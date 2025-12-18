@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Self-help resources and mental health information">
+  <title>Learn - MindVerse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="nav-bar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="breathe.html" class="nav-item">
+        <span class="nav-icon">🫁</span>
+        <span>Breathe</span>
+      </a>
+      <a href="journal.html" class="nav-item">
+        <span class="nav-icon">📔</span>
+        <span>Journal</span>
+      </a>
+      <a href="activities.html" class="nav-item">
+        <span class="nav-icon">✨</span>
+        <span>Activities</span>
+      </a>
+      <a href="skills.html" class="nav-item">
+        <span class="nav-icon">🎯</span>
+        <span>Skills</span>
+      </a>
+      <a href="learn.html" class="nav-item">
+        <span class="nav-icon">📚</span>
+        <span>Learn</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="page-wrapper">
+    <div class="page-header">
+      <h1>Learn & Understand</h1>
+      <p>Self-help resources for your mental wellbeing</p>
+    </div>
+
+    <div class="container">
+      <!-- Important Disclaimer -->
+      <div class="alert alert-warning">
+        <h3 style="margin-top: 0;">⚠️ Important Notice</h3>
+        <p style="margin-bottom: var(--spacing-sm);">
+          <strong>This app offers general support and is not a substitute for professional help or emergency services.</strong>
+        </p>
+        <p style="margin-bottom: 0;">
+          The information provided here is educational and should not replace advice from qualified mental health professionals.
+        </p>
+      </div>
+
+      <!-- Crisis Resources -->
+      <div class="alert alert-danger">
+        <h3 style="margin-top: 0;">🆘 Need Urgent Help?</h3>
+        <p>If you're in crisis or having thoughts of self-harm, please reach out immediately:</p>
+        <ul style="margin: var(--spacing-sm) 0; padding-left: var(--spacing-lg);">
+          <li><strong>Emergency:</strong> Call 911 (US) or your local emergency number</li>
+          <li><strong>National Suicide Prevention Lifeline (US):</strong> 988 or 1-800-273-8255</li>
+          <li><strong>Crisis Text Line (US):</strong> Text HOME to 741741</li>
+          <li><strong>International:</strong> Visit <a href="https://findahelpline.com" target="_blank" style="color: inherit; text-decoration: underline;">findahelpline.com</a></li>
+        </ul>
+        <p style="margin-bottom: 0;">
+          You can also contact a trusted friend, family member, or mental health professional.
+        </p>
+      </div>
+
+      <!-- Topics Grid -->
+      <div class="topics-grid" id="topicsGrid">
+        <!-- Topics will be loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Topic Detail Modal -->
+  <div class="modal" id="topicModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="MindVerse.closeModal(document.getElementById('topicModal'))">
+        ✕
+      </button>
+      <div id="topicContent">
+        <!-- Content will be loaded dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="firebase-config.js"></script>
+  <script src="common.js"></script>
+  <script src="learn.js"></script>
+</body>
+</html>

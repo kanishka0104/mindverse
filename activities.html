@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pleasant activities to boost your mood and wellbeing">
+  <title>Activities - MindVerse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="nav-bar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="breathe.html" class="nav-item">
+        <span class="nav-icon">🫁</span>
+        <span>Breathe</span>
+      </a>
+      <a href="journal.html" class="nav-item">
+        <span class="nav-icon">📔</span>
+        <span>Journal</span>
+      </a>
+      <a href="activities.html" class="nav-item">
+        <span class="nav-icon">✨</span>
+        <span>Activities</span>
+      </a>
+      <a href="skills.html" class="nav-item">
+        <span class="nav-icon">🎯</span>
+        <span>Skills</span>
+      </a>
+      <a href="learn.html" class="nav-item">
+        <span class="nav-icon">📚</span>
+        <span>Learn</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="page-wrapper">
+    <div class="page-header">
+      <h1>Pleasant Activities</h1>
+      <p>Small positive actions can make a big difference</p>
+    </div>
+
+    <div class="container">
+      <!-- Daily Summary -->
+      <div class="card text-center">
+        <h3 class="card-title">Today's Progress</h3>
+        <p id="dailySummary" style="color: var(--color-text-light);">
+          Loading your activities...
+        </p>
+      </div>
+
+      <!-- Activities Grid -->
+      <div class="activities-grid" id="activitiesGrid">
+        <!-- Activities will be dynamically loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Completion Modal -->
+  <div class="modal" id="completionModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="MindVerse.closeModal(document.getElementById('completionModal'))">
+        ✕
+      </button>
+      <div class="text-center">
+        <div style="font-size: 4rem; margin: var(--spacing-md) 0;">🎉</div>
+        <h2 id="modalTitle">Great Job!</h2>
+        <p id="modalMessage" style="color: var(--color-text-light); margin: var(--spacing-md) 0;">
+          You completed an activity!
+        </p>
+        <button class="btn btn-primary" onclick="MindVerse.closeModal(document.getElementById('completionModal'))">
+          Continue
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="firebase-config.js"></script>
+  <script src="common.js"></script>
+  <script src="activities.js"></script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your profile, preferences, and progress tracking">
+  <title>Profile - MindVerse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="nav-bar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="breathe.html" class="nav-item">
+        <span class="nav-icon">🫁</span>
+        <span>Breathe</span>
+      </a>
+      <a href="journal.html" class="nav-item">
+        <span class="nav-icon">📔</span>
+        <span>Journal</span>
+      </a>
+      <a href="activities.html" class="nav-item">
+        <span class="nav-icon">✨</span>
+        <span>Activities</span>
+      </a>
+      <a href="skills.html" class="nav-item">
+        <span class="nav-icon">🎯</span>
+        <span>Skills</span>
+      </a>
+      <a href="learn.html" class="nav-item">
+        <span class="nav-icon">📚</span>
+        <span>Learn</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="page-wrapper">
+    <div class="page-header">
+      <h1>Your Profile</h1>
+      <p class="profile-email" style="color: var(--color-text-light); margin-top: 0.5rem;"></p>
+    </div>
+
+    <div class="container">
+      <!-- User Account Card -->
+      <div class="card">
+        <div class="profile-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+          <div>
+            <h2 style="margin: 0;">Welcome Back!</h2>
+            <p style="color: var(--color-text-light); margin: 0.5rem 0 0 0;" class="profile-email"></p>
+          </div>
+          <button class="btn btn-outline" onclick="handleLogout()" style="color: var(--color-secondary);">
+            🚪 Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- Streak & Motivation -->
+      <div class="card text-center">
+        <div style="font-size: 3rem; margin-bottom: var(--spacing-sm);">🔥</div>
+        <h2 style="color: var(--color-primary); margin-bottom: var(--spacing-xs);">
+          <span id="streakDays">-</span> Day Streak
+        </h2>
+        <p style="color: var(--color-text-light);" id="streakMessage">
+          Loading your progress...
+        </p>
+      </div>
+
+      <!-- User Preferences -->
+      <div class="card">
+        <h2 class="card-title">Preferences</h2>
+        <p style="color: var(--color-text-light); margin-bottom: var(--spacing-md);">
+          Help us personalize your experience
+        </p>
+
+        <div class="form-group">
+          <label class="form-label" for="focusArea">What do you want to focus on?</label>
+          <select id="focusArea" class="form-select">
+            <option value="">Select your focus...</option>
+            <option value="reduce_anxiety">Reduce anxiety</option>
+            <option value="feel_less_sad">Feel less sad</option>
+            <option value="sleep_better">Sleep better</option>
+            <option value="build_confidence">Build confidence</option>
+            <option value="general">General wellbeing</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="preferredTime">When do you usually use the app?</label>
+          <select id="preferredTime" class="form-select">
+            <option value="">Select a time...</option>
+            <option value="morning">Morning</option>
+            <option value="afternoon">Afternoon</option>
+            <option value="evening">Evening</option>
+            <option value="any">Anytime</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="savePreferencesBtn">
+          💾 Save Preferences
+        </button>
+      </div>
+
+      <!-- Progress Stats -->
+      <div class="card">
+        <h2 class="card-title">Your Progress</h2>
+        <p style="color: var(--color-text-light); margin-bottom: var(--spacing-md);">
+          Last 7 days
+        </p>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-value" id="statMoodEntries">-</span>
+            <span class="stat-label">Mood Check-ins</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-value" id="statJournalEntries">-</span>
+            <span class="stat-label">Journal Entries</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-value" id="statBreathingSessions">-</span>
+            <span class="stat-label">Breathing Sessions</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-value" id="statActivities">-</span>
+            <span class="stat-label">Activities Done</span>
+          </div>
+        </div>
+
+        <!-- Weekly Activity -->
+        <div class="mt-lg">
+          <h3 style="font-size: var(--font-size-base); margin-bottom: var(--spacing-sm);">
+            Days Active This Week
+          </h3>
+          <div id="weeklyActivity" style="display: flex; gap: var(--spacing-xs); justify-content: space-around; flex-wrap: wrap;">
+            <!-- Will be filled dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Favorite Affirmations -->
+      <div class="card">
+        <h2 class="card-title">💝 Favorite Affirmations</h2>
+        <div id="favoritesContainer">
+          <p class="text-center" style="color: var(--color-text-light);">
+            Loading your favorites...
+          </p>
+        </div>
+      </div>
+
+      <!-- Data Management -->
+      <div class="card">
+        <h3 class="card-title">Data & Privacy</h3>
+        <p style="color: var(--color-text-light); margin-bottom: var(--spacing-md);">
+          Your data is stored locally in your browser and in Firebase.
+        </p>
+        <div style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap;">
+          <button class="btn btn-outline btn-sm" onclick="showDataInfo()">
+            ℹ️ About Your Data
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Data Info Modal -->
+  <div class="modal" id="dataModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="MindVerse.closeModal(document.getElementById('dataModal'))">
+        ✕
+      </button>
+      <h2>About Your Data</h2>
+      <p>MindVerse stores your data in two places:</p>
+      <ol style="line-height: 2; margin: var(--spacing-md) 0;">
+        <li><strong>Your Browser (localStorage):</strong> Your user ID is stored locally on this device.</li>
+        <li><strong>Firebase (Cloud Database):</strong> Your mood entries, journal entries, activity logs, 
+        and preferences are stored in Firebase Firestore.</li>
+      </ol>
+      <p><strong>User ID:</strong> <code id="userIdDisplay" style="background: var(--color-background); padding: 4px 8px; border-radius: 4px;">-</code></p>
+      <p style="margin-top: var(--spacing-md);">
+        <strong>Important:</strong> If you clear your browser data, you'll lose access to your entries 
+        unless you note down your user ID. This app does not currently support account recovery.
+      </p>
+      <div class="alert alert-info" style="margin-top: var(--spacing-md);">
+        To use this app with real data, you need to configure Firebase with your own project credentials 
+        in <code>firebase-config.js</code>.
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="firebase-config.js"></script>
+  <script src="common.js"></script>
+  <script src="profile.js"></script>
+</body>
+</html>

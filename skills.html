@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn new skills - Music, Art, Dance, and more">
+  <title>Learn Skills - MindVerse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="nav-bar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="breathe.html" class="nav-item">
+        <span class="nav-icon">🫁</span>
+        <span>Breathe</span>
+      </a>
+      <a href="journal.html" class="nav-item">
+        <span class="nav-icon">📔</span>
+        <span>Journal</span>
+      </a>
+      <a href="activities.html" class="nav-item">
+        <span class="nav-icon">✨</span>
+        <span>Activities</span>
+      </a>
+      <a href="skills.html" class="nav-item">
+        <span class="nav-icon">🎨</span>
+        <span>Skills</span>
+      </a>
+      <a href="learn.html" class="nav-item">
+        <span class="nav-icon">📚</span>
+        <span>Learn</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="page-wrapper">
+    <div class="page-header">
+      <h1>🎨 Learn New Skills</h1>
+      <p>Discover and practice new hobbies that bring joy and fulfillment</p>
+    </div>
+
+    <div class="container">
+      <!-- Motivational Message -->
+      <div class="card text-center" style="background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-primary-light) 100%); color: white;">
+        <h3 style="color: white; margin-bottom: var(--spacing-sm);">✨ Why Learn New Skills?</h3>
+        <p style="opacity: 0.95; line-height: 1.6;">
+          Learning new skills boosts confidence, reduces stress, and gives you a sense of accomplishment.
+          Pick something that excites you and start small!
+        </p>
+      </div>
+
+      <!-- Skill Categories -->
+      <div class="skills-categories">
+        
+        <!-- Music & Sound -->
+        <div class="card skill-category">
+          <div class="skill-category-header">
+            <span class="skill-category-icon">🎵</span>
+            <h2 class="card-title">Music & Sound</h2>
+          </div>
+          <p class="skill-category-description">
+            Express yourself through the universal language of music
+          </p>
+          <div class="skills-grid">
+            <div class="skill-card" onclick="openSkillModal('guitar')">
+              <div class="skill-icon">🎸</div>
+              <h4 class="skill-name">Guitar</h4>
+              <p class="skill-desc">Learn chords and songs</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('singing')">
+              <div class="skill-icon">🎤</div>
+              <h4 class="skill-name">Singing</h4>
+              <p class="skill-desc">Develop your voice</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('piano')">
+              <div class="skill-icon">🎹</div>
+              <h4 class="skill-name">Piano</h4>
+              <p class="skill-desc">Master the keys</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('ukulele')">
+              <div class="skill-icon">🎸</div>
+              <h4 class="skill-name">Ukulele</h4>
+              <p class="skill-desc">Easy and fun to learn</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Art & Craft -->
+        <div class="card skill-category">
+          <div class="skill-category-header">
+            <span class="skill-category-icon">🎨</span>
+            <h2 class="card-title">Art & Craft</h2>
+          </div>
+          <p class="skill-category-description">
+            Create beautiful things with your hands
+          </p>
+          <div class="skills-grid">
+            <div class="skill-card" onclick="openSkillModal('drawing')">
+              <div class="skill-icon">✏️</div>
+              <h4 class="skill-name">Drawing</h4>
+              <p class="skill-desc">Sketch and illustrate</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('painting')">
+              <div class="skill-icon">🖌️</div>
+              <h4 class="skill-name">Painting</h4>
+              <p class="skill-desc">Watercolor, acrylic, oil</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('crafts')">
+              <div class="skill-icon">✂️</div>
+              <h4 class="skill-name">Crafts</h4>
+              <p class="skill-desc">DIY projects</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('calligraphy')">
+              <div class="skill-icon">🖋️</div>
+              <h4 class="skill-name">Calligraphy</h4>
+              <p class="skill-desc">Beautiful lettering</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Movement & Dance -->
+        <div class="card skill-category">
+          <div class="skill-category-header">
+            <span class="skill-category-icon">💃</span>
+            <h2 class="card-title">Movement & Dance</h2>
+          </div>
+          <p class="skill-category-description">
+            Move your body and express yourself through dance
+          </p>
+          <div class="skills-grid">
+            <div class="skill-card" onclick="openSkillModal('dancing')">
+              <div class="skill-icon">💃</div>
+              <h4 class="skill-name">Dancing</h4>
+              <p class="skill-desc">Various dance styles</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('yoga')">
+              <div class="skill-icon">🧘</div>
+              <h4 class="skill-name">Yoga</h4>
+              <p class="skill-desc">Mind and body practice</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('martial-arts')">
+              <div class="skill-icon">🥋</div>
+              <h4 class="skill-name">Martial Arts</h4>
+              <p class="skill-desc">Discipline and strength</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('fitness')">
+              <div class="skill-icon">💪</div>
+              <h4 class="skill-name">Fitness</h4>
+              <p class="skill-desc">Build healthy habits</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Languages -->
+        <div class="card skill-category">
+          <div class="skill-category-header">
+            <span class="skill-category-icon">🌍</span>
+            <h2 class="card-title">Languages</h2>
+          </div>
+          <p class="skill-category-description">
+            Connect with the world through new languages
+          </p>
+          <div class="skills-grid">
+            <div class="skill-card" onclick="openSkillModal('spanish')">
+              <div class="skill-icon">🇪🇸</div>
+              <h4 class="skill-name">Spanish</h4>
+              <p class="skill-desc">Hola! Learn español</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('french')">
+              <div class="skill-icon">🇫🇷</div>
+              <h4 class="skill-name">French</h4>
+              <p class="skill-desc">Bonjour! Learn français</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('japanese')">
+              <div class="skill-icon">🇯🇵</div>
+              <h4 class="skill-name">Japanese</h4>
+              <p class="skill-desc">Konnichiwa! Learn 日本語</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('sign-language')">
+              <div class="skill-icon">🤟</div>
+              <h4 class="skill-name">Sign Language</h4>
+              <p class="skill-desc">Communicate visually</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Culinary Arts -->
+        <div class="card skill-category">
+          <div class="skill-category-header">
+            <span class="skill-category-icon">👨‍🍳</span>
+            <h2 class="card-title">Culinary Arts</h2>
+          </div>
+          <p class="skill-category-description">
+            Create delicious food and explore flavors
+          </p>
+          <div class="skills-grid">
+            <div class="skill-card" onclick="openSkillModal('cooking')">
+              <div class="skill-icon">🍳</div>
+              <h4 class="skill-name">Cooking</h4>
+              <p class="skill-desc">Master recipes</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('baking')">
+              <div class="skill-icon">🥐</div>
+              <h4 class="skill-name">Baking</h4>
+              <p class="skill-desc">Breads and pastries</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('cocktails')">
+              <div class="skill-icon">🍹</div>
+              <h4 class="skill-name">Mixology</h4>
+              <p class="skill-desc">Craft beverages</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('plating')">
+              <div class="skill-icon">🍽️</div>
+              <h4 class="skill-name">Food Plating</h4>
+              <p class="skill-desc">Beautiful presentation</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Digital & Tech -->
+        <div class="card skill-category">
+          <div class="skill-category-header">
+            <span class="skill-category-icon">💻</span>
+            <h2 class="card-title">Digital & Tech</h2>
+          </div>
+          <p class="skill-category-description">
+            Learn modern skills for the digital age
+          </p>
+          <div class="skills-grid">
+            <div class="skill-card" onclick="openSkillModal('photography')">
+              <div class="skill-icon">📷</div>
+              <h4 class="skill-name">Photography</h4>
+              <p class="skill-desc">Capture moments</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('video-editing')">
+              <div class="skill-icon">🎬</div>
+              <h4 class="skill-name">Video Editing</h4>
+              <p class="skill-desc">Create content</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('graphic-design')">
+              <div class="skill-icon">🎨</div>
+              <h4 class="skill-name">Graphic Design</h4>
+              <p class="skill-desc">Visual creativity</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('coding')">
+              <div class="skill-icon">👨‍💻</div>
+              <h4 class="skill-name">Coding</h4>
+              <p class="skill-desc">Build websites/apps</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Writing & Communication -->
+        <div class="card skill-category">
+          <div class="skill-category-header">
+            <span class="skill-category-icon">✍️</span>
+            <h2 class="card-title">Writing & Communication</h2>
+          </div>
+          <p class="skill-category-description">
+            Express your thoughts and tell stories
+          </p>
+          <div class="skills-grid">
+            <div class="skill-card" onclick="openSkillModal('creative-writing')">
+              <div class="skill-icon">📝</div>
+              <h4 class="skill-name">Creative Writing</h4>
+              <p class="skill-desc">Stories and poetry</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('public-speaking')">
+              <div class="skill-icon">🎤</div>
+              <h4 class="skill-name">Public Speaking</h4>
+              <p class="skill-desc">Confident communication</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('blogging')">
+              <div class="skill-icon">📰</div>
+              <h4 class="skill-name">Blogging</h4>
+              <p class="skill-desc">Share your voice online</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('journaling')">
+              <div class="skill-icon">📔</div>
+              <h4 class="skill-name">Journaling</h4>
+              <p class="skill-desc">Reflective writing</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- My Learning Path -->
+      <div class="card">
+        <h2 class="card-title">📚 My Learning Path</h2>
+        <p style="color: var(--color-text-light); margin-bottom: var(--spacing-md);">
+          Skills you're interested in will appear here
+        </p>
+        <div id="mySkillsContainer">
+          <p class="text-center" style="color: var(--color-text-light);">
+            Click on any skill above to explore and add it to your learning path!
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Skill Detail Modal -->
+  <div class="modal" id="skillModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="MindVerse.closeModal(document.getElementById('skillModal'))">✕</button>
+      <div id="skillModalContent">
+        <!-- Content loaded dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="firebase-config.js"></script>
+  <script src="common.js"></script>
+  <script src="skills.js"></script>
+</body>
+</html>

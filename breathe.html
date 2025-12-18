@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Guided breathing exercises for calm and relaxation">
+  <title>Breathe - MindVerse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="nav-bar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="breathe.html" class="nav-item">
+        <span class="nav-icon">🫁</span>
+        <span>Breathe</span>
+      </a>
+      <a href="journal.html" class="nav-item">
+        <span class="nav-icon">📔</span>
+        <span>Journal</span>
+      </a>
+      <a href="activities.html" class="nav-item">
+        <span class="nav-icon">✨</span>
+        <span>Activities</span>
+      </a>
+      <a href="skills.html" class="nav-item">
+        <span class="nav-icon">🎯</span>
+        <span>Skills</span>
+      </a>
+      <a href="learn.html" class="nav-item">
+        <span class="nav-icon">📚</span>
+        <span>Learn</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="page-wrapper">
+    <div class="page-header">
+      <h1>Breathe & Calm</h1>
+      <p>Take a moment to center yourself with guided breathing</p>
+    </div>
+
+    <div class="container">
+      <!-- Session Summary (shown when not breathing) -->
+      <div class="card text-center" id="sessionSummary">
+        <h3 class="card-title">Your Breathing Practice</h3>
+        <p id="summaryText" style="color: var(--color-text-light);">
+          Loading your statistics...
+        </p>
+      </div>
+
+      <!-- Breathing Interface -->
+      <div class="breathing-container">
+        <!-- Animated Breathing Circle -->
+        <div class="breathing-circle" id="breathingCircle">
+          <div class="breathing-text" id="breathingText">Ready</div>
+        </div>
+
+        <!-- Timer Display -->
+        <div class="breathing-timer" id="timerDisplay">
+          <span id="timeRemaining">--:--</span>
+        </div>
+
+        <!-- Instructions -->
+        <p class="text-center mb-md" style="color: var(--color-text-light); max-width: 400px;">
+          <span id="instructionText">Choose a duration below and click Start to begin</span>
+        </p>
+
+        <!-- Controls -->
+        <div class="breathing-controls">
+          <button class="btn btn-secondary btn-sm duration-btn" data-duration="60">
+            1 Minute
+          </button>
+          <button class="btn btn-secondary btn-sm duration-btn" data-duration="180">
+            3 Minutes
+          </button>
+          <button class="btn btn-secondary btn-sm duration-btn" data-duration="300">
+            5 Minutes
+          </button>
+        </div>
+
+        <div class="breathing-controls mt-md">
+          <button class="btn btn-primary btn-lg" id="startBtn">
+            Start Breathing
+          </button>
+          <button class="btn btn-outline btn-lg hidden" id="stopBtn">
+            Stop
+          </button>
+        </div>
+      </div>
+
+      <!-- Post-Session Feedback (hidden initially) -->
+      <div class="card hidden" id="feedbackCard">
+        <h3 class="card-title text-center">How do you feel now?</h3>
+        <div class="mood-selector">
+          <div class="mood-option" data-feeling="worse">
+            <span class="mood-emoji">😟</span>
+            <span class="mood-label">Worse</span>
+          </div>
+          <div class="mood-option" data-feeling="same">
+            <span class="mood-emoji">😐</span>
+            <span class="mood-label">Same</span>
+          </div>
+          <div class="mood-option" data-feeling="better">
+            <span class="mood-emoji">😌</span>
+            <span class="mood-label">Better</span>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block mt-md hidden" id="saveFeedbackBtn">
+          Save & Continue
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="firebase-config.js"></script>
+  <script src="common.js"></script>
+  <script src="breathe.js"></script>
+</body>
+</html>

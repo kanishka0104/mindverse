@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Journal and gratitude entries for emotional wellbeing">
+  <title>Journal - MindVerse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="nav-bar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="breathe.html" class="nav-item">
+        <span class="nav-icon">🫁</span>
+        <span>Breathe</span>
+      </a>
+      <a href="journal.html" class="nav-item">
+        <span class="nav-icon">📔</span>
+        <span>Journal</span>
+      </a>
+      <a href="activities.html" class="nav-item">
+        <span class="nav-icon">✨</span>
+        <span>Activities</span>
+      </a>
+      <a href="skills.html" class="nav-item">
+        <span class="nav-icon">🎯</span>
+        <span>Skills</span>
+      </a>
+      <a href="learn.html" class="nav-item">
+        <span class="nav-icon">📚</span>
+        <span>Learn</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="page-wrapper">
+    <div class="page-header">
+      <h1>Journal & Gratitude</h1>
+      <p>Express your thoughts and celebrate the good</p>
+    </div>
+
+    <div class="container">
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" data-tab="journal">
+          📝 Journal
+        </button>
+        <button class="tab" data-tab="gratitude">
+          ✨ Gratitude
+        </button>
+      </div>
+
+      <!-- Journal Tab Content -->
+      <div class="tab-content active" id="journalTab">
+        <!-- New Journal Entry Card -->
+        <div class="card">
+          <h3 class="card-title">
+            <span id="journalDateHeader">Today's Entry</span>
+          </h3>
+          <div class="form-group">
+            <label class="form-label" for="journalContent">
+              Write anything on your mind...
+            </label>
+            <textarea 
+              id="journalContent" 
+              class="form-textarea" 
+              placeholder="How are you feeling? What's on your mind? What happened today?"
+              rows="8"
+            ></textarea>
+          </div>
+          <button class="btn btn-primary btn-block" id="saveJournalBtn">
+            💾 Save Journal Entry
+          </button>
+        </div>
+
+        <!-- Previous Entries -->
+        <div class="card">
+          <h3 class="card-title">Previous Entries</h3>
+          <div id="journalEntriesContainer">
+            <p class="text-center" style="color: var(--color-text-light);">
+              Loading your journal entries...
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gratitude Tab Content -->
+      <div class="tab-content" id="gratitudeTab">
+        <!-- New Gratitude Entry Card -->
+        <div class="card">
+          <h3 class="card-title">
+            <span id="gratitudeDateHeader">Three Good Things Today</span>
+          </h3>
+          <p style="color: var(--color-text-light); margin-bottom: var(--spacing-md);">
+            Research shows that regularly noting things we're grateful for can improve mood and wellbeing.
+          </p>
+          
+          <div class="form-group">
+            <label class="form-label" for="gratitude1">1. Something good that happened:</label>
+            <input 
+              type="text" 
+              id="gratitude1" 
+              class="form-input" 
+              placeholder="e.g., Had a nice conversation with a friend"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="gratitude2">2. Another good thing:</label>
+            <input 
+              type="text" 
+              id="gratitude2" 
+              class="form-input" 
+              placeholder="e.g., Enjoyed my morning coffee"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="gratitude3">3. One more good thing:</label>
+            <input 
+              type="text" 
+              id="gratitude3" 
+              class="form-input" 
+              placeholder="e.g., Made progress on a project"
+            >
+          </div>
+
+          <button class="btn btn-primary btn-block" id="saveGratitudeBtn">
+            ✨ Save Gratitude Entry
+          </button>
+        </div>
+
+        <!-- Previous Gratitude Entries -->
+        <div class="card">
+          <h3 class="card-title">Your Gratitude Collection</h3>
+          <div class="gratitude-grid" id="gratitudeEntriesContainer">
+            <p class="text-center" style="color: var(--color-text-light); grid-column: 1 / -1;">
+              Loading your gratitude entries...
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="firebase-config.js"></script>
+  <script src="common.js"></script>
+  <script src="journal.js"></script>
+</body>
+</html>

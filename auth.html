@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome - MindVerse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1 class="app-title">🧠 MindVerse</h1>
+        <p class="app-tagline">Your Mental Health Companion</p>
+      </div>
+
+      <!-- Login Form -->
+      <div id="loginForm" class="auth-form">
+        <h2>Welcome Back</h2>
+        <p class="form-subtitle">Sign in to continue your journey</p>
+        
+        <div class="input-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="your@email.com" required>
+        </div>
+        
+        <div class="input-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" required>
+        </div>
+        
+        <p class="forgot-password-link">
+          <a href="#" onclick="showForgotPasswordForm(); return false;">Forgot password?</a>
+        </p>
+        
+        <button class="btn btn-primary btn-block" onclick="handleLogin()">
+          Sign In
+        </button>
+        
+        <p class="form-switch">
+          Don't have an account? 
+          <a href="#" onclick="showSignupForm(); return false;">Create one</a>
+        </p>
+      </div>
+
+      <!-- Forgot Password Form -->
+      <div id="forgotPasswordForm" class="auth-form" style="display: none;">
+        <h2>Reset Password</h2>
+        <p class="form-subtitle">We'll send you a password reset link</p>
+        
+        <div class="input-group">
+          <label for="resetEmail">Email</label>
+          <input type="email" id="resetEmail" placeholder="your@email.com" required>
+        </div>
+        
+        <button class="btn btn-primary btn-block" onclick="handlePasswordReset()">
+          Send Reset Link
+        </button>
+        
+        <p class="form-switch">
+          Remember your password? 
+          <a href="#" onclick="showLoginForm(); return false;">Sign in</a>
+        </p>
+      </div>
+
+      <!-- Signup Form -->
+      <div id="signupForm" class="auth-form" style="display: none;">
+        <h2>Create Account</h2>
+        <p class="form-subtitle">Start your mental wellness journey</p>
+        
+        <div class="input-group">
+          <label for="signupName">Name</label>
+          <input type="text" id="signupName" placeholder="Your name" required>
+        </div>
+        
+        <div class="input-group">
+          <label for="signupEmail">Email</label>
+          <input type="email" id="signupEmail" placeholder="your@email.com" required>
+        </div>
+        
+        <div class="input-group">
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" placeholder="At least 6 characters" required>
+        </div>
+        
+        <div class="input-group">
+          <label for="signupPasswordConfirm">Confirm Password</label>
+          <input type="password" id="signupPasswordConfirm" placeholder="Re-enter password" required>
+        </div>
+        
+        <button class="btn btn-primary btn-block" onclick="handleSignup()">
+          Create Account
+        </button>
+        
+        <p class="form-switch">
+          Already have an account? 
+          <a href="#" onclick="showLoginForm(); return false;">Sign in</a>
+        </p>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div id="authLoading" class="auth-loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>Please wait...</p>
+      </div>
+
+      <!-- Error Message -->
+      <div id="authError" class="auth-error" style="display: none;"></div>
+    </div>
+
+    <div class="auth-footer">
+      <p>MindVerse - Supporting your mental health journey, one step at a time.</p>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  
+  <!-- App Scripts -->
+  <script src="firebase-config.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>

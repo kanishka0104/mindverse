@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MindVerse - Your mental health support companion">
+  <title>Home - MindVerse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="nav-bar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="breathe.html" class="nav-item">
+        <span class="nav-icon">🫁</span>
+        <span>Breathe</span>
+      </a>
+      <a href="journal.html" class="nav-item">
+        <span class="nav-icon">📔</span>
+        <span>Journal</span>
+      </a>
+      <a href="activities.html" class="nav-item">
+        <span class="nav-icon">✨</span>
+        <span>Activities</span>
+      </a>
+      <a href="skills.html" class="nav-item">
+        <span class="nav-icon">🎯</span>
+        <span>Skills</span>
+      </a>
+      <a href="learn.html" class="nav-item">
+        <span class="nav-icon">📚</span>
+        <span>Learn</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="page-wrapper">
+    <div class="container">
+      <!-- Welcome Section -->
+      <div class="page-header">
+        <h1>Welcome to MindVerse</h1>
+        <p id="welcomeMessage">How are you feeling today?</p>
+      </div>
+
+      <!-- Affirmation Section -->
+      <div class="affirmation-box fade-in">
+        <p class="affirmation-text" id="affirmationText">Loading...</p>
+        <div class="affirmation-controls">
+          <button class="btn btn-sm btn-outline" id="newAffirmationBtn" style="background: white; color: var(--color-primary);">
+            🔄 New Message
+          </button>
+          <button class="btn btn-sm btn-outline" id="favoriteAffirmationBtn" style="background: white; color: var(--color-primary);">
+            ❤️ Save to Favorites
+          </button>
+        </div>
+      </div>
+
+      <!-- Mood Check-in Section -->
+      <div class="card">
+        <h2 class="card-title">How are you feeling right now?</h2>
+        <div class="mood-selector">
+          <div class="mood-option" data-mood="awful">
+            <span class="mood-emoji">😢</span>
+            <span class="mood-label">Awful</span>
+          </div>
+          <div class="mood-option" data-mood="low">
+            <span class="mood-emoji">😔</span>
+            <span class="mood-label">Low</span>
+          </div>
+          <div class="mood-option" data-mood="meh">
+            <span class="mood-emoji">😐</span>
+            <span class="mood-label">Meh</span>
+          </div>
+          <div class="mood-option" data-mood="okay">
+            <span class="mood-emoji">🙂</span>
+            <span class="mood-label">Okay</span>
+          </div>
+          <div class="mood-option" data-mood="great">
+            <span class="mood-emoji">😊</span>
+            <span class="mood-label">Great</span>
+          </div>
+        </div>
+
+        <!-- Optional Note Section (Hidden by default) -->
+        <div id="moodNoteSection" class="hidden mt-md">
+          <label class="form-label" for="moodNote">Add a note (optional):</label>
+          <textarea 
+            id="moodNote" 
+            class="form-textarea" 
+            placeholder="What's on your mind?"
+            rows="3"
+          ></textarea>
+          <button class="btn btn-primary btn-block mt-sm" id="saveMoodBtn">
+            Save Mood Entry
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent Mood History -->
+      <div class="card" id="moodHistoryCard">
+        <h3 class="card-title">Your Recent Moods</h3>
+        <div id="moodHistoryContainer">
+          <p class="text-center" style="color: var(--color-text-light);">
+            No mood entries yet. Select your mood above to get started!
+          </p>
+        </div>
+      </div>
+
+      <!-- Today's Plan Section -->
+      <div class="card" id="todaysPlanCard">
+        <h2 class="card-title">📋 Today's Plan for You</h2>
+        <div id="todaysPlanContainer">
+          <p class="text-center" style="color: var(--color-text-light);">
+            Loading your personalized plan...
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="firebase-config.js"></script>
+  <script src="common.js"></script>
+  <script src="home.js"></script>
+</body>
+</html>
