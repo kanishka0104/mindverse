@@ -11,17 +11,9 @@
   <!-- Navigation Bar -->
   <nav class="nav-bar">
     <div class="nav-container">
-      <a href="index.html" class="nav-item">
+      <a href="index.html" class="nav-item active">
         <span class="nav-icon">🏠</span>
         <span>Home</span>
-      </a>
-      <a href="breathe.html" class="nav-item">
-        <span class="nav-icon">🫁</span>
-        <span>Breathe</span>
-      </a>
-      <a href="journal.html" class="nav-item">
-        <span class="nav-icon">📔</span>
-        <span>Journal</span>
       </a>
       <a href="activities.html" class="nav-item">
         <span class="nav-icon">✨</span>
@@ -31,13 +23,13 @@
         <span class="nav-icon">🎯</span>
         <span>Skills</span>
       </a>
-      <a href="learn.html" class="nav-item">
-        <span class="nav-icon">📚</span>
-        <span>Learn</span>
-      </a>
       <a href="profile.html" class="nav-item">
         <span class="nav-icon">👤</span>
         <span>Profile</span>
+      </a>
+      <a href="settings.html" class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span>Settings</span>
       </a>
     </div>
   </nav>
@@ -55,10 +47,10 @@
       <div class="affirmation-box fade-in">
         <p class="affirmation-text" id="affirmationText">Loading...</p>
         <div class="affirmation-controls">
-          <button class="btn btn-sm btn-outline" id="newAffirmationBtn" style="background: white; color: var(--color-primary);">
+          <button class="btn btn-sm btn-outline" id="newAffirmationBtn" onclick="if(window.loadAffirmation) window.loadAffirmation()" style="background: white; color: var(--color-primary);">
             🔄 New Message
           </button>
-          <button class="btn btn-sm btn-outline" id="favoriteAffirmationBtn" style="background: white; color: var(--color-primary);">
+          <button class="btn btn-sm btn-outline" id="favoriteAffirmationBtn" onclick="if(window.saveAffirmationToFavorites) window.saveAffirmationToFavorites()" style="background: white; color: var(--color-primary);">
             ❤️ Save to Favorites
           </button>
         </div>
@@ -68,27 +60,32 @@
       <div class="card">
         <h2 class="card-title">How are you feeling right now?</h2>
         <div class="mood-selector">
-          <div class="mood-option" data-mood="awful">
+          <div class="mood-option" data-mood="awful" onclick="if(window.selectMood) window.selectMood(this)">
             <span class="mood-emoji">😢</span>
             <span class="mood-label">Awful</span>
           </div>
-          <div class="mood-option" data-mood="low">
+          <div class="mood-option" data-mood="low" onclick="if(window.selectMood) window.selectMood(this)">
             <span class="mood-emoji">😔</span>
             <span class="mood-label">Low</span>
           </div>
-          <div class="mood-option" data-mood="meh">
+          <div class="mood-option" data-mood="meh" onclick="if(window.selectMood) window.selectMood(this)">
             <span class="mood-emoji">😐</span>
             <span class="mood-label">Meh</span>
           </div>
-          <div class="mood-option" data-mood="okay">
+          <div class="mood-option" data-mood="okay" onclick="if(window.selectMood) window.selectMood(this)">
             <span class="mood-emoji">🙂</span>
             <span class="mood-label">Okay</span>
           </div>
-          <div class="mood-option" data-mood="great">
+          <div class="mood-option" data-mood="great" onclick="if(window.selectMood) window.selectMood(this)">
             <span class="mood-emoji">😊</span>
             <span class="mood-label">Great</span>
           </div>
         </div>
+
+        <!-- Save Mood Button -->
+        <button class="btn btn-primary btn-block mt-md" id="saveMoodBtn" onclick="if(window.saveMood) window.saveMood()">
+          💾 Save My Mood
+        </button>
 
         <!-- Optional Note Section (Hidden by default) -->
         <div id="moodNoteSection" class="hidden mt-md">
@@ -99,29 +96,264 @@
             placeholder="What's on your mind?"
             rows="3"
           ></textarea>
-          <button class="btn btn-primary btn-block mt-sm" id="saveMoodBtn">
-            Save Mood Entry
-          </button>
         </div>
       </div>
 
-      <!-- Recent Mood History -->
+      <!-- Current Mood Entry -->
       <div class="card" id="moodHistoryCard">
-        <h3 class="card-title">Your Recent Moods</h3>
+        <h3 class="card-title">Current Mood Entry</h3>
         <div id="moodHistoryContainer">
           <p class="text-center" style="color: var(--color-text-light);">
-            No mood entries yet. Select your mood above to get started!
+            No mood saved yet. Select your mood above to get started!
           </p>
         </div>
       </div>
 
-      <!-- Today's Plan Section -->
-      <div class="card" id="todaysPlanCard">
-        <h2 class="card-title">📋 Today's Plan for You</h2>
-        <div id="todaysPlanContainer">
-          <p class="text-center" style="color: var(--color-text-light);">
-            Loading your personalized plan...
+      <!-- Sleep Tracker -->
+      <div class="card">
+        <h2 class="card-title">😴 Sleep Tracker</h2>
+        <p style="color: var(--color-text-light); margin-bottom: var(--spacing-md);">
+          Track your sleep patterns for better mental health
+        </p>
+
+        <div class="sleep-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="bedTime">Bed Time</label>
+              <input type="time" id="bedTime" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="wakeTime">Wake Time</label>
+              <input type="time" id="wakeTime" class="form-input">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Sleep Quality</label>
+            <div class="sleep-quality-selector">
+              <button class="sleep-quality-btn" data-quality="1" onclick="selectSleepQuality(1)">😞 Poor</button>
+              <button class="sleep-quality-btn" data-quality="2" onclick="selectSleepQuality(2)">😐 Fair</button>
+              <button class="sleep-quality-btn" data-quality="3" onclick="selectSleepQuality(3)">🙂 Good</button>
+              <button class="sleep-quality-btn" data-quality="4" onclick="selectSleepQuality(4)">😊 Great</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="sleepNotes">Notes (Optional)</label>
+            <textarea id="sleepNotes" class="form-textarea" placeholder="Any dreams, interruptions, or observations?" rows="2"></textarea>
+          </div>
+
+          <button class="btn btn-primary btn-block" onclick="saveSleepLog()">💾 Log Sleep</button>
+        </div>
+
+        <!-- Recent Sleep Logs -->
+        <div class="mt-md" id="recentSleepSection" style="display: none;">
+          <h3 style="font-size: var(--font-size-lg); margin-bottom: var(--spacing-sm);">Recent Sleep Logs</h3>
+          <div id="recentSleepContainer">
+            <!-- Dynamic content -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Breathing Section -->
+      <div class="card">
+        <h2 class="card-title">🫁 Breathing & Calm</h2>
+        <p style="color: var(--color-text-light); margin-bottom: var(--spacing-md);">
+          Take a moment to center yourself with guided breathing
+        </p>
+        
+        <!-- Breathing Interface -->
+        <div class="breathing-container" style="min-height: auto; padding: var(--spacing-md);">
+          <!-- Animated Breathing Circle -->
+          <div class="breathing-circle" id="breathingCircle">
+            <div class="breathing-text" id="breathingText">Ready</div>
+          </div>
+
+          <!-- Timer Display -->
+          <div class="breathing-timer" id="timerDisplay">
+            <span id="timeRemaining">--:--</span>
+          </div>
+
+          <!-- Instructions -->
+          <p class="text-center mb-md" style="color: var(--color-text-light); max-width: 400px; margin: 0 auto var(--spacing-md) auto;">
+            <span id="instructionText">Choose a duration below and click Start to begin</span>
           </p>
+
+          <!-- Controls -->
+          <div class="breathing-controls">
+            <button class="btn btn-secondary btn-sm duration-btn" data-duration="60" onclick="if(window.selectDuration) window.selectDuration(this)">
+              1 Minute
+            </button>
+            <button class="btn btn-secondary btn-sm duration-btn" data-duration="180" onclick="if(window.selectDuration) window.selectDuration(this)">
+              3 Minutes
+            </button>
+            <button class="btn btn-secondary btn-sm duration-btn" data-duration="300" onclick="if(window.selectDuration) window.selectDuration(this)">
+              5 Minutes
+            </button>
+          </div>
+
+          <div class="breathing-controls mt-md">
+            <button class="btn btn-primary" id="startBtn" onclick="if(window.startBreathing) window.startBreathing()">
+              Start Breathing
+            </button>
+            <button class="btn btn-outline hidden" id="stopBtn" onclick="if(window.stopBreathing) window.stopBreathing()">
+              Stop
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Journal Section -->
+      <div class="card">
+        <h2 class="card-title">📔 Journal & Gratitude</h2>
+        
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="tab active" data-tab="journal" onclick="switchJournalTab('journal')">
+            📝 Journal
+          </button>
+          <button class="tab" data-tab="gratitude" onclick="switchJournalTab('gratitude')">
+            ✨ Gratitude
+          </button>
+          <button class="tab" data-tab="futureself" onclick="switchJournalTab('futureself')">
+            💌 Future Self
+          </button>
+        </div>
+
+        <!-- Journal Tab Content -->
+        <div class="tab-content active" id="journalTab">
+          <!-- New Journal Entry -->
+          <div class="form-group">
+            <label class="form-label" for="journalContent">
+              Write anything on your mind...
+            </label>
+            <textarea 
+              id="journalContent" 
+              class="form-textarea" 
+              placeholder="How are you feeling? What's on your mind? What happened today?"
+              rows="6"
+            ></textarea>
+          </div>
+          <button class="btn btn-primary btn-block" id="saveJournalBtn">
+            💾 Save Journal Entry
+          </button>
+
+          <!-- Previous Entries -->
+          <div class="mt-md">
+            <h3 style="font-size: var(--font-size-lg); margin-bottom: var(--spacing-sm);">Previous Entries</h3>
+            <div id="journalEntriesContainer">
+              <p class="text-center" style="color: var(--color-text-light);">
+                Loading your journal entries...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Future Self Letters Tab Content -->
+        <div class="tab-content" id="futureselfTab">
+          <div class="future-self-intro">
+            <p style="color: var(--color-text-light); margin-bottom: var(--spacing-md);">
+              💡 Write a letter to your future self during a good moment. We'll deliver it when you might need it most.
+            </p>
+          </div>
+
+          <!-- Check for letters delivered today -->
+          <div id="deliveredLettersSection" style="display: none;">
+            <div class="alert alert-success" style="margin-bottom: var(--spacing-lg);">
+              <h3 style="margin: 0 0 var(--spacing-sm) 0;">📬 You've Got Mail from Past You!</h3>
+              <div id="deliveredLettersContainer"></div>
+            </div>
+          </div>
+
+          <!-- Write New Letter -->
+          <div class="form-group">
+            <label class="form-label" for="futureLetterContent">
+              Write to your future self...
+            </label>
+            <textarea 
+              id="futureLetterContent" 
+              class="form-textarea" 
+              placeholder="Dear Future Me,\n\nRight now I'm feeling good and I want you to remember...\n\nRemember that this difficult moment will pass, just like others have. You are stronger than you think.\n\nLove,\nPast You"
+              rows="8"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="deliveryDate">When should we deliver this letter?</label>
+            <select id="deliveryDate" class="form-select">
+              <option value="7">In 1 week</option>
+              <option value="14">In 2 weeks</option>
+              <option value="30" selected>In 1 month</option>
+              <option value="60">In 2 months</option>
+              <option value="90">In 3 months</option>
+              <option value="180">In 6 months</option>
+            </select>
+          </div>
+
+          <button class="btn btn-primary btn-block" onclick="saveFutureLetter()">
+            💌 Send to Future Me
+          </button>
+
+          <!-- Pending Letters -->
+          <div class="mt-lg">
+            <h3 style="font-size: var(--font-size-lg); margin-bottom: var(--spacing-sm);">📮 Letters in Transit</h3>
+            <div id="pendingLettersContainer">
+              <p class="text-center" style="color: var(--color-text-light);">
+                No letters scheduled yet
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gratitude Tab Content -->
+        <div class="tab-content" id="gratitudeTab">
+          <p style="color: var(--color-text-light); margin-bottom: var(--spacing-md);">
+            Research shows that regularly noting things we're grateful for can improve mood and wellbeing.
+          </p>
+          
+          <div class="form-group">
+            <label class="form-label" for="gratitude1">1. Something good that happened:</label>
+            <input 
+              type="text" 
+              id="gratitude1" 
+              class="form-input" 
+              placeholder="e.g., Had a nice conversation with a friend"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="gratitude2">2. Another good thing:</label>
+            <input 
+              type="text" 
+              id="gratitude2" 
+              class="form-input" 
+              placeholder="e.g., Enjoyed my morning coffee"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="gratitude3">3. One more good thing:</label>
+            <input 
+              type="text" 
+              id="gratitude3" 
+              class="form-input" 
+              placeholder="e.g., Made progress on a project"
+            >
+          </div>
+
+          <button class="btn btn-primary btn-block" id="saveGratitudeBtn">
+            ✨ Save Gratitude Entry
+          </button>
+
+          <!-- Previous Gratitude Entries -->
+          <div class="mt-md">
+            <h3 style="font-size: var(--font-size-lg); margin-bottom: var(--spacing-sm);">Your Gratitude Collection</h3>
+            <div class="gratitude-grid" id="gratitudeEntriesContainer">
+              <p class="text-center" style="color: var(--color-text-light); grid-column: 1 / -1;">
+                Loading your gratitude entries...
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -137,5 +369,7 @@
   <script src="firebase-config.js"></script>
   <script src="common.js"></script>
   <script src="home.js"></script>
+  <script src="breathe.js"></script>
+  <script src="journal.js"></script>
 </body>
 </html>

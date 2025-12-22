@@ -4,6 +4,18 @@
 // ============================================
 
 // ============================================
+// Theme Management (Load on Every Page)
+// ============================================
+
+// Load and apply saved theme immediately
+(function initializeTheme() {
+  const savedTheme = localStorage.getItem('mindverse-theme') || 'light';
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-theme');
+  }
+})();
+
+// ============================================
 // User ID Management
 // ============================================
 

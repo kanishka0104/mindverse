@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Settings and preferences for MindVerse">
+  <title>Settings - MindVerse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="nav-bar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="activities.html" class="nav-item">
+        <span class="nav-icon">✨</span>
+        <span>Activities</span>
+      </a>
+      <a href="skills.html" class="nav-item">
+        <span class="nav-icon">🎯</span>
+        <span>Skills</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+      </a>
+      <a href="settings.html" class="nav-item active">
+        <span class="nav-icon">⚙️</span>
+        <span>Settings</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="page-wrapper">
+    <div class="page-header">
+      <h1>Settings</h1>
+      <p>Customize your MindVerse experience</p>
+    </div>
+
+    <div class="container">
+      <!-- Theme Settings -->
+      <div class="card">
+        <h2 class="card-title">🎨 Appearance</h2>
+        
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3 class="setting-title">Theme</h3>
+            <p class="setting-description">Choose between light and dark mode</p>
+          </div>
+          <div class="theme-toggle">
+            <button class="theme-btn active" id="lightThemeBtn" data-theme="light">
+              ☀️ Light
+            </button>
+            <button class="theme-btn" id="darkThemeBtn" data-theme="dark">
+              🌙 Dark
+            </button>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3 class="setting-title">Current Theme</h3>
+            <p class="setting-description" id="currentThemeDescription">You're using light mode</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Settings -->
+      <div class="card">
+        <h2 class="card-title">👤 Account</h2>
+        
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3 class="setting-title">Email</h3>
+            <p class="setting-description" id="userEmail">Loading...</p>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3 class="setting-title">Account Created</h3>
+            <p class="setting-description" id="accountCreated">Loading...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data & Privacy -->
+      <div class="card">
+        <h2 class="card-title">🔒 Data & Privacy</h2>
+        
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3 class="setting-title">Data Storage</h3>
+            <p class="setting-description">Your data is securely stored in Firebase and encrypted</p>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <button class="btn btn-outline btn-block" id="exportDataBtn">
+            📥 Export My Data
+          </button>
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="card">
+        <h2 class="card-title">ℹ️ About MindVerse</h2>
+        
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3 class="setting-title">Version</h3>
+            <p class="setting-description">2.0.0</p>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3 class="setting-title">Mission</h3>
+            <p class="setting-description">
+              MindVerse is your personal mental health support companion, designed to help you 
+              track your mood, practice mindfulness, and build positive habits.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="card" style="border: 2px solid var(--mood-awful);">
+        <h2 class="card-title" style="color: var(--mood-awful);">⚠️ Danger Zone</h2>
+        
+        <div class="setting-item">
+          <button class="btn btn-secondary btn-block" id="logoutBtn">
+            🚪 Log Out
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="firebase-config.js"></script>
+  <script src="common.js"></script>
+  <script src="settings.js"></script>
+</body>
+</html>

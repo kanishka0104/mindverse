@@ -15,14 +15,6 @@
         <span class="nav-icon">🏠</span>
         <span>Home</span>
       </a>
-      <a href="breathe.html" class="nav-item">
-        <span class="nav-icon">🫁</span>
-        <span>Breathe</span>
-      </a>
-      <a href="journal.html" class="nav-item">
-        <span class="nav-icon">📔</span>
-        <span>Journal</span>
-      </a>
       <a href="activities.html" class="nav-item">
         <span class="nav-icon">✨</span>
         <span>Activities</span>
@@ -31,13 +23,13 @@
         <span class="nav-icon">🎯</span>
         <span>Skills</span>
       </a>
-      <a href="learn.html" class="nav-item">
-        <span class="nav-icon">📚</span>
-        <span>Learn</span>
-      </a>
-      <a href="profile.html" class="nav-item">
+      <a href="profile.html" class="nav-item active">
         <span class="nav-icon">👤</span>
         <span>Profile</span>
+      </a>
+      <a href="settings.html" class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span>Settings</span>
       </a>
     </div>
   </nav>
@@ -149,6 +141,67 @@
         </div>
       </div>
 
+      <!-- Visual Progress Charts -->
+      <div class="card">
+        <h2 class="card-title">📊 Progress Charts</h2>
+        <p style="color: var(--color-text-light); margin-bottom: var(--spacing-lg);">
+          Visualize your mental health journey over time
+        </p>
+
+        <!-- Mood Trend Chart -->
+        <div class="chart-section">
+          <h3 class="chart-title">Mood Trends (Last 30 Days)</h3>
+          <div class="chart-container">
+            <canvas id="moodTrendChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Activity Frequency Chart -->
+        <div class="chart-section">
+          <h3 class="chart-title">Activity Summary (Last 7 Days)</h3>
+          <div class="chart-container">
+            <canvas id="activityChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Sleep Pattern Chart -->
+        <div class="chart-section">
+          <h3 class="chart-title">Sleep Duration (Last 7 Days)</h3>
+          <div class="chart-container">
+            <canvas id="sleepChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Rewind -->
+      <div class="card">
+        <h2 class="card-title">⏮️ Progress Rewind</h2>
+        <p style="color: var(--color-text-light); margin-bottom: var(--spacing-lg);">
+          Look how far you've come! Compare your current state to the past.
+        </p>
+
+        <div class="rewind-selector">
+          <button class="rewind-btn active" data-period="30" onclick="loadProgressRewind(30)">
+            1 Month Ago
+          </button>
+          <button class="rewind-btn" data-period="90" onclick="loadProgressRewind(90)">
+            3 Months Ago
+          </button>
+          <button class="rewind-btn" data-period="180" onclick="loadProgressRewind(180)">
+            6 Months Ago
+          </button>
+          <button class="rewind-btn" data-period="365" onclick="loadProgressRewind(365)">
+            1 Year Ago
+          </button>
+        </div>
+
+        <div id="progressRewindContainer" class="mt-lg">
+          <p class="text-center" style="color: var(--color-text-light);">
+            Loading your progress...
+          </p>
+        </div>
+      </div>
+
       <!-- Favorite Affirmations -->
       <div class="card">
         <h2 class="card-title">💝 Favorite Affirmations</h2>
@@ -157,6 +210,37 @@
             Loading your favorites...
           </p>
         </div>
+      </div>
+
+      <!-- Positive Memory Bank -->
+      <div class="card">
+        <h2 class="card-title">🌟 Positive Memory Bank</h2>
+        <p style="color: var(--color-text-light); margin-bottom: var(--spacing-md);">
+          Save and revisit your happy moments, achievements, and positive experiences
+        </p>
+
+        <!-- Add Memory Button -->
+        <button class="btn btn-primary" onclick="openMemoryModal()">
+          ➕ Add New Memory
+        </button>
+
+        <!-- Memory Display -->
+        <div class="mt-lg" id="memoriesContainer">
+          <p class="text-center" style="color: var(--color-text-light);">
+            Loading your memories...
+          </p>
+        </div>
+      </div>
+
+      <!-- Personal Safety Plan Button -->
+      <div class="card">
+        <h2 class="card-title">🛡️ Personal Safety Plan</h2>
+        <p style="color: var(--color-text-light); margin-bottom: var(--spacing-md);">
+          Create and manage your personalized safety plan for difficult moments
+        </p>
+        <button class="btn btn-primary" onclick="openSafetyPlanModal()">
+          📋 Open Safety Plan
+        </button>
       </div>
 
       <!-- Data Management -->
@@ -172,6 +256,164 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- Add Memory Modal -->
+  <div class="modal" id="memoryModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="MindVerse.closeModal(document.getElementById('memoryModal'))">
+        ✕
+      </button>
+      <h2>🌟 Add Positive Memory</h2>
+      <p style="color: var(--color-text-light); margin-bottom: var(--spacing-lg);">
+        Capture a happy moment or achievement to revisit later
+      </p>
+
+      <div class="form-group">
+        <label class="form-label" for="memoryTitle">Title</label>
+        <input type="text" id="memoryTitle" class="form-input" placeholder="e.g., Beach day with family">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="memoryDescription">Description</label>
+        <textarea id="memoryDescription" class="form-textarea" placeholder="What made this moment special?" rows="4"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="memoryDate">Date</label>
+        <input type="date" id="memoryDate" class="form-input">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="memoryImageUrl">Image URL (Optional)</label>
+        <input type="url" id="memoryImageUrl" class="form-input" placeholder="https://example.com/image.jpg">
+      </div>
+
+      <button class="btn btn-primary btn-block" onclick="saveMemory()">
+        💾 Save Memory
+      </button>
+    </div>
+  </div>
+
+  <!-- Personal Safety Plan Modal -->
+  <div class="modal" id="safetyPlanModal">
+    <div class="modal-content modal-large">
+      <button class="modal-close" onclick="MindVerse.closeModal(document.getElementById('safetyPlanModal'))">
+        ✕
+      </button>
+      <h2>🛡️ Personal Safety Plan</h2>
+      <p style="color: var(--color-text-light); margin-bottom: var(--spacing-lg);">
+        Your personalized plan for difficult moments
+      </p>
+
+      <!-- Warning Signs -->
+      <div class="safety-section">
+        <h3 class="safety-section-title">⚠️ My Warning Signs</h3>
+        <p class="safety-section-desc">What thoughts, feelings, or behaviors indicate I might need support?</p>
+        <div id="warningSignsList" class="safety-list">
+          <!-- Dynamic content -->
+        </div>
+        <div class="form-group">
+          <input type="text" id="warningSignInput" class="form-input" placeholder="e.g., Isolating from friends, trouble sleeping...">
+          <button class="btn btn-secondary btn-sm" onclick="addWarningSigns()">+ Add Warning Sign</button>
+        </div>
+      </div>
+
+      <!-- Coping Strategies -->
+      <div class="safety-section">
+        <h3 class="safety-section-title">💪 My Coping Strategies</h3>
+        <p class="safety-section-desc">Things I can do on my own to feel better</p>
+        <div id="copingStrategiesList" class="safety-list">
+          <!-- Dynamic content -->
+        </div>
+        <div class="form-group">
+          <input type="text" id="copingStrategyInput" class="form-input" placeholder="e.g., Deep breathing, going for a walk, listening to music...">
+          <button class="btn btn-secondary btn-sm" onclick="addCopingStrategy()">+ Add Strategy</button>
+        </div>
+      </div>
+
+      <!-- Reasons for Living -->
+      <div class="safety-section">
+        <h3 class="safety-section-title">❤️ My Reasons for Living</h3>
+        <p class="safety-section-desc">People, things, or goals that are important to me</p>
+        <div id="reasonsForLivingList" class="safety-list">
+          <!-- Dynamic content -->
+        </div>
+        <div class="form-group">
+          <input type="text" id="reasonForLivingInput" class="form-input" placeholder="e.g., My family, my pet, my goals...">
+          <button class="btn btn-secondary btn-sm" onclick="addReasonForLiving()">+ Add Reason</button>
+        </div>
+      </div>
+
+      <!-- Support Contacts -->
+      <div class="safety-section">
+        <h3 class="safety-section-title">📞 My Support Network</h3>
+        <p class="safety-section-desc">People I can reach out to when I need help</p>
+        <div id="supportContactsList" class="safety-contacts-grid">
+          <!-- Dynamic content -->
+        </div>
+        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-sm);">
+          <input type="text" id="contactNameInput" class="form-input" placeholder="Name">
+          <input type="tel" id="contactPhoneInput" class="form-input" placeholder="Phone number">
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="addSupportContact()">+ Add Contact</button>
+      </div>
+
+      <!-- Professional Help -->
+      <div class="safety-section">
+        <h3 class="safety-section-title">🏥 Professional Support</h3>
+        <p class="safety-section-desc">Healthcare providers and mental health professionals</p>
+        <div id="professionalContactsList" class="safety-contacts-grid">
+          <!-- Dynamic content -->
+        </div>
+        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-sm);">
+          <input type="text" id="professionalNameInput" class="form-input" placeholder="Name/Service">
+          <input type="tel" id="professionalPhoneInput" class="form-input" placeholder="Phone number">
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="addProfessionalContact()">+ Add Professional</button>
+      </div>
+
+      <!-- Crisis Resources -->
+      <div class="safety-section">
+        <h3 class="safety-section-title">🆘 Crisis Resources</h3>
+        <div class="crisis-resources">
+          <div class="crisis-card">
+            <div class="crisis-card-header">
+              <strong>988 Suicide & Crisis Lifeline</strong>
+              <a href="tel:988" class="btn btn-danger btn-sm">Call 988</a>
+            </div>
+            <p>24/7 free and confidential support for people in distress</p>
+          </div>
+          <div class="crisis-card">
+            <div class="crisis-card-header">
+              <strong>Crisis Text Line</strong>
+              <a href="sms:741741" class="btn btn-danger btn-sm">Text HOME to 741741</a>
+            </div>
+            <p>Free, 24/7 crisis support via text message</p>
+          </div>
+          <div class="crisis-card">
+            <div class="crisis-card-header">
+              <strong>Emergency Services</strong>
+              <a href="tel:911" class="btn btn-danger btn-sm">Call 911</a>
+            </div>
+            <p>For immediate life-threatening emergencies</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Safe Environment -->
+      <div class="safety-section">
+        <h3 class="safety-section-title">🏠 Making My Environment Safer</h3>
+        <p class="safety-section-desc">Steps I can take to reduce access to means of self-harm</p>
+        <div id="safeEnvironmentList" class="safety-list">
+          <!-- Dynamic content -->
+        </div>
+        <div class="form-group">
+          <input type="text" id="safeEnvironmentInput" class="form-input" placeholder="e.g., Remove harmful items, stay with someone...">
+          <button class="btn btn-secondary btn-sm" onclick="addSafeEnvironmentStep()">+ Add Step</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -199,6 +441,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Chart.js for visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>

@@ -15,15 +15,7 @@
         <span class="nav-icon">🏠</span>
         <span>Home</span>
       </a>
-      <a href="breathe.html" class="nav-item">
-        <span class="nav-icon">🫁</span>
-        <span>Breathe</span>
-      </a>
-      <a href="journal.html" class="nav-item">
-        <span class="nav-icon">📔</span>
-        <span>Journal</span>
-      </a>
-      <a href="activities.html" class="nav-item">
+      <a href="activities.html" class="nav-item active">
         <span class="nav-icon">✨</span>
         <span>Activities</span>
       </a>
@@ -31,13 +23,13 @@
         <span class="nav-icon">🎯</span>
         <span>Skills</span>
       </a>
-      <a href="learn.html" class="nav-item">
-        <span class="nav-icon">📚</span>
-        <span>Learn</span>
-      </a>
       <a href="profile.html" class="nav-item">
         <span class="nav-icon">👤</span>
         <span>Profile</span>
+      </a>
+      <a href="settings.html" class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span>Settings</span>
       </a>
     </div>
   </nav>
@@ -50,17 +42,343 @@
     </div>
 
     <div class="container">
-      <!-- Daily Summary -->
-      <div class="card text-center">
-        <h3 class="card-title">Today's Progress</h3>
-        <p id="dailySummary" style="color: var(--color-text-light);">
-          Loading your activities...
-        </p>
+      <!-- Tabs for Activities and Grounding -->
+      <div class="tabs">
+        <button class="tab active" data-tab="activities-tab">
+          ✨ Activities
+        </button>
+        <button class="tab" data-tab="grounding-tab">
+          🧘 Grounding
+        </button>
+        <button class="tab" data-tab="distraction-tab">
+          🎮 Distraction Zone
+        </button>
       </div>
 
-      <!-- Activities Grid -->
-      <div class="activities-grid" id="activitiesGrid">
-        <!-- Activities will be dynamically loaded here -->
+      <!-- Activities Tab -->
+      <div class="tab-content active" id="activities-tab">
+        <!-- Daily Summary -->
+        <div class="card text-center">
+          <h3 class="card-title">Today's Progress</h3>
+          <p id="dailySummary" style="color: var(--color-text-light);">
+            Loading your activities...
+          </p>
+        </div>
+
+        <!-- Activities Grid -->
+        <div class="activities-grid" id="activitiesGrid">
+          <!-- Activities will be dynamically loaded here -->
+        </div>
+      </div>
+
+      <!-- Grounding Technique Tab -->
+      <div class="tab-content" id="grounding-tab">
+        <div class="card">
+          <h2 class="card-title">🧘 5-4-3-2-1 Grounding Technique</h2>
+          <p style="color: var(--color-text-light); margin-bottom: var(--spacing-lg);">
+            This technique helps you stay present and calm during moments of anxiety or overwhelm. 
+            Focus on your senses and check off each item as you identify it.
+          </p>
+
+          <!-- 5 Things You See -->
+          <div class="grounding-section">
+            <h3 style="color: var(--color-primary); margin-bottom: var(--spacing-md);">
+              👀 Name 5 things you can see
+            </h3>
+            <div class="grounding-checklist">
+              <label class="grounding-item">
+                <input type="checkbox" class="grounding-checkbox" data-category="see">
+                <span class="grounding-input-wrapper">
+                  <input type="text" class="grounding-text-input" placeholder="e.g., A blue pen on my desk">
+                </span>
+              </label>
+              <label class="grounding-item">
+                <input type="checkbox" class="grounding-checkbox" data-category="see">
+                <span class="grounding-input-wrapper">
+                  <input type="text" class="grounding-text-input" placeholder="e.g., The clock on the wall">
+                </span>
+              </label>
+              <label class="grounding-item">
+                <input type="checkbox" class="grounding-checkbox" data-category="see">
+                <span class="grounding-input-wrapper">
+                  <input type="text" class="grounding-text-input" placeholder="e.g., A plant by the window">
+                </span>
+              </label>
+              <label class="grounding-item">
+                <input type="checkbox" class="grounding-checkbox" data-category="see">
+                <span class="grounding-input-wrapper">
+                  <input type="text" class="grounding-text-input" placeholder="e.g., My phone screen">
+                </span>
+              </label>
+              <label class="grounding-item">
+                <input type="checkbox" class="grounding-checkbox" data-category="see">
+                <span class="grounding-input-wrapper">
+                  <input type="text" class="grounding-text-input" placeholder="e.g., A picture frame">
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 4 Things You Touch -->
+          <div class="grounding-section">
+            <h3 style="color: var(--color-primary); margin-bottom: var(--spacing-md);">
+              ✋ Name 4 things you can touch
+            </h3>
+            <div class="grounding-checklist">
+              <label class="grounding-item">
+                <input type="checkbox" class="grounding-checkbox" data-category="touch">
+                <span class="grounding-input-wrapper">
+                  <input type="text" class="grounding-text-input" placeholder="e.g., The smooth surface of my desk">
+                </span>
+              </label>
+              <label class="grounding-item">
+                <input type="checkbox" class="grounding-checkbox" data-category="touch">
+                <span class="grounding-input-wrapper">
+                  <input type="text" class="grounding-text-input" placeholder="e.g., The fabric of my shirt">
+                </span>
+              </label>
+              <label class="grounding-item">
+                <input type="checkbox" class="grounding-checkbox" data-category="touch">
+                <span class="grounding-input-wrapper">
+                  <input type="text" class="grounding-text-input" placeholder="e.g., My hair">
+                </span>
+              </label>
+              <label class="grounding-item">
+                <input type="checkbox" class="grounding-checkbox" data-category="touch">
+                <span class="grounding-input-wrapper">
+                  <input type="text" class="grounding-text-input" placeholder="e.g., The floor beneath my feet">
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 3 Things You Hear -->
+          <div class="grounding-section">
+            <h3 style="color: var(--color-primary); margin-bottom: var(--spacing-md);">
+              👂 Name 3 things you can hear
+            </h3>
+            <div class="grounding-checklist">
+              <label class="grounding-item">
+                <input type="checkbox" class="grounding-checkbox" data-category="hear">
+                <span class="grounding-input-wrapper">
+                  <input type="text" class="grounding-text-input" placeholder="e.g., Birds chirping outside">
+                </span>
+              </label>
+              <label class="grounding-item">
+                <input type="checkbox" class="grounding-checkbox" data-category="hear">
+                <span class="grounding-input-wrapper">
+                  <input type="text" class="grounding-text-input" placeholder="e.g., The hum of the refrigerator">
+                </span>
+              </label>
+              <label class="grounding-item">
+                <input type="checkbox" class="grounding-checkbox" data-category="hear">
+                <span class="grounding-input-wrapper">
+                  <input type="text" class="grounding-text-input" placeholder="e.g., My own breathing">
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 2 Things You Smell -->
+          <div class="grounding-section">
+            <h3 style="color: var(--color-primary); margin-bottom: var(--spacing-md);">
+              👃 Name 2 things you can smell
+            </h3>
+            <div class="grounding-checklist">
+              <label class="grounding-item">
+                <input type="checkbox" class="grounding-checkbox" data-category="smell">
+                <span class="grounding-input-wrapper">
+                  <input type="text" class="grounding-text-input" placeholder="e.g., Fresh air">
+                </span>
+              </label>
+              <label class="grounding-item">
+                <input type="checkbox" class="grounding-checkbox" data-category="smell">
+                <span class="grounding-input-wrapper">
+                  <input type="text" class="grounding-text-input" placeholder="e.g., Coffee">
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 1 Thing You Taste -->
+          <div class="grounding-section">
+            <h3 style="color: var(--color-primary); margin-bottom: var(--spacing-md);">
+              👅 Name 1 thing you can taste
+            </h3>
+            <div class="grounding-checklist">
+              <label class="grounding-item">
+                <input type="checkbox" class="grounding-checkbox" data-category="taste">
+                <span class="grounding-input-wrapper">
+                  <input type="text" class="grounding-text-input" placeholder="e.g., Mint toothpaste">
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Completion Message -->
+          <div class="hidden" id="groundingComplete" style="text-align: center; padding: var(--spacing-lg); background: var(--color-primary-light); border-radius: var(--border-radius); margin-top: var(--spacing-lg);">
+            <div style="font-size: 3rem; margin-bottom: var(--spacing-sm);">🎉</div>
+            <h3 style="color: var(--color-primary-dark); margin-bottom: var(--spacing-sm);">Great Work!</h3>
+            <p style="color: var(--color-text);">You've completed the grounding exercise. How do you feel now?</p>
+            <button class="btn btn-primary mt-md" id="resetGroundingBtn">
+              Start Again
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Distraction Zone Tab -->
+      <div class="tab-content" id="distraction-tab">
+        <div class="card">
+          <h2 class="card-title">🎮 Distraction Zone</h2>
+          <p style="color: var(--color-text-light); margin-bottom: var(--spacing-lg);">
+            Take a break and play some relaxing games to clear your mind.
+          </p>
+
+          <!-- Game Selection Buttons -->
+          <div class="game-selector">
+            <button class="game-btn" data-game="puzzle">
+              <span class="game-icon">🧩</span>
+              <span class="game-name">Sliding Puzzle</span>
+            </button>
+            <button class="game-btn" data-game="memory">
+              <span class="game-icon">🃏</span>
+              <span class="game-name">Memory Match</span>
+            </button>
+            <button class="game-btn" data-game="color">
+              <span class="game-icon">🎨</span>
+              <span class="game-name">Color Match</span>
+            </button>
+            <button class="game-btn" data-game="number">
+              <span class="game-icon">🔢</span>
+              <span class="game-name">Number Quest</span>
+            </button>
+            <button class="game-btn" data-game="word">
+              <span class="game-icon">📝</span>
+              <span class="game-name">Word Scramble</span>
+            </button>
+          </div>
+
+          <!-- Game Containers (Hidden by default) -->
+          <!-- Puzzle Game -->
+          <div class="game-card hidden" id="puzzleGameCard">
+            <div class="game-header">
+              <h3>🧩 Sliding Puzzle</h3>
+              <button class="btn btn-outline btn-sm" onclick="closeGame()">← Back</button>
+            </div>
+            <div class="game-container">
+              <div id="puzzleBoard" class="puzzle-board"></div>
+              <button class="btn btn-primary btn-sm mt-md" id="shufflePuzzleBtn">New Puzzle</button>
+              <p id="puzzleMoves" class="game-score">Moves: 0</p>
+            </div>
+          </div>
+
+          <!-- Memory Card Game -->
+          <div class="game-card hidden" id="memoryGameCard">
+            <div class="game-header">
+              <h3>🃏 Memory Match</h3>
+              <button class="btn btn-outline btn-sm" onclick="closeGame()">← Back</button>
+            </div>
+            <div class="game-container">
+              <div id="memoryBoard" class="memory-board"></div>
+              <button class="btn btn-primary btn-sm mt-md" id="startMemoryBtn">New Game</button>
+              <p id="memoryScore" class="game-score">Matches: 0/8</p>
+            </div>
+          </div>
+
+          <!-- Color Match Game -->
+          <div class="game-card hidden" id="colorGameCard">
+            <div class="game-header">
+              <h3>🎨 Color Match</h3>
+              <button class="btn btn-outline btn-sm" onclick="closeGame()">← Back</button>
+            </div>
+            <div class="game-container">
+              <div id="colorDisplay" class="color-display"></div>
+              <div id="colorOptions" class="color-options"></div>
+              <p id="colorScore" class="game-score">Score: 0</p>
+            </div>
+          </div>
+
+          <!-- Number Guess Game -->
+          <div class="game-card hidden" id="numberGameCard">
+            <div class="game-header">
+              <h3>🔢 Number Quest</h3>
+              <button class="btn btn-outline btn-sm" onclick="closeGame()">← Back</button>
+            </div>
+            <div class="game-container">
+              <p class="game-instruction">Guess the number between 1-100</p>
+              <input type="number" id="numberInput" class="game-input" placeholder="Enter number" min="1" max="100">
+              <button class="btn btn-primary btn-sm mt-sm" id="guessBtn">Guess</button>
+              <p id="numberHint" class="game-hint"></p>
+              <p id="numberAttempts" class="game-score">Attempts: 0</p>
+              <button class="btn btn-outline btn-sm mt-sm" id="newNumberBtn">New Game</button>
+            </div>
+          </div>
+
+          <!-- Word Scramble Game -->
+          <div class="game-card hidden" id="wordGameCard">
+            <div class="game-header">
+              <h3>📝 Word Scramble</h3>
+              <button class="btn btn-outline btn-sm" onclick="closeGame()">← Back</button>
+            </div>
+            <div class="game-container">
+              <div id="scrambledWord" class="scrambled-word"></div>
+              <p class="game-hint" id="wordHint"></p>
+              <input type="text" id="wordInput" class="game-input" placeholder="Unscramble the word">
+              <button class="btn btn-primary btn-sm mt-sm" id="wordSubmitBtn">Submit</button>
+              <button class="btn btn-outline btn-sm mt-sm" id="wordSkipBtn">Skip</button>
+              <p id="wordScore" class="game-score">Score: 0</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity Timer Modal -->
+  <div class="modal" id="activityTimerModal">
+    <div class="modal-content">
+      <button class="modal-close" id="closeTimerModal">✕</button>
+      <div class="text-center">
+        <h2 id="activityModalTitle">Activity in Progress</h2>
+        <div class="activity-timer-display">
+          <div id="activityTimerCircle" class="timer-circle">
+            <span id="activityTimeRemaining">00:00</span>
+          </div>
+        </div>
+        <p id="activityModalDescription" style="color: var(--color-text-light); margin: var(--spacing-md) 0;"></p>
+        
+        <!-- Optional Webcam Section -->
+        <div id="webcamSection" class="hidden" style="margin: var(--spacing-md) 0;">
+          <button class="btn btn-secondary btn-sm" id="toggleWebcamBtn">
+            📸 Take Photo (Optional)
+          </button>
+          <div id="webcamContainer" class="hidden" style="margin-top: var(--spacing-md);">
+            <video id="webcamVideo" width="100%" height="auto" autoplay style="border-radius: var(--border-radius); max-width: 400px; display: block; margin: 0 auto;"></video>
+            <canvas id="webcamCanvas" style="display: none;"></canvas>
+            <div style="margin-top: var(--spacing-sm);">
+              <button class="btn btn-primary btn-sm" id="capturePhotoBtn">
+                📷 Capture
+              </button>
+              <button class="btn btn-outline btn-sm" id="closeWebcamBtn">
+                Cancel
+              </button>
+            </div>
+          </div>
+          <div id="capturedPhotoContainer" class="hidden" style="margin-top: var(--spacing-md);">
+            <img id="capturedPhoto" style="max-width: 300px; border-radius: var(--border-radius); display: block; margin: 0 auto;" />
+            <p style="color: var(--color-accent); margin-top: var(--spacing-sm);">✓ Photo captured!</p>
+          </div>
+        </div>
+
+        <div class="breathing-controls">
+          <button class="btn btn-outline" id="pauseTimerBtn">
+            Pause
+          </button>
+          <button class="btn btn-outline" id="stopActivityBtn">
+            Stop Activity
+          </button>
+        </div>
       </div>
     </div>
   </div>

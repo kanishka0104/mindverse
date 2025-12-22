@@ -6,10 +6,11 @@
 // Require authentication
 FirebaseAuth.requireAuth();
 
-const userId = MindVerse.getOrCreateUserId();
+// Use userId from global scope (declared in home.js which loads first)
+// const userId is already declared in home.js, so we can reference it directly
 
 // State
-let selectedDuration = 180; // Default 3 minutes
+let selectedDuration = null; // No default - user must select
 let isBreathing = false;
 let breathingTimer = null;
 let breathingInterval = null;
@@ -30,10 +31,21 @@ const BREATHING_CYCLE = {
 // ============================================
 
 document.addEventListener('DOMContentLoaded', async () => {
-  console.log('Breathe page loaded for user:', userId);
+  console.log('Breathe page loaded');
   
   setupEventListeners();
-  await loadSessionSummary();
+  
+  // Show placeholder timer until duration is selected
+  const timeRemainingEl = document.getElementById('timeRemaining');
+  if (timeRemainingEl) {
+    timeRemainingEl.textContent = '--:--';
+  }
+  
+  // Only load session summary if we're on standalone breathe page
+  const summaryText = document.getElementById('summaryText');
+  if (summaryText) {
+    await loadSessionSummary();
+  }
 });
 
 // ============================================
@@ -42,21 +54,44 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function setupEventListeners() {
   // Duration buttons
-  document.querySelectorAll('.duration-btn').forEach(btn => {
-    btn.addEventListener('click', () => selectDuration(btn));
+  const durationBtns = document.querySelectorAll('.duration-btn');
+  console.log('Found duration buttons:', durationBtns.length);
+  
+  durationBtns.forEach(btn => {
+    console.log('Adding listener to button:', btn.dataset.duration);
+    btn.addEventListener('click', (e) => {
+      console.log('Duration button clicked:', btn.dataset.duration);
+      e.preventDefault();
+      e.stopPropagation();
+      selectDuration(btn);
+    });
   });
   
   // Start/Stop buttons
-  document.getElementById('startBtn').addEventListener('click', startBreathing);
-  document.getElementById('stopBtn').addEventListener('click', stopBreathing);
+  const startBtn = document.getElementById('startBtn');
+  const stopBtn = document.getElementById('stopBtn');
   
-  // Feedback options
-  document.querySelectorAll('#feedbackCard .mood-option').forEach(option => {
-    option.addEventListener('click', () => selectFeeling(option));
-  });
+  if (startBtn) {
+    startBtn.addEventListener('click', startBreathing);
+  }
   
-  // Save feedback button
-  document.getElementById('saveFeedbackBtn').addEventListener('click', saveFeedback);
+  if (stopBtn) {
+    stopBtn.addEventListener('click', stopBreathing);
+  }
+  
+  // Feedback options (only on standalone breathe page)
+  const feedbackOptions = document.querySelectorAll('#feedbackCard .mood-option');
+  if (feedbackOptions.length > 0) {
+    feedbackOptions.forEach(option => {
+      option.addEventListener('click', () => selectFeeling(option));
+    });
+  }
+  
+  // Save feedback button (only on standalone breathe page)
+  const saveFeedbackBtn = document.getElementById('saveFeedbackBtn');
+  if (saveFeedbackBtn) {
+    saveFeedbackBtn.addEventListener('click', saveFeedback);
+  }
 }
 
 // ============================================
@@ -64,6 +99,8 @@ function setupEventListeners() {
 // ============================================
 
 function selectDuration(btn) {
+  console.log('selectDuration called with:', btn);
+  
   // Remove selection from all buttons
   document.querySelectorAll('.duration-btn').forEach(b => {
     b.classList.remove('btn-primary');
@@ -75,8 +112,27 @@ function selectDuration(btn) {
   btn.classList.add('btn-primary');
   
   selectedDuration = parseInt(btn.dataset.duration);
+  console.log('Set selectedDuration to:', selectedDuration);
+  
+  // Update timer display immediately
+  const timeRemainingEl = document.getElementById('timeRemaining');
+  console.log('timeRemaining element:', timeRemainingEl);
+  
+  if (timeRemainingEl) {
+    const minutes = Math.floor(selectedDuration / 60);
+    const seconds = selectedDuration % 60;
+    const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    timeRemainingEl.textContent = display;
+    console.log('Updated timer to:', display);
+  }
+  
   console.log('Selected duration:', selectedDuration, 'seconds');
 }
+
+// Make function globally accessible
+window.selectDuration = selectDuration;
+window.startBreathing = startBreathing;
+window.stopBreathing = stopBreathing;
 
 // ============================================
 // Start Breathing Session
@@ -85,15 +141,29 @@ function selectDuration(btn) {
 function startBreathing() {
   if (isBreathing) return;
   
+  // Check if duration is selected
+  if (!selectedDuration) {
+    alert('Please select a duration first (1, 3, or 5 minutes)');
+    return;
+  }
+  
   isBreathing = true;
   timeRemaining = selectedDuration;
   sessionStartTime = Date.now();
   
   // Update UI
-  document.getElementById('startBtn').classList.add('hidden');
-  document.getElementById('stopBtn').classList.remove('hidden');
-  document.getElementById('sessionSummary').classList.add('hidden');
-  document.getElementById('feedbackCard').classList.add('hidden');
+  const startBtn = document.getElementById('startBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  
+  if (startBtn) startBtn.classList.add('hidden');
+  if (stopBtn) stopBtn.classList.remove('hidden');
+  
+  // Hide elements if they exist (only on standalone page)
+  const sessionSummary = document.getElementById('sessionSummary');
+  if (sessionSummary) sessionSummary.classList.add('hidden');
+  
+  const feedbackCard = document.getElementById('feedbackCard');
+  if (feedbackCard) feedbackCard.classList.add('hidden');
   
   // Disable duration buttons
   document.querySelectorAll('.duration-btn').forEach(btn => {
@@ -196,12 +266,18 @@ function stopBreathing() {
   const circle = document.getElementById('breathingCircle');
   const text = document.getElementById('breathingText');
   
-  circle.classList.remove('inhale', 'exhale');
-  text.textContent = 'Ready';
+  if (circle) circle.classList.remove('inhale', 'exhale');
+  if (text) text.textContent = 'Ready';
   
-  document.getElementById('startBtn').classList.remove('hidden');
-  document.getElementById('stopBtn').classList.add('hidden');
-  document.getElementById('sessionSummary').classList.remove('hidden');
+  const startBtn = document.getElementById('startBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  
+  if (startBtn) startBtn.classList.remove('hidden');
+  if (stopBtn) stopBtn.classList.add('hidden');
+  
+  // Show session summary if it exists (only on standalone page)
+  const sessionSummary = document.getElementById('sessionSummary');
+  if (sessionSummary) sessionSummary.classList.remove('hidden');
   
   // Enable duration buttons
   document.querySelectorAll('.duration-btn').forEach(btn => {
@@ -227,22 +303,30 @@ function completeSession() {
   // Reset UI
   const circle = document.getElementById('breathingCircle');
   const text = document.getElementById('breathingText');
+  const startBtn = document.getElementById('startBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  const timeRemainingEl = document.getElementById('timeRemaining');
   
-  circle.classList.remove('inhale', 'exhale');
-  text.textContent = 'Complete!';
-  
-  document.getElementById('startBtn').classList.remove('hidden');
-  document.getElementById('stopBtn').classList.add('hidden');
-  document.getElementById('timeRemaining').textContent = '✓ Done';
+  if (circle) circle.classList.remove('inhale', 'exhale');
+  if (text) text.textContent = 'Complete!';
+  if (startBtn) startBtn.classList.remove('hidden');
+  if (stopBtn) stopBtn.classList.add('hidden');
+  if (timeRemainingEl) timeRemainingEl.textContent = '✓ Done';
   
   // Enable duration buttons
   document.querySelectorAll('.duration-btn').forEach(btn => {
     btn.disabled = false;
   });
   
-  // Show feedback card
-  document.getElementById('feedbackCard').classList.remove('hidden');
-  document.getElementById('feedbackCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // Show feedback card if it exists (only on standalone page)
+  const feedbackCard = document.getElementById('feedbackCard');
+  if (feedbackCard) {
+    feedbackCard.classList.remove('hidden');
+    feedbackCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else {
+    // On home page, auto-save session without feedback
+    saveSessionWithoutFeedback(actualDuration);
+  }
   
   // Store duration for later save
   window.completedSessionDuration = actualDuration;
@@ -255,10 +339,20 @@ function completeSession() {
 // ============================================
 
 function updateTimerDisplay() {
-  const minutes = Math.floor(timeRemaining / 60);
-  const seconds = timeRemaining % 60;
-  const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  document.getElementById('timeRemaining').textContent = display;
+  const timeRemainingEl = document.getElementById('timeRemaining');
+  if (!timeRemainingEl) return; // Element doesn't exist, skip
+  
+  if (timeRemaining === 0) {
+    const minutes = Math.floor(selectedDuration / 60);
+    const seconds = selectedDuration % 60;
+    const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    timeRemainingEl.textContent = display;
+  } else {
+    const minutes = Math.floor(timeRemaining / 60);
+    const seconds = timeRemaining % 60;
+    const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    timeRemainingEl.textContent = display;
+  }
 }
 
 // ============================================
@@ -282,6 +376,24 @@ function selectFeeling(option) {
 // ============================================
 // Save Feedback
 // ============================================
+
+async function saveSessionWithoutFeedback(duration) {
+  try {
+    // Save session to Firestore without feedback (for home page)
+    const sessionData = {
+      userId: userId,
+      duration: duration,
+      afterFeeling: 'completed', // Default value when no feedback provided
+      timestamp: Date.now()
+    };
+    
+    await FirebaseDB.addDocument('breathingSessions', sessionData);
+    
+    console.log('Breathing session auto-saved');
+  } catch (error) {
+    console.error('Error auto-saving breathing session:', error);
+  }
+}
 
 async function saveFeedback() {
   if (!selectedFeeling) {
@@ -351,6 +463,11 @@ async function loadSessionSummary() {
     
     const summaryText = document.getElementById('summaryText');
     
+    // Only update summary if the element exists (it's on the standalone breathe page, not home)
+    if (!summaryText) {
+      return; // Element doesn't exist on home page, skip summary update
+    }
+    
     if (totalSessions === 0) {
       summaryText.innerHTML = `
         Welcome to breathing exercises! Regular practice can help reduce stress and anxiety.<br>
@@ -371,8 +488,11 @@ async function loadSessionSummary() {
     
   } catch (error) {
     console.error('Error loading session summary:', error);
-    document.getElementById('summaryText').textContent = 
-      'Regular breathing practice helps calm your mind and reduce stress.';
+    const summaryText = document.getElementById('summaryText');
+    if (summaryText) {
+      summaryText.textContent = 
+        'Regular breathing practice helps calm your mind and reduce stress.';
+    }
   }
 }
 

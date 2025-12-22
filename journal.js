@@ -4,13 +4,24 @@
 // ============================================
 // Require authentication
 FirebaseAuth.requireAuth();
-const userId = MindVerse.getOrCreateUserId();
+// Use userId from global scope (declared in home.js which loads first)
+// const userId is already declared in home.js, so we can reference it directly
 
 // ============================================
 // Initialize Page
 // ============================================
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Only initialize if we're on the standalone journal page (check for journal-specific elements)
+  const journalDateHeader = document.getElementById('journalDateHeader');
+  const gratitudeDateHeader = document.getElementById('gratitudeDateHeader');
+  
+  if (!journalDateHeader || !gratitudeDateHeader) {
+    // We're on the home page where journal is embedded, not standalone page
+    console.log('Journal embedded in home page - using home page initialization');
+    return;
+  }
+  
   console.log('Journal page loaded for user:', userId);
   
   // Set date headers
@@ -30,8 +41,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function setDateHeaders() {
   const today = MindVerse.formatDateOnly(Date.now());
-  document.getElementById('journalDateHeader').textContent = today;
-  document.getElementById('gratitudeDateHeader').textContent = today;
+  const journalDateHeader = document.getElementById('journalDateHeader');
+  const gratitudeDateHeader = document.getElementById('gratitudeDateHeader');
+  
+  if (journalDateHeader) journalDateHeader.textContent = today;
+  if (gratitudeDateHeader) gratitudeDateHeader.textContent = today;
 }
 
 // ============================================
