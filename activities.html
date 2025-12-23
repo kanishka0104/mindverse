@@ -257,6 +257,26 @@
               <span class="game-icon">📝</span>
               <span class="game-name">Word Scramble</span>
             </button>
+            <button class="game-btn" data-game="pattern">
+              <span class="game-icon">🔷</span>
+              <span class="game-name">Pattern Match</span>
+            </button>
+            <button class="game-btn" data-game="math">
+              <span class="game-icon">➗</span>
+              <span class="game-name">Math Sprint</span>
+            </button>
+            <button class="game-btn" data-game="reaction">
+              <span class="game-icon">⚡</span>
+              <span class="game-name">Reaction Time</span>
+            </button>
+            <button class="game-btn" data-game="focus">
+              <span class="game-icon">🎯</span>
+              <span class="game-name">Focus Finder</span>
+            </button>
+            <button class="game-btn" data-game="sequence">
+              <span class="game-icon">🔢</span>
+              <span class="game-name">Sequence Memory</span>
+            </button>
           </div>
 
           <!-- Game Containers (Hidden by default) -->
@@ -328,6 +348,83 @@
               <button class="btn btn-primary btn-sm mt-sm" id="wordSubmitBtn">Submit</button>
               <button class="btn btn-outline btn-sm mt-sm" id="wordSkipBtn">Skip</button>
               <p id="wordScore" class="game-score">Score: 0</p>
+            </div>
+          </div>
+
+          <!-- Pattern Match Game -->
+          <div class="game-card hidden" id="patternGameCard">
+            <div class="game-header">
+              <h3>🔷 Pattern Match</h3>
+              <button class="btn btn-outline btn-sm" onclick="closeGame()">← Back</button>
+            </div>
+            <div class="game-container">
+              <p class="game-instruction">Memorize the pattern and recreate it!</p>
+              <div id="patternDisplay" class="pattern-display"></div>
+              <div id="patternInput" class="pattern-input"></div>
+              <button class="btn btn-primary btn-sm mt-md" id="startPatternBtn">Start</button>
+              <button class="btn btn-outline btn-sm mt-sm" id="checkPatternBtn" style="display: none;">Check Answer</button>
+              <p id="patternScore" class="game-score">Level: 1</p>
+            </div>
+          </div>
+
+          <!-- Math Sprint Game -->
+          <div class="game-card hidden" id="mathGameCard">
+            <div class="game-header">
+              <h3>➗ Math Sprint</h3>
+              <button class="btn btn-outline btn-sm" onclick="closeGame()">← Back</button>
+            </div>
+            <div class="game-container">
+              <p class="game-instruction">Solve as many problems as you can!</p>
+              <div id="mathQuestion" class="math-question"></div>
+              <input type="number" id="mathInput" class="game-input" placeholder="Your answer">
+              <button class="btn btn-primary btn-sm mt-sm" id="mathSubmitBtn">Submit</button>
+              <p id="mathScore" class="game-score">Score: 0</p>
+              <p id="mathTimer" class="game-timer">Time: 60s</p>
+            </div>
+          </div>
+
+          <!-- Reaction Time Game -->
+          <div class="game-card hidden" id="reactionGameCard">
+            <div class="game-header">
+              <h3>⚡ Reaction Time</h3>
+              <button class="btn btn-outline btn-sm" onclick="closeGame()">← Back</button>
+            </div>
+            <div class="game-container">
+              <p class="game-instruction">Click when the color changes to green!</p>
+              <div id="reactionBox" class="reaction-box"></div>
+              <button class="btn btn-primary btn-sm mt-md" id="startReactionBtn">Start</button>
+              <p id="reactionResult" class="game-score"></p>
+              <p id="reactionAverage" class="game-hint">Best: -</p>
+            </div>
+          </div>
+
+          <!-- Focus Finder Game -->
+          <div class="game-card hidden" id="focusGameCard">
+            <div class="game-header">
+              <h3>🎯 Focus Finder</h3>
+              <button class="btn btn-outline btn-sm" onclick="closeGame()">← Back</button>
+            </div>
+            <div class="game-container">
+              <p class="game-instruction" id="focusInstruction">Find the odd one out!</p>
+              <div id="focusGrid" class="focus-grid"></div>
+              <p id="focusScore" class="game-score">Score: 0</p>
+              <p id="focusTimer" class="game-timer">Time: 30s</p>
+            </div>
+          </div>
+
+          <!-- Sequence Memory Game -->
+          <div class="game-card hidden" id="sequenceGameCard">
+            <div class="game-header">
+              <h3>🔢 Sequence Memory</h3>
+              <button class="btn btn-outline btn-sm" onclick="closeGame()">← Back</button>
+            </div>
+            <div class="game-container">
+              <p class="game-instruction">Remember the sequence of numbers!</p>
+              <div id="sequenceDisplay" class="sequence-display"></div>
+              <input type="text" id="sequenceInput" class="game-input" placeholder="Enter the sequence" style="display: none;">
+              <button class="btn btn-primary btn-sm mt-md" id="startSequenceBtn">Start</button>
+              <button class="btn btn-outline btn-sm mt-sm" id="checkSequenceBtn" style="display: none;">Check</button>
+              <p id="sequenceScore" class="game-score">Level: 1</p>
             </div>
           </div>
         </div>

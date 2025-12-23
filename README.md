@@ -41,6 +41,12 @@ A complete mental health support web application built with vanilla HTML, CSS, J
 - **Streak Tracking**: Motivation through consecutive days of use
 - **Favorite Affirmations**: Collection of saved messages
 - **Weekly Activity Calendar**: Visual representation of daily engagement
+- **🆕 Daily Check-In**: View today's progress summary with personalized suggestions
+- **🆕 Mood Tracker with Insights**: Quick mood logging, 7-day average, trends, and pattern discovery
+- **🆕 Habit Tracker**: Build consistency with daily habits and streak motivation
+- **🆕 Smart Reminders**: Browser notifications to maintain daily engagement
+
+> 📖 **See [NEW_FEATURES_GUIDE.md](NEW_FEATURES_GUIDE.md) for detailed documentation on the new features**
 
 ## 🎨 Design Features
 

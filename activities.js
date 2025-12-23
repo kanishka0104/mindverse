@@ -623,7 +623,12 @@ const gameState = {
   memory: { flippedCards: [], matchedPairs: 0, canFlip: true },
   color: { score: 0, currentColor: null },
   number: { target: 0, attempts: 0 },
-  word: { score: 0, currentWord: '', scrambled: '', hint: '' }
+  word: { score: 0, currentWord: '', scrambled: '', hint: '' },
+  pattern: { level: 1, currentPattern: [], userPattern: [], showingPattern: false },
+  math: { score: 0, timeLeft: 60, timer: null, currentQuestion: null },
+  reaction: { attempts: 0, times: [], bestTime: null, waiting: false, startTime: 0 },
+  focus: { score: 0, timeLeft: 30, timer: null, targetSymbol: '' },
+  sequence: { level: 1, currentSequence: [], showingSequence: false }
 };
 
 // ===== PUZZLE GAME =====
@@ -982,6 +987,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     initWordScramble();
   }
+  
+  // Pattern Game
+  if (document.getElementById('startPatternBtn')) {
+    document.getElementById('startPatternBtn').addEventListener('click', startPatternRound);
+    document.getElementById('checkPatternBtn').addEventListener('click', checkPattern);
+  }
+  
+  // Math Game
+  if (document.getElementById('mathSubmitBtn')) {
+    document.getElementById('mathSubmitBtn').addEventListener('click', checkMathAnswer);
+    document.getElementById('mathInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') checkMathAnswer();
+    });
+  }
+  
+  // Reaction Game
+  if (document.getElementById('startReactionBtn')) {
+    document.getElementById('startReactionBtn').addEventListener('click', startReactionTest);
+  }
+  
+  // Sequence Game
+  if (document.getElementById('startSequenceBtn')) {
+    document.getElementById('startSequenceBtn').addEventListener('click', startSequenceRound);
+    document.getElementById('checkSequenceBtn').addEventListener('click', checkSequence);
+    document.getElementById('sequenceInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') checkSequence();
+    });
+  }
 });
 
 // Open specific game
@@ -1011,6 +1044,16 @@ function openGame(gameType) {
       initNumberGame();
     } else if (gameType === 'word') {
       initWordScramble();
+    } else if (gameType === 'pattern') {
+      initPatternMatch();
+    } else if (gameType === 'math') {
+      initMathSprint();
+    } else if (gameType === 'reaction') {
+      initReactionTime();
+    } else if (gameType === 'focus') {
+      initFocusFinder();
+    } else if (gameType === 'sequence') {
+      initSequenceMemory();
     }
   }
 }
@@ -1025,5 +1068,428 @@ function closeGame() {
   document.querySelectorAll('[id$="GameCard"]').forEach(card => {
     card.classList.add('hidden');
   });
+  
+  // Clear any active timers
+  if (gameState.math.timer) {
+    clearInterval(gameState.math.timer);
+    gameState.math.timer = null;
+  }
+  if (gameState.focus.timer) {
+    clearInterval(gameState.focus.timer);
+    gameState.focus.timer = null;
+  }
 }
 
+// ============================================
+// PATTERN MATCH GAME
+// ============================================
+function initPatternMatch() {
+  gameState.pattern = { level: 1, currentPattern: [], userPattern: [], showingPattern: false };
+  document.getElementById('patternScore').textContent = `Level: ${gameState.pattern.level}`;
+  document.getElementById('patternInput').innerHTML = '';
+  document.getElementById('patternDisplay').innerHTML = '';
+  document.getElementById('startPatternBtn').style.display = 'inline-block';
+  document.getElementById('checkPatternBtn').style.display = 'none';
+}
+
+function startPatternRound() {
+  const patternLength = 3 + gameState.pattern.level;
+  const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'];
+  
+  gameState.pattern.currentPattern = [];
+  for (let i = 0; i < patternLength; i++) {
+    gameState.pattern.currentPattern.push(colors[Math.floor(Math.random() * colors.length)]);
+  }
+  
+  gameState.pattern.userPattern = [];
+  gameState.pattern.showingPattern = true;
+  
+  // Display pattern
+  const display = document.getElementById('patternDisplay');
+  display.innerHTML = '';
+  gameState.pattern.currentPattern.forEach(color => {
+    const box = document.createElement('div');
+    box.className = 'pattern-box';
+    box.style.backgroundColor = color;
+    display.appendChild(box);
+  });
+  
+  // Hide input
+  document.getElementById('patternInput').innerHTML = '';
+  document.getElementById('startPatternBtn').style.display = 'none';
+  document.getElementById('checkPatternBtn').style.display = 'none';
+  
+  // Show pattern for a few seconds
+  setTimeout(() => {
+    display.innerHTML = '<p style=\"color: var(--color-text-light);\">Recreate the pattern!</p>';
+    gameState.pattern.showingPattern = false;
+    showPatternInput();
+  }, 2000 + (patternLength * 500));
+}
+
+function showPatternInput() {
+  const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'];
+  const inputContainer = document.getElementById('patternInput');
+  inputContainer.innerHTML = '';
+  
+  colors.forEach(color => {
+    const box = document.createElement('div');
+    box.className = 'pattern-box clickable';
+    box.style.backgroundColor = color;
+    box.onclick = () => addPatternColor(color);
+    inputContainer.appendChild(box);
+  });
+  
+  document.getElementById('checkPatternBtn').style.display = 'inline-block';
+}
+
+function addPatternColor(color) {
+  if (gameState.pattern.userPattern.length < gameState.pattern.currentPattern.length) {
+    gameState.pattern.userPattern.push(color);
+    
+    // Show user's selection
+    const display = document.getElementById('patternDisplay');
+    if (gameState.pattern.userPattern.length === 1) {
+      display.innerHTML = '';
+    }
+    const box = document.createElement('div');
+    box.className = 'pattern-box';
+    box.style.backgroundColor = color;
+    display.appendChild(box);
+    
+    // Auto-check if complete
+    if (gameState.pattern.userPattern.length === gameState.pattern.currentPattern.length) {
+      setTimeout(checkPattern, 500);
+    }
+  }
+}
+
+function checkPattern() {
+  const correct = gameState.pattern.userPattern.every((color, index) => 
+    color === gameState.pattern.currentPattern[index]
+  );
+  
+  const display = document.getElementById('patternDisplay');
+  if (correct) {
+    display.innerHTML = '<p style=\"color: var(--color-success); font-size: 2rem;\">🎉 Correct!</p>';
+    gameState.pattern.level++;
+    document.getElementById('patternScore').textContent = `Level: ${gameState.pattern.level}`;
+    setTimeout(() => {
+      document.getElementById('startPatternBtn').style.display = 'inline-block';
+      document.getElementById('checkPatternBtn').style.display = 'none';
+      document.getElementById('patternInput').innerHTML = '';
+    }, 1500);
+  } else {
+    display.innerHTML = '<p style=\"color: var(--color-danger); font-size: 1.5rem;\">❌ Try Again!</p>';
+    gameState.pattern.level = Math.max(1, gameState.pattern.level - 1);
+    document.getElementById('patternScore').textContent = `Level: ${gameState.pattern.level}`;
+    setTimeout(() => {
+      document.getElementById('startPatternBtn').style.display = 'inline-block';
+      document.getElementById('checkPatternBtn').style.display = 'none';
+      document.getElementById('patternInput').innerHTML = '';
+    }, 1500);
+  }
+}
+
+// ============================================
+// MATH SPRINT GAME
+// ============================================
+function initMathSprint() {
+  gameState.math = { score: 0, timeLeft: 60, timer: null, currentQuestion: null };
+  document.getElementById('mathScore').textContent = 'Score: 0';
+  document.getElementById('mathTimer').textContent = 'Time: 60s';
+  document.getElementById('mathInput').value = '';
+  newMathQuestion();
+  startMathTimer();
+}
+
+function startMathTimer() {
+  if (gameState.math.timer) clearInterval(gameState.math.timer);
+  
+  gameState.math.timer = setInterval(() => {
+    gameState.math.timeLeft--;
+    document.getElementById('mathTimer').textContent = `Time: ${gameState.math.timeLeft}s`;
+    
+    if (gameState.math.timeLeft <= 0) {
+      endMathGame();
+    }
+  }, 1000);
+}
+
+function newMathQuestion() {
+  const operations = ['+', '-', '*'];
+  const operation = operations[Math.floor(Math.random() * operations.length)];
+  
+  let num1, num2, answer;
+  
+  if (operation === '+') {
+    num1 = Math.floor(Math.random() * 50) + 1;
+    num2 = Math.floor(Math.random() * 50) + 1;
+    answer = num1 + num2;
+  } else if (operation === '-') {
+    num1 = Math.floor(Math.random() * 50) + 20;
+    num2 = Math.floor(Math.random() * num1) + 1;
+    answer = num1 - num2;
+  } else {
+    num1 = Math.floor(Math.random() * 12) + 1;
+    num2 = Math.floor(Math.random() * 12) + 1;
+    answer = num1 * num2;
+  }
+  
+  gameState.math.currentQuestion = { num1, num2, operation, answer };
+  document.getElementById('mathQuestion').textContent = `${num1} ${operation} ${num2} = ?`;
+}
+
+function checkMathAnswer() {
+  const input = document.getElementById('mathInput');
+  const userAnswer = parseInt(input.value);
+  
+  if (userAnswer === gameState.math.currentQuestion.answer) {
+    gameState.math.score++;
+    document.getElementById('mathScore').textContent = `Score: ${gameState.math.score}`;
+    input.value = '';
+    newMathQuestion();
+  } else {
+    input.style.borderColor = 'var(--color-danger)';
+    setTimeout(() => {
+      input.style.borderColor = '';
+    }, 300);
+  }
+  
+  input.focus();
+}
+
+function endMathGame() {
+  clearInterval(gameState.math.timer);
+  gameState.math.timer = null;
+  document.getElementById('mathQuestion').innerHTML = 
+    `<p style=\"color: var(--color-success); font-size: 2rem;\">🎉 Time's Up!</p>
+     <p style=\"color: var(--color-text);\">Final Score: ${gameState.math.score}</p>`;
+  document.getElementById('mathInput').disabled = true;
+  document.getElementById('mathSubmitBtn').textContent = 'Play Again';
+  document.getElementById('mathSubmitBtn').onclick = () => {
+    document.getElementById('mathInput').disabled = false;
+    document.getElementById('mathSubmitBtn').textContent = 'Submit';
+    document.getElementById('mathSubmitBtn').onclick = checkMathAnswer;
+    initMathSprint();
+  };
+}
+
+// ============================================
+// REACTION TIME GAME
+// ============================================
+function initReactionTime() {
+  gameState.reaction = { attempts: 0, times: [], bestTime: null, waiting: false, startTime: 0 };
+  const box = document.getElementById('reactionBox');
+  box.style.backgroundColor = '#FF6B6B';
+  box.textContent = 'Click "Start" to begin';
+  box.onclick = null;
+  document.getElementById('reactionResult').textContent = '';
+  document.getElementById('reactionAverage').textContent = 'Best: -';
+  document.getElementById('startReactionBtn').style.display = 'inline-block';
+}
+
+function startReactionTest() {
+  document.getElementById('startReactionBtn').style.display = 'none';
+  const box = document.getElementById('reactionBox');
+  box.style.backgroundColor = '#FF6B6B';
+  box.textContent = 'Wait for green...';
+  box.onclick = null;
+  
+  const delay = Math.random() * 3000 + 2000; // 2-5 seconds
+  
+  gameState.reaction.waiting = true;
+  
+  setTimeout(() => {
+    if (gameState.reaction.waiting) {
+      box.style.backgroundColor = '#4ECDC4';
+      box.textContent = 'CLICK NOW!';
+      gameState.reaction.startTime = Date.now();
+      box.onclick = recordReactionTime;
+    }
+  }, delay);
+}
+
+function recordReactionTime() {
+  if (!gameState.reaction.waiting) return;
+  
+  const reactionTime = Date.now() - gameState.reaction.startTime;
+  gameState.reaction.waiting = false;
+  gameState.reaction.attempts++;
+  gameState.reaction.times.push(reactionTime);
+  
+  if (!gameState.reaction.bestTime || reactionTime < gameState.reaction.bestTime) {
+    gameState.reaction.bestTime = reactionTime;
+  }
+  
+  const box = document.getElementById('reactionBox');
+  box.style.backgroundColor = '#98D8C8';
+  box.textContent = `${reactionTime}ms`;
+  box.onclick = null;
+  
+  document.getElementById('reactionResult').textContent = `Reaction Time: ${reactionTime}ms`;
+  document.getElementById('reactionAverage').textContent = `Best: ${gameState.reaction.bestTime}ms`;
+  document.getElementById('startReactionBtn').style.display = 'inline-block';
+}
+
+// ============================================
+// FOCUS FINDER GAME
+// ============================================
+function initFocusFinder() {
+  gameState.focus = { score: 0, timeLeft: 30, timer: null, targetSymbol: '' };
+  document.getElementById('focusScore').textContent = 'Score: 0';
+  document.getElementById('focusTimer').textContent = 'Time: 30s';
+  newFocusRound();
+  startFocusTimer();
+}
+
+function startFocusTimer() {
+  if (gameState.focus.timer) clearInterval(gameState.focus.timer);
+  
+  gameState.focus.timer = setInterval(() => {
+    gameState.focus.timeLeft--;
+    document.getElementById('focusTimer').textContent = `Time: ${gameState.focus.timeLeft}s`;
+    
+    if (gameState.focus.timeLeft <= 0) {
+      endFocusGame();
+    }
+  }, 1000);
+}
+
+function newFocusRound() {
+  const symbols = ['🌟', '⭐', '✨', '💫', '🌙', '☀️', '🌈', '🔥', '💧', '🌸', '🍀', '🦋'];
+  const normalSymbol = symbols[Math.floor(Math.random() * symbols.length)];
+  let oddSymbol = symbols[Math.floor(Math.random() * symbols.length)];
+  while (oddSymbol === normalSymbol) {
+    oddSymbol = symbols[Math.floor(Math.random() * symbols.length)];
+  }
+  
+  gameState.focus.targetSymbol = oddSymbol;
+  
+  // Create grid with one odd symbol
+  const gridSize = 16;
+  const oddPosition = Math.floor(Math.random() * gridSize);
+  
+  const grid = document.getElementById('focusGrid');
+  grid.innerHTML = '';
+  
+  for (let i = 0; i < gridSize; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'focus-cell';
+    cell.textContent = i === oddPosition ? oddSymbol : normalSymbol;
+    cell.onclick = () => checkFocusClick(i === oddPosition);
+    grid.appendChild(cell);
+  }
+  
+  document.getElementById('focusInstruction').textContent = 'Find the odd one out!';
+}
+
+function checkFocusClick(isCorrect) {
+  if (isCorrect) {
+    gameState.focus.score++;
+    document.getElementById('focusScore').textContent = `Score: ${gameState.focus.score}`;
+    document.getElementById('focusInstruction').textContent = '✓ Correct!';
+    document.getElementById('focusInstruction').style.color = 'var(--color-success)';
+    setTimeout(() => {
+      document.getElementById('focusInstruction').textContent = 'Find the odd one out!';
+      document.getElementById('focusInstruction').style.color = '';
+      newFocusRound();
+    }, 500);
+  } else {
+    document.getElementById('focusInstruction').textContent = '✗ Try again!';
+    document.getElementById('focusInstruction').style.color = 'var(--color-danger)';
+    setTimeout(() => {
+      document.getElementById('focusInstruction').textContent = 'Find the odd one out!';
+      document.getElementById('focusInstruction').style.color = '';
+    }, 500);
+  }
+}
+
+function endFocusGame() {
+  clearInterval(gameState.focus.timer);
+  gameState.focus.timer = null;
+  document.getElementById('focusGrid').innerHTML = 
+    `<p style=\"color: var(--color-success); font-size: 2rem;\">🎉 Time's Up!</p>
+     <p style=\"color: var(--color-text);\">Final Score: ${gameState.focus.score}</p>`;
+  document.getElementById('focusInstruction').innerHTML = 
+    '<button class=\"btn btn-primary btn-sm\" onclick=\"initFocusFinder()\">Play Again</button>';
+}
+
+// ============================================
+// SEQUENCE MEMORY GAME
+// ============================================
+function initSequenceMemory() {
+  gameState.sequence = { level: 1, currentSequence: [], showingSequence: false };
+  document.getElementById('sequenceScore').textContent = `Level: ${gameState.sequence.level}`;
+  document.getElementById('sequenceDisplay').innerHTML = '';
+  document.getElementById('sequenceInput').style.display = 'none';
+  document.getElementById('sequenceInput').value = '';
+  document.getElementById('startSequenceBtn').style.display = 'inline-block';
+  document.getElementById('checkSequenceBtn').style.display = 'none';
+}
+
+function startSequenceRound() {
+  const sequenceLength = 3 + gameState.sequence.level;
+  gameState.sequence.currentSequence = [];
+  
+  for (let i = 0; i < sequenceLength; i++) {
+    gameState.sequence.currentSequence.push(Math.floor(Math.random() * 10));
+  }
+  
+  gameState.sequence.showingSequence = true;
+  document.getElementById('startSequenceBtn').style.display = 'none';
+  document.getElementById('checkSequenceBtn').style.display = 'none';
+  
+  // Show sequence one number at a time
+  const display = document.getElementById('sequenceDisplay');
+  display.style.fontSize = '4rem';
+  display.style.color = 'var(--color-primary)';
+  
+  let index = 0;
+  const showNext = () => {
+    if (index < gameState.sequence.currentSequence.length) {
+      display.textContent = gameState.sequence.currentSequence[index];
+      index++;
+      setTimeout(showNext, 1000);
+    } else {
+      display.textContent = 'Enter the sequence!';
+      display.style.fontSize = '1.2rem';
+      display.style.color = 'var(--color-text)';
+      gameState.sequence.showingSequence = false;
+      document.getElementById('sequenceInput').style.display = 'block';
+      document.getElementById('sequenceInput').focus();
+      document.getElementById('checkSequenceBtn').style.display = 'inline-block';
+    }
+  };
+  
+  setTimeout(showNext, 500);
+}
+
+function checkSequence() {
+  const input = document.getElementById('sequenceInput');
+  const userSequence = input.value.replace(/\\s/g, '').split('').map(n => parseInt(n));
+  
+  const correct = userSequence.length === gameState.sequence.currentSequence.length &&
+                  userSequence.every((num, index) => num === gameState.sequence.currentSequence[index]);
+  
+  const display = document.getElementById('sequenceDisplay');
+  
+  if (correct) {
+    display.innerHTML = '<p style=\"color: var(--color-success); font-size: 2rem;\">🎉 Correct!</p>';
+    gameState.sequence.level++;
+    document.getElementById('sequenceScore').textContent = `Level: ${gameState.sequence.level}`;
+  } else {
+    display.innerHTML = `<p style=\"color: var(--color-danger); font-size: 1.5rem;\">❌ Wrong!</p>
+                         <p style=\"color: var(--color-text-light);\">Correct: ${gameState.sequence.currentSequence.join('')}</p>`;
+    gameState.sequence.level = Math.max(1, gameState.sequence.level - 1);
+    document.getElementById('sequenceScore').textContent = `Level: ${gameState.sequence.level}`;
+  }
+  
+  document.getElementById('sequenceInput').style.display = 'none';
+  document.getElementById('checkSequenceBtn').style.display = 'none';
+  
+  setTimeout(() => {
+    document.getElementById('startSequenceBtn').style.display = 'inline-block';
+    input.value = '';
+  }, 2000);
+}

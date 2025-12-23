@@ -316,34 +316,395 @@ const SKILLS_DATA = {
     ],
     timeCommitment: 'Flexible',
     difficulty: 'Beginner Friendly'
+  },
+
+  // Additional Skills
+  calligraphy: {
+    name: 'Calligraphy',
+    icon: '🖋️',
+    category: 'Art',
+    description: 'Master the art of beautiful handwriting and decorative lettering.',
+    benefits: ['Meditative practice', 'Unique gift making', 'Improves focus', 'Personal style'],
+    gettingStarted: ['Get calligraphy pens or brush pens', 'Practice basic strokes', 'Learn letter forms', 'Start with simple alphabets'],
+    resources: [
+      { name: 'YouTube - The Happy Ever Crafter', url: 'https://www.youtube.com/@TheHappyEverCrafter', type: 'Free Videos' },
+      { name: 'Skillshare Calligraphy', url: 'https://www.skillshare.com/browse/calligraphy', type: 'Classes' },
+      { name: 'IAMPETH', url: 'https://www.iampeth.com', type: 'Resources' }
+    ],
+    timeCommitment: '20-30 minutes daily',
+    difficulty: 'Beginner Friendly'
+  },
+
+  'martial-arts': {
+    name: 'Martial Arts',
+    icon: '🥋',
+    category: 'Movement',
+    description: 'Learn self-defense, discipline, and physical fitness through martial arts.',
+    benefits: ['Self-defense skills', 'Builds confidence', 'Great exercise', 'Mental discipline'],
+    gettingStarted: ['Choose a style (karate, taekwondo, jiu-jitsu)', 'Find a local dojo', 'Start with basics', 'Practice regularly'],
+    resources: [
+      { name: 'YouTube - Karate Culture', url: 'https://www.youtube.com/@KarateCulture', type: 'Free Videos' },
+      { name: 'Local martial arts schools', url: '#', type: 'In-Person' },
+      { name: 'FightTips', url: 'https://www.youtube.com/@FightTips', type: 'Tutorials' }
+    ],
+    timeCommitment: '2-3 times per week',
+    difficulty: 'Beginner to Advanced'
+  },
+
+  fitness: {
+    name: 'Fitness & Exercise',
+    icon: '💪',
+    category: 'Movement',
+    description: 'Build strength, endurance, and overall health through fitness training.',
+    benefits: ['Improves health', 'Boosts energy', 'Better mood', 'Increased confidence'],
+    gettingStarted: ['Start with bodyweight exercises', 'Create a workout schedule', 'Focus on form', 'Progress gradually'],
+    resources: [
+      { name: 'YouTube - FitnessBlender', url: 'https://www.youtube.com/@FitnessBlender', type: 'Free Workouts' },
+      { name: 'Nike Training Club App', url: 'https://www.nike.com/ntc-app', type: 'Free App' },
+      { name: 'Fitness subreddit', url: 'https://www.reddit.com/r/Fitness/', type: 'Community' }
+    ],
+    timeCommitment: '30-60 minutes, 3-5x/week',
+    difficulty: 'Beginner Friendly'
+  },
+
+  french: {
+    name: 'French',
+    icon: '🇫🇷',
+    category: 'Language',
+    description: 'Learn the romantic French language for travel, culture, and career opportunities.',
+    benefits: ['Beautiful language', 'Travel opportunities', 'Career advantage', 'Cultural appreciation'],
+    gettingStarted: ['Learn pronunciation', 'Master basic greetings', 'Study 15 minutes daily', 'Watch French media'],
+    resources: [
+      { name: 'Duolingo French', url: 'https://www.duolingo.com/course/fr/en/Learn-French', type: 'Free App' },
+      { name: 'YouTube - Learn French with Alexa', url: 'https://www.youtube.com/@learnfrenchwithalexa', type: 'Free Videos' },
+      { name: 'FrenchPod101', url: 'https://www.frenchpod101.com', type: 'Podcast' }
+    ],
+    timeCommitment: '15-30 minutes daily',
+    difficulty: 'Beginner Friendly'
+  },
+
+  japanese: {
+    name: 'Japanese',
+    icon: '🇯🇵',
+    category: 'Language',
+    description: 'Explore Japanese language and culture, from hiragana to conversation.',
+    benefits: ['Access anime/manga', 'Travel to Japan', 'Unique writing system', 'Career opportunities'],
+    gettingStarted: ['Learn hiragana and katakana', 'Practice basic phrases', 'Study kanji gradually', 'Use spaced repetition'],
+    resources: [
+      { name: 'WaniKani', url: 'https://www.wanikani.com', type: 'Kanji Learning' },
+      { name: 'YouTube - JapanesePod101', url: 'https://www.youtube.com/@JapanesePod101', type: 'Free Videos' },
+      { name: 'Duolingo Japanese', url: 'https://www.duolingo.com/course/ja/en/Learn-Japanese', type: 'Free App' }
+    ],
+    timeCommitment: '20-30 minutes daily',
+    difficulty: 'Moderate'
+  },
+
+  'sign-language': {
+    name: 'Sign Language',
+    icon: '🤟',
+    category: 'Language',
+    description: 'Learn to communicate using American Sign Language (ASL) or BSL.',
+    benefits: ['Inclusive communication', 'Career opportunities', 'Cognitive benefits', 'Connect with Deaf community'],
+    gettingStarted: ['Learn the alphabet', 'Practice common phrases', 'Watch sign language videos', 'Practice facial expressions'],
+    resources: [
+      { name: 'SignSchool', url: 'https://www.signschool.com', type: 'Online Course' },
+      { name: 'YouTube - Sign Language 101', url: 'https://www.youtube.com/results?search_query=asl+basics', type: 'Free Videos' },
+      { name: 'Lifeprint ASL', url: 'https://www.lifeprint.com', type: 'Free Lessons' }
+    ],
+    timeCommitment: '15-30 minutes daily',
+    difficulty: 'Beginner Friendly'
+  },
+
+  baking: {
+    name: 'Baking',
+    icon: '🥐',
+    category: 'Culinary',
+    description: 'Create delicious breads, pastries, cakes, and more from your kitchen.',
+    benefits: ['Therapeutic activity', 'Delicious results', 'Impressive skill', 'Science meets art'],
+    gettingStarted: ['Learn basic measurements', 'Start with simple recipes', 'Understand oven temps', 'Practice techniques'],
+    resources: [
+      { name: 'King Arthur Baking', url: 'https://www.kingarthurbaking.com/learn', type: 'Tutorials' },
+      { name: 'YouTube - Preppy Kitchen', url: 'https://www.youtube.com/@PreppyKitchen', type: 'Free Videos' },
+      { name: 'The Great British Bake Off', url: '#', type: 'Inspiration' }
+    ],
+    timeCommitment: '2-3 hours per recipe',
+    difficulty: 'Beginner to Advanced'
+  },
+
+  cocktails: {
+    name: 'Mixology',
+    icon: '🍹',
+    category: 'Culinary',
+    description: 'Master the art of crafting cocktails and mocktails for any occasion.',
+    benefits: ['Impress guests', 'Creative expression', 'Social skill', 'Fun hobby'],
+    gettingStarted: ['Learn classic cocktails', 'Get basic tools', 'Understand flavor profiles', 'Practice techniques'],
+    resources: [
+      { name: 'YouTube - How to Drink', url: 'https://www.youtube.com/@howtodrink', type: 'Free Videos' },
+      { name: 'Difford\'s Guide', url: 'https://www.diffordsguide.com', type: 'Recipes' },
+      { name: 'The Educated Barfly', url: 'https://www.youtube.com/@TheEducatedBarfly', type: 'Tutorials' }
+    ],
+    timeCommitment: 'Practice as desired',
+    difficulty: 'Beginner Friendly'
+  },
+
+  plating: {
+    name: 'Food Plating',
+    icon: '🍽️',
+    category: 'Culinary',
+    description: 'Learn to present food beautifully like a professional chef.',
+    benefits: ['Elevates dining experience', 'Instagram-worthy', 'Attention to detail', 'Artistic expression'],
+    gettingStarted: ['Study professional plates', 'Learn color theory', 'Practice garnishing', 'Use odd numbers'],
+    resources: [
+      { name: 'YouTube - Chef Plating Techniques', url: 'https://www.youtube.com/results?search_query=food+plating+techniques', type: 'Free Videos' },
+      { name: 'Instagram food accounts', url: 'https://www.instagram.com', type: 'Inspiration' },
+      { name: 'The Art of Plating', url: 'https://theartofplating.com', type: 'Gallery' }
+    ],
+    timeCommitment: 'Apply when cooking',
+    difficulty: 'Intermediate'
+  },
+
+  'video-editing': {
+    name: 'Video Editing',
+    icon: '🎬',
+    category: 'Digital',
+    description: 'Create professional videos for YouTube, social media, or personal projects.',
+    benefits: ['Creative career path', 'Content creation', 'Storytelling skill', 'In-demand skill'],
+    gettingStarted: ['Choose editing software', 'Learn basic cuts and transitions', 'Understand pacing', 'Practice with projects'],
+    resources: [
+      { name: 'YouTube - Premiere Gal', url: 'https://www.youtube.com/@PremiereGal', type: 'Free Tutorials' },
+      { name: 'DaVinci Resolve Tutorials', url: 'https://www.blackmagicdesign.com/products/davinciresolve/training', type: 'Free Software' },
+      { name: 'Film Editing Pro', url: 'https://www.filmeditingpro.com', type: 'Courses' }
+    ],
+    timeCommitment: '1-2 hours per project',
+    difficulty: 'Beginner to Advanced'
+  },
+
+  'graphic-design': {
+    name: 'Graphic Design',
+    icon: '🎨',
+    category: 'Digital',
+    description: 'Create stunning visual designs for web, print, and branding.',
+    benefits: ['Creative career', 'Freelance opportunities', 'Personal branding', 'Problem solving'],
+    gettingStarted: ['Learn design principles', 'Use Canva or Adobe', 'Study color theory', 'Practice daily'],
+    resources: [
+      { name: 'Canva Design School', url: 'https://www.canva.com/learn/', type: 'Free Tutorials' },
+      { name: 'YouTube - The Futur', url: 'https://www.youtube.com/@thefutur', type: 'Free Videos' },
+      { name: 'Coursera Graphic Design', url: 'https://www.coursera.org', type: 'Courses' }
+    ],
+    timeCommitment: '30-60 minutes daily',
+    difficulty: 'Beginner Friendly'
+  },
+
+  coding: {
+    name: 'Coding & Programming',
+    icon: '👨‍💻',
+    category: 'Digital',
+    description: 'Build websites, apps, and software. Learn languages like Python, JavaScript, and more.',
+    benefits: ['High-paying career', 'Problem-solving', 'Create anything', 'Remote work'],
+    gettingStarted: ['Choose a language (Python recommended)', 'Use free platforms', 'Build small projects', 'Code daily'],
+    resources: [
+      { name: 'freeCodeCamp', url: 'https://www.freecodecamp.org', type: 'Free Platform' },
+      { name: 'The Odin Project', url: 'https://www.theodinproject.com', type: 'Free Curriculum' },
+      { name: 'Codecademy', url: 'https://www.codecademy.com', type: 'Interactive' },
+      { name: 'YouTube - Programming with Mosh', url: 'https://www.youtube.com/@programmingwithmosh', type: 'Tutorials' }
+    ],
+    timeCommitment: '1-2 hours daily',
+    difficulty: 'Beginner to Advanced'
+  },
+
+  'creative-writing': {
+    name: 'Creative Writing',
+    icon: '📝',
+    category: 'Writing',
+    description: 'Write stories, novels, poetry, and express your imagination through words.',
+    benefits: ['Self-expression', 'Emotional outlet', 'Cognitive benefits', 'Potential income'],
+    gettingStarted: ['Write every day', 'Read widely', 'Join writing communities', 'Start with short stories'],
+    resources: [
+      { name: 'r/writing', url: 'https://www.reddit.com/r/writing/', type: 'Community' },
+      { name: 'NaNoWriMo', url: 'https://nanowrimo.org', type: 'Challenge' },
+      { name: 'YouTube - Abbie Emmons', url: 'https://www.youtube.com/@AbbieEmmons', type: 'Writing Tips' }
+    ],
+    timeCommitment: '30 minutes daily',
+    difficulty: 'Beginner Friendly'
+  },
+
+  'public-speaking': {
+    name: 'Public Speaking',
+    icon: '🎤',
+    category: 'Communication',
+    description: 'Develop confidence and skill in presenting and speaking to audiences.',
+    benefits: ['Career advancement', 'Confidence boost', 'Leadership skill', 'Overcome fear'],
+    gettingStarted: ['Join Toastmasters', 'Practice in front of mirror', 'Record yourself', 'Start small'],
+    resources: [
+      { name: 'Toastmasters', url: 'https://www.toastmasters.org', type: 'Organization' },
+      { name: 'YouTube - Charisma on Command', url: 'https://www.youtube.com/@Charismaoncommand', type: 'Tips' },
+      { name: 'TED Talks', url: 'https://www.ted.com', type: 'Examples' }
+    ],
+    timeCommitment: 'Practice regularly',
+    difficulty: 'Intermediate'
+  },
+
+  blogging: {
+    name: 'Blogging',
+    icon: '📰',
+    category: 'Writing',
+    description: 'Share your thoughts, expertise, and stories through online writing.',
+    benefits: ['Build audience', 'Passive income potential', 'Personal brand', 'Creative outlet'],
+    gettingStarted: ['Choose a niche', 'Set up a blog (WordPress)', 'Write consistently', 'Learn SEO basics'],
+    resources: [
+      { name: 'WordPress.com', url: 'https://wordpress.com', type: 'Platform' },
+      { name: 'YouTube - Income School', url: 'https://www.youtube.com/@incomeschoolvideos', type: 'Blogging Tips' },
+      { name: 'ProBlogger', url: 'https://problogger.com', type: 'Resources' }
+    ],
+    timeCommitment: '2-3 hours per post',
+    difficulty: 'Beginner Friendly'
+  },
+
+  journaling: {
+    name: 'Journaling',
+    icon: '📔',
+    category: 'Writing',
+    description: 'Reflective writing for personal growth, gratitude, and self-awareness.',
+    benefits: ['Mental clarity', 'Stress relief', 'Track growth', 'Self-discovery'],
+    gettingStarted: ['Get a notebook', 'Write daily', 'Try different styles', 'Be honest'],
+    resources: [
+      { name: 'YouTube - Pick Up Limes', url: 'https://www.youtube.com/@PickUpLimes', type: 'Journaling Ideas' },
+      { name: 'Day One App', url: 'https://dayoneapp.com', type: 'Digital Journal' },
+      { name: 'r/Journaling', url: 'https://www.reddit.com/r/Journaling/', type: 'Community' }
+    ],
+    timeCommitment: '10-20 minutes daily',
+    difficulty: 'Very Easy'
+  },
+
+  // Additional new skills
+  meditation: {
+    name: 'Meditation',
+    icon: '🧘‍♂️',
+    category: 'Wellness',
+    description: 'Practice mindfulness and meditation for mental peace and clarity.',
+    benefits: ['Reduces stress', 'Improves focus', 'Emotional balance', 'Better sleep'],
+    gettingStarted: ['Start with 5 minutes', 'Find a quiet space', 'Focus on breath', 'Use guided apps'],
+    resources: [
+      { name: 'Headspace', url: 'https://www.headspace.com', type: 'App' },
+      { name: 'YouTube - Goodful', url: 'https://www.youtube.com/@Goodful', type: 'Guided Meditations' },
+      { name: 'Insight Timer', url: 'https://insighttimer.com', type: 'Free App' }
+    ],
+    timeCommitment: '5-20 minutes daily',
+    difficulty: 'Beginner Friendly'
+  },
+
+  gardening: {
+    name: 'Gardening',
+    icon: '🌱',
+    category: 'Lifestyle',
+    description: 'Grow plants, flowers, vegetables, and connect with nature.',
+    benefits: ['Fresh produce', 'Physical activity', 'Mental wellness', 'Beautiful space'],
+    gettingStarted: ['Start with easy plants', 'Learn basic care', 'Get proper tools', 'Start small'],
+    resources: [
+      { name: 'YouTube - Epic Gardening', url: 'https://www.youtube.com/@epicgardening', type: 'Free Videos' },
+      { name: 'r/gardening', url: 'https://www.reddit.com/r/gardening/', type: 'Community' },
+      { name: 'Gardening Know How', url: 'https://www.gardeningknowhow.com', type: 'Articles' }
+    ],
+    timeCommitment: '30 minutes daily',
+    difficulty: 'Beginner Friendly'
+  },
+
+  chess: {
+    name: 'Chess',
+    icon: '♟️',
+    category: 'Games & Strategy',
+    description: 'Master the ancient game of strategy, critical thinking, and tactics.',
+    benefits: ['Improves critical thinking', 'Patience', 'Problem-solving', 'Competitive fun'],
+    gettingStarted: ['Learn piece movements', 'Understand basic tactics', 'Play online', 'Study games'],
+    resources: [
+      { name: 'Chess.com', url: 'https://www.chess.com', type: 'Free Platform' },
+      { name: 'YouTube - GothamChess', url: 'https://www.youtube.com/@GothamChess', type: 'Lessons' },
+      { name: 'Lichess', url: 'https://lichess.org', type: 'Free Platform' }
+    ],
+    timeCommitment: '20-60 minutes daily',
+    difficulty: 'Beginner to Advanced'
+  },
+
+  origami: {
+    name: 'Origami',
+    icon: '🦢',
+    category: 'Art',
+    description: 'The Japanese art of paper folding to create beautiful sculptures.',
+    benefits: ['Meditative', 'Improves dexterity', 'Affordable hobby', 'Beautiful results'],
+    gettingStarted: ['Get origami paper', 'Start with simple models', 'Follow diagrams', 'Practice patience'],
+    resources: [
+      { name: 'Origami-Instructions.com', url: 'http://www.origami-instructions.com', type: 'Free Diagrams' },
+      { name: 'YouTube - Jo Nakashima', url: 'https://www.youtube.com/@jonakashima', type: 'Tutorials' },
+      { name: 'Happy Folding', url: 'https://www.happyfolding.com', type: 'Resources' }
+    ],
+    timeCommitment: '30 minutes per session',
+    difficulty: 'Beginner Friendly'
+  },
+
+  podcasting: {
+    name: 'Podcasting',
+    icon: '🎙️',
+    category: 'Digital',
+    description: 'Create and produce your own podcast to share stories and ideas.',
+    benefits: ['Build audience', 'Share expertise', 'Networking', 'Creative outlet'],
+    gettingStarted: ['Choose your topic', 'Get basic microphone', 'Plan episodes', 'Record and edit'],
+    resources: [
+      { name: 'YouTube - Podcast Insights', url: 'https://www.youtube.com/results?search_query=how+to+start+a+podcast', type: 'Tutorials' },
+      { name: 'Anchor', url: 'https://anchor.fm', type: 'Free Platform' },
+      { name: 'Audacity', url: 'https://www.audacityteam.org', type: 'Free Software' }
+    ],
+    timeCommitment: '2-4 hours per episode',
+    difficulty: 'Beginner Friendly'
+  },
+
+  magic: {
+    name: 'Magic Tricks',
+    icon: '🎩',
+    category: 'Entertainment',
+    description: 'Learn sleight of hand and illusions to amaze and entertain.',
+    benefits: ['Confidence builder', 'Social icebreaker', 'Dexterity', 'Entertainment skill'],
+    gettingStarted: ['Learn basic card tricks', 'Practice sleight of hand', 'Perform for friends', 'Study presentation'],
+    resources: [
+      { name: 'YouTube - 52Kards', url: 'https://www.youtube.com/@52Kards', type: 'Free Tutorials' },
+      { name: 'Penguin Magic', url: 'https://www.penguinmagic.com', type: 'Shop & Learn' },
+      { name: 'Scam School', url: 'https://www.youtube.com/results?search_query=scam+school', type: 'Bar Tricks' }
+    ],
+    timeCommitment: '30 minutes practice daily',
+    difficulty: 'Beginner to Advanced'
+  },
+
+  woodworking: {
+    name: 'Woodworking',
+    icon: '🪵',
+    category: 'Crafts',
+    description: 'Build furniture and wooden items with your hands and tools.',
+    benefits: ['Practical skill', 'Satisfying results', 'Save money', 'Creative projects'],
+    gettingStarted: ['Learn safety first', 'Start with simple projects', 'Get basic tools', 'Follow plans'],
+    resources: [
+      { name: 'YouTube - Steve Ramsey', url: 'https://www.youtube.com/@stevinmarin', type: 'Beginner Projects' },
+      { name: 'Ana White Plans', url: 'https://www.ana-white.com', type: 'Free Plans' },
+      { name: 'r/woodworking', url: 'https://www.reddit.com/r/woodworking/', type: 'Community' }
+    ],
+    timeCommitment: 'Project-based',
+    difficulty: 'Beginner to Advanced'
+  },
+
+  astronomy: {
+    name: 'Astronomy',
+    icon: '🔭',
+    category: 'Science',
+    description: 'Explore the cosmos, identify stars, and learn about our universe.',
+    benefits: ['Perspective', 'Scientific knowledge', 'Peaceful hobby', 'Connect with nature'],
+    gettingStarted: ['Get a star chart', 'Learn constellations', 'Use astronomy apps', 'Join astronomy club'],
+    resources: [
+      { name: 'Stellarium', url: 'https://stellarium.org', type: 'Free Software' },
+      { name: 'YouTube - NASA', url: 'https://www.youtube.com/@NASA', type: 'Free Content' },
+      { name: 'Sky & Telescope', url: 'https://skyandtelescope.org', type: 'Magazine' }
+    ],
+    timeCommitment: 'Evening sessions',
+    difficulty: 'Beginner Friendly'
   }
 };
-
-// Add generic data for skills not fully detailed
-const GENERIC_SKILLS = ['calligraphy', 'martial-arts', 'fitness', 'french', 'japanese', 'sign-language', 
-  'baking', 'cocktails', 'plating', 'video-editing', 'graphic-design', 'coding', 'creative-writing', 
-  'public-speaking', 'blogging', 'journaling'];
-
-GENERIC_SKILLS.forEach(skillId => {
-  if (!SKILLS_DATA[skillId]) {
-    const skillName = skillId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-    SKILLS_DATA[skillId] = {
-      name: skillName,
-      icon: '✨',
-      category: 'General',
-      description: `Learn ${skillName} and develop new abilities.`,
-      benefits: ['Personal growth', 'New experiences', 'Skill development', 'Self-improvement'],
-      gettingStarted: ['Research basics online', 'Find quality tutorials', 'Practice regularly', 'Join communities'],
-      resources: [
-        { name: 'YouTube Tutorials', url: `https://www.youtube.com/results?search_query=${skillName.replace(/ /g, '+')}+tutorial`, type: 'Free Videos' },
-        { name: 'Skillshare', url: 'https://www.skillshare.com', type: 'Classes' },
-        { name: 'Udemy', url: 'https://www.udemy.com', type: 'Courses' }
-      ],
-      timeCommitment: 'Varies',
-      difficulty: 'Beginner Friendly'
-    };
-  }
-});
 
 // ============================================
 // Initialize Page
@@ -352,7 +713,94 @@ GENERIC_SKILLS.forEach(skillId => {
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('Skills page loaded for user:', userId);
   await loadMySkills();
+  initializeSearch();
 });
+
+// ============================================
+// Search Functionality
+// ============================================
+
+function initializeSearch() {
+  const searchInput = document.getElementById('skillSearchInput');
+  const searchResults = document.getElementById('searchResults');
+
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.trim().toLowerCase();
+    
+    if (query.length === 0) {
+      searchResults.classList.add('hidden');
+      searchResults.innerHTML = '';
+      return;
+    }
+
+    // Search through all skills
+    const results = [];
+    for (const [skillId, skillData] of Object.entries(SKILLS_DATA)) {
+      const skillName = skillData.name.toLowerCase();
+      const category = skillData.category.toLowerCase();
+      const description = skillData.description.toLowerCase();
+      
+      if (skillName.includes(query) || category.includes(query) || description.includes(query)) {
+        results.push({ skillId, ...skillData });
+      }
+    }
+
+    if (results.length > 0) {
+      displaySearchResults(results, query);
+    } else {
+      displayNoResults(query);
+    }
+  });
+
+  // Close search results when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-container')) {
+      searchResults.classList.add('hidden');
+    }
+  });
+}
+
+function displaySearchResults(results, query) {
+  const searchResults = document.getElementById('searchResults');
+  
+  searchResults.innerHTML = `
+    <div class="search-results-header">
+      Found ${results.length} skill${results.length === 1 ? '' : 's'}:
+    </div>
+    ${results.map(skill => `
+      <div class="search-result-item" onclick="openSkillModal('${skill.skillId}')">
+        <span class="search-result-icon">${skill.icon}</span>
+        <div class="search-result-info">
+          <h4 class="search-result-name">${skill.name}</h4>
+          <p class="search-result-category">${skill.category}</p>
+        </div>
+      </div>
+    `).join('')}
+  `;
+  
+  searchResults.classList.remove('hidden');
+}
+
+function displayNoResults(query) {
+  const searchResults = document.getElementById('searchResults');
+  const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query + ' tutorial')}`;
+  
+  searchResults.innerHTML = `
+    <div class="search-no-results">
+      <p style="margin-bottom: var(--spacing-sm);">
+        <strong>No skills found for "${query}"</strong>
+      </p>
+      <p style="color: var(--color-text-light); margin-bottom: var(--spacing-md); font-size: 0.9rem;">
+        Don't worry! We can help you find learning resources.
+      </p>
+      <a href="${youtubeSearchUrl}" target="_blank" class="btn btn-primary btn-sm" style="text-decoration: none;">
+        🎥 Search on YouTube
+      </a>
+    </div>
+  `;
+  
+  searchResults.classList.remove('hidden');
+}
 
 // ============================================
 // Open Skill Modal

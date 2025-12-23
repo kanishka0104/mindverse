@@ -25,6 +25,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadProgressCharts();
   await loadMemories();
   await loadProgressRewind(30); // Default to 1 month
+  
+  // Defer new features to avoid blocking main thread
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => initNewFeatures(), { timeout: 2000 });
+  } else {
+    setTimeout(() => initNewFeatures(), 100);
+  }
 });
 
 // ============================================
@@ -765,6 +772,7 @@ window.deleteSafeEnvironmentStep = async function(index) {
 // ============================================
 
 let moodChart, activityChart, sleepChart;
+let moodMiniChart = null;
 
 async function loadProgressCharts() {
   try {
@@ -871,6 +879,9 @@ async function renderMoodTrendChart() {
         responsive: true,
         maintainAspectRatio: true,
         aspectRatio: 2,
+        animation: {
+          duration: 300
+        },
         plugins: {
           legend: {
             display: false
@@ -897,9 +908,6 @@ async function renderMoodTrendChart() {
         }
       }
     });
-    
-    console.log('Mood trend chart rendered successfully');
-    
   } catch (error) {
     console.error('Error rendering mood chart:', error);
   }
@@ -969,6 +977,7 @@ async function renderActivityChart() {
         responsive: true,
         maintainAspectRatio: true,
         aspectRatio: 2,
+        animation: false,
         plugins: {
           legend: {
             display: false
@@ -1058,6 +1067,7 @@ async function renderSleepChart() {
         responsive: true,
         maintainAspectRatio: true,
         aspectRatio: 2,
+        animation: false,
         plugins: {
           legend: {
             display: false
@@ -1382,3 +1392,843 @@ window.loadProgressRewind = async function(days) {
   }
 };
 
+// ============================================
+// NEW FEATURES: Mood Tracker, Habits, Reminders
+// ============================================
+
+// Initialize new features
+async function initNewFeatures() {
+  try {
+    // Load all features in parallel for better performance
+    await Promise.all([
+      loadDailyCheckIn(),
+      loadMoodInsights(),
+      loadHabits(),
+      initializeReminders()
+    ]);
+  } catch (error) {
+    console.error('Error initializing new features:', error);
+  }
+}
+
+// ============================================
+// Daily Check-In Functions
+// ============================================
+
+async function loadDailyCheckIn() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayStart = today.getTime();
+    const todayEnd = todayStart + (24 * 60 * 60 * 1000);
+
+    // Get today's data
+    const [moodToday, habitsToday, activitiesToday] = await Promise.all([
+      FirebaseDB.queryDocuments(
+        'moodEntries',
+        [['userId', '==', userId], ['timestamp', '>', todayStart], ['timestamp', '<', todayEnd]],
+        'timestamp',
+        'desc',
+        1
+      ),
+      FirebaseDB.queryDocuments(
+        'habitCompletions',
+        [['userId', '==', userId], ['date', '==', todayStart]],
+        'timestamp',
+        'desc'
+      ),
+      FirebaseDB.queryDocuments(
+        'activitiesCompleted',
+        [['userId', '==', userId], ['timestamp', '>', todayStart], ['timestamp', '<', todayEnd]],
+        'timestamp',
+        'desc'
+      )
+    ]);
+
+    // Get total habits count
+    const allHabits = await FirebaseDB.queryDocuments(
+      'habits',
+      [['userId', '==', userId], ['isActive', '==', true]],
+      'createdAt',
+      'asc'
+    );
+
+    // Update today's summary
+    if (moodToday && moodToday.length > 0) {
+      const moodEmojis = { 1: '😢', 2: '😔', 3: '😐', 4: '🙂', 5: '😊' };
+      const moodEl = document.getElementById('todayMood');
+      if (moodEl) moodEl.textContent = moodEmojis[moodToday[0].mood] || 'Not logged';
+    }
+
+    const habitsEl = document.getElementById('todayHabits');
+    const activitiesEl = document.getElementById('todayActivities');
+    if (habitsEl) habitsEl.textContent = `${habitsToday.length}/${allHabits.length}`;
+    if (activitiesEl) activitiesEl.textContent = activitiesToday.length;
+
+    // Generate suggestions
+    generateDailySuggestions(moodToday, habitsToday, activitiesToday, allHabits);
+  } catch (error) {
+    console.error('Error loading daily check-in:', error);
+  }
+}
+
+function generateDailySuggestions(moodToday, habitsToday, activitiesToday, allHabits) {
+  const suggestions = [];
+
+  // If low mood
+  if (moodToday.length > 0 && moodToday[0].mood <= 2) {
+    suggestions.push({
+      icon: '🫁',
+      text: 'Your mood seems low. Try 5 minutes of breathing exercises to calm your mind'
+    });
+    suggestions.push({
+      icon: '🚶',
+      text: 'A short walk outside can help improve your mood'
+    });
+  }
+
+  // If no mood logged
+  if (moodToday.length === 0) {
+    suggestions.push({
+      icon: '😊',
+      text: 'Log your mood to help track patterns and get personalized insights'
+    });
+  }
+
+  // If habits incomplete
+  if (habitsToday.length < allHabits.length) {
+    const remaining = allHabits.length - habitsToday.length;
+    suggestions.push({
+      icon: '✅',
+      text: `You have ${remaining} habit${remaining > 1 ? 's' : ''} left to complete today`
+    });
+  }
+
+  // If no activities
+  if (activitiesToday.length === 0) {
+    suggestions.push({
+      icon: '✨',
+      text: 'Try doing one pleasant activity today to boost your wellbeing'
+    });
+  }
+
+  // Always include a positive suggestion
+  suggestions.push({
+    icon: '🌟',
+    text: 'Remember: small steps lead to big changes. You\'re doing great!'
+  });
+
+  // Display top 3 suggestions - batch DOM update
+  const suggestionsEl = document.getElementById('suggestionsList');
+  if (suggestionsEl) {
+    const display = suggestions.slice(0, 3).map(s => `
+      <div class="suggestion-item">
+        <span class="suggestion-icon">${s.icon}</span>
+        <span class="suggestion-text">${s.text}</span>
+      </div>
+    `).join('');
+    requestAnimationFrame(() => {
+      suggestionsEl.innerHTML = display;
+    });
+  }
+}
+
+// ============================================
+// Mood Insights Functions
+// ============================================
+
+async function loadMoodInsights() {
+  try {
+    const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+    const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+
+    const [recentMoods, allMoods, activities] = await Promise.all([
+      FirebaseDB.queryDocuments(
+        'moodEntries',
+        [['userId', '==', userId], ['timestamp', '>', sevenDaysAgo]],
+        'timestamp',
+        'desc'
+      ),
+      FirebaseDB.queryDocuments(
+        'moodEntries',
+        [['userId', '==', userId], ['timestamp', '>', thirtyDaysAgo]],
+        'timestamp',
+        'desc'
+      ),
+      FirebaseDB.queryDocuments(
+        'activitiesCompleted',
+        [['userId', '==', userId], ['timestamp', '>', sevenDaysAgo]],
+        'timestamp',
+        'desc'
+      )
+    ]);
+
+    if (recentMoods.length === 0) {
+      if (document.getElementById('avgMood')) document.getElementById('avgMood').textContent = '-';
+      if (document.getElementById('moodTrend')) document.getElementById('moodTrend').textContent = '-';
+      if (document.getElementById('bestMoodDay')) document.getElementById('bestMoodDay').textContent = '-';
+      return;
+    }
+
+    // Calculate average mood
+    const avgMood = recentMoods.reduce((sum, m) => sum + m.mood, 0) / recentMoods.length;
+    if (document.getElementById('avgMood')) {
+      document.getElementById('avgMood').textContent = avgMood.toFixed(1) + '/5';
+    }
+
+    // Calculate trend
+    const firstHalf = recentMoods.slice(Math.floor(recentMoods.length / 2));
+    const secondHalf = recentMoods.slice(0, Math.floor(recentMoods.length / 2));
+    const firstAvg = firstHalf.length > 0 ? firstHalf.reduce((sum, m) => sum + m.mood, 0) / firstHalf.length : 0;
+    const secondAvg = secondHalf.length > 0 ? secondHalf.reduce((sum, m) => sum + m.mood, 0) / secondHalf.length : 0;
+    
+    if (document.getElementById('moodTrend')) {
+      if (secondAvg > firstAvg + 0.3) {
+        document.getElementById('moodTrend').innerHTML = '📈 Improving';
+      } else if (secondAvg < firstAvg - 0.3) {
+        document.getElementById('moodTrend').innerHTML = '📉 Declining';
+      } else {
+        document.getElementById('moodTrend').textContent = '➡️ Stable';
+      }
+    }
+
+    // Find best mood day
+    const bestDay = recentMoods.reduce((best, current) => 
+      current.mood > best.mood ? current : best
+    );
+    const date = new Date(bestDay.timestamp);
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    if (document.getElementById('bestMoodDay')) {
+      document.getElementById('bestMoodDay').textContent = days[date.getDay()];
+    }
+
+    // Generate patterns
+    generateMoodPatterns(recentMoods, activities);
+
+    // Draw mini chart
+    if (typeof Chart !== 'undefined') {
+      drawMoodMiniChart(allMoods);
+    }
+  } catch (error) {
+    console.error('Error loading mood insights:', error);
+  }
+}
+
+function generateMoodPatterns(moods, activities) {
+  const patterns = [];
+
+  // Activity correlation
+  const daysWithActivities = new Set();
+  activities.forEach(a => {
+    const date = new Date(a.timestamp);
+    date.setHours(0, 0, 0, 0);
+    daysWithActivities.add(date.getTime());
+  });
+
+  const moodsWithActivity = moods.filter(m => {
+    const date = new Date(m.timestamp);
+    date.setHours(0, 0, 0, 0);
+    return daysWithActivities.has(date.getTime());
+  });
+
+  if (moodsWithActivity.length > 2) {
+    const avgWithActivity = moodsWithActivity.reduce((sum, m) => sum + m.mood, 0) / moodsWithActivity.length;
+    const avgOverall = moods.reduce((sum, m) => sum + m.mood, 0) / moods.length;
+    
+    if (avgWithActivity > avgOverall + 0.3) {
+      patterns.push('You tend to feel better on days when you complete activities 🎯');
+    }
+  }
+
+  // Day of week pattern
+  const dayAverages = {};
+  moods.forEach(m => {
+    const day = new Date(m.timestamp).getDay();
+    if (!dayAverages[day]) dayAverages[day] = [];
+    dayAverages[day].push(m.mood);
+  });
+
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  let bestDay = -1;
+  let bestAvg = 0;
+  Object.keys(dayAverages).forEach(day => {
+    const avg = dayAverages[day].reduce((sum, m) => sum + m, 0) / dayAverages[day].length;
+    if (avg > bestAvg) {
+      bestAvg = avg;
+      bestDay = parseInt(day);
+    }
+  });
+
+  if (bestDay >= 0) {
+    patterns.push(`${days[bestDay]}s tend to be your best days 📅`);
+  }
+
+  // Display patterns
+  const patternsDisplay = document.getElementById('patternsList');
+  if (patternsDisplay) {
+    if (patterns.length > 0) {
+      patternsDisplay.innerHTML = patterns.map(p => `<p style="margin: 0.5rem 0;">• ${p}</p>`).join('');
+    } else {
+      patternsDisplay.innerHTML = '<p>Keep tracking to discover your patterns!</p>';
+    }
+  }
+}
+
+function drawMoodMiniChart(moods) {
+  const canvas = document.getElementById('moodMiniChart');
+  if (!canvas) return;
+  
+  if (typeof Chart === 'undefined') {
+    canvas.insertAdjacentHTML('beforebegin', '<p style="text-align: center; color: var(--color-text-light);">Loading chart...</p>');
+    return;
+  }
+  
+  // Destroy existing chart to prevent memory leaks and performance issues
+  if (moodMiniChart) {
+    moodMiniChart.destroy();
+    moodMiniChart = null;
+  }
+  
+  const ctx = canvas.getContext('2d');
+
+  // Prepare data for last 30 days
+  const labels = [];
+  const data = [];
+  const today = new Date();
+  let hasData = false;
+
+  for (let i = 29; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+    date.setHours(0, 0, 0, 0);
+    
+    labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    
+    const dayMoods = moods.filter(m => {
+      const moodDate = new Date(m.timestamp);
+      moodDate.setHours(0, 0, 0, 0);
+      return moodDate.getTime() === date.getTime();
+    });
+    
+    if (dayMoods.length > 0) {
+      const avg = dayMoods.reduce((sum, m) => sum + m.mood, 0) / dayMoods.length;
+      data.push(avg);
+      hasData = true;
+    } else {
+      data.push(null);
+    }
+  }
+
+  // Show message if no data
+  if (!hasData) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '14px var(--font-primary)';
+    ctx.fillStyle = 'var(--color-text-light)';
+    ctx.textAlign = 'center';
+    ctx.fillText('No mood data yet. Start logging your mood to see trends!', canvas.width / 2, canvas.height / 2);
+    return;
+  }
+
+  moodMiniChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Mood',
+        data: data,
+        borderColor: 'rgb(108, 92, 231)',
+        backgroundColor: 'rgba(108, 92, 231, 0.1)',
+        tension: 0.4,
+        spanGaps: true,
+        pointRadius: 2,
+        pointHoverRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          enabled: true,
+          mode: 'index',
+          intersect: false
+        }
+      },
+      interaction: {
+        mode: 'nearest',
+        axis: 'x',
+        intersect: false
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 5,
+          ticks: { 
+            stepSize: 1,
+            maxTicksLimit: 6
+          }
+        },
+        x: {
+          display: true,
+          ticks: { 
+            maxTicksLimit: 6,
+            maxRotation: 0,
+            autoSkip: true
+          }
+        }
+      },
+      elements: {
+        line: {
+          borderWidth: 2
+        }
+      }
+    }
+  });
+}
+
+window.quickLogMood = async function(moodValue) {
+  try {
+    const moodData = {
+      userId: userId,
+      mood: moodValue,
+      timestamp: Date.now()
+    };
+
+    await FirebaseDB.addDocument('moodEntries', moodData);
+    MindVerse.showToast('Mood logged! 😊', 'success');
+    
+    // Reload insights
+    await loadMoodInsights();
+    await loadDailyCheckIn();
+  } catch (error) {
+    console.error('Error logging mood:', error);
+    MindVerse.showToast('Failed to log mood', 'error');
+  }
+};
+
+// ============================================
+// Habit Tracker Functions
+// ============================================
+
+async function loadHabits() {
+  try {
+    const habits = await FirebaseDB.queryDocuments(
+      'habits',
+      [['userId', '==', userId], ['isActive', '==', true]],
+      'createdAt',
+      'asc'
+    );
+
+    const habitsList = document.getElementById('todayHabitsList');
+    if (!habitsList) return;
+
+    if (habits.length === 0) {
+      habitsList.innerHTML = '<p style="color: var(--color-text-light); text-align: center;">No habits added yet. Create your first habit above!</p>';
+      return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayTimestamp = today.getTime();
+
+    // Get today's completions
+    const completions = await FirebaseDB.queryDocuments(
+      'habitCompletions',
+      [['userId', '==', userId], ['date', '==', todayTimestamp]],
+      'timestamp',
+      'desc'
+    );
+
+    const completedHabitIds = new Set(completions.map(c => c.habitId));
+
+    // Render habits
+    const habitsHTML = habits.map(habit => {
+      const isCompleted = completedHabitIds.has(habit.id);
+      return `
+        <div class="habit-item ${isCompleted ? 'completed' : ''}">
+          <div class="habit-checkbox" onclick="toggleHabit('${habit.id}', ${!isCompleted})">
+            ${isCompleted ? '✓' : ''}
+          </div>
+          <div class="habit-info">
+            <span class="habit-name">${habit.name}</span>
+            <span class="habit-streak">🔥 ${habit.currentStreak || 0} days</span>
+          </div>
+          <button class="btn-icon-delete" onclick="deleteHabit('${habit.id}')" title="Delete habit">✕</button>
+        </div>
+      `;
+    }).join('');
+
+    // Batch DOM update
+    requestAnimationFrame(() => {
+      habitsList.innerHTML = habitsHTML;
+    });
+
+    // Load habit streaks
+    loadHabitStreaks(habits);
+  } catch (error) {
+    console.error('Error loading habits:', error);
+  }
+}
+
+window.addNewHabit = async function() {
+  const input = document.getElementById('newHabitInput');
+  const habitName = input.value.trim();
+
+  if (!habitName) {
+    MindVerse.showToast('Please enter a habit name', 'error');
+    return;
+  }
+
+  try {
+    const habitData = {
+      userId: userId,
+      name: habitName,
+      isActive: true,
+      currentStreak: 0,
+      longestStreak: 0,
+      createdAt: Date.now()
+    };
+
+    await FirebaseDB.addDocument('habits', habitData);
+    input.value = '';
+    MindVerse.showToast('Habit added! ✅', 'success');
+    await loadHabits();
+    await loadDailyCheckIn();
+  } catch (error) {
+    console.error('Error adding habit:', error);
+    MindVerse.showToast('Failed to add habit', 'error');
+  }
+};
+
+window.toggleHabit = async function(habitId, complete) {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayTimestamp = today.getTime();
+
+    if (complete) {
+      // Mark as complete
+      await FirebaseDB.addDocument('habitCompletions', {
+        userId: userId,
+        habitId: habitId,
+        date: todayTimestamp,
+        timestamp: Date.now()
+      });
+
+      // Update streak
+      await updateHabitStreak(habitId);
+      MindVerse.showToast('Great job! 🎉', 'success');
+    } else {
+      // Remove completion
+      const completions = await FirebaseDB.queryDocuments(
+        'habitCompletions',
+        [['userId', '==', userId], ['habitId', '==', habitId], ['date', '==', todayTimestamp]],
+        'timestamp',
+        'desc'
+      );
+
+      if (completions.length > 0) {
+        await FirebaseDB.deleteDocument('habitCompletions', completions[0].id);
+        await updateHabitStreak(habitId);
+      }
+    }
+
+    await loadHabits();
+    await loadDailyCheckIn();
+  } catch (error) {
+    console.error('Error toggling habit:', error);
+    MindVerse.showToast('Failed to update habit', 'error');
+  }
+};
+
+async function updateHabitStreak(habitId) {
+  try {
+    // Get all completions for this habit
+    const completions = await FirebaseDB.queryDocuments(
+      'habitCompletions',
+      [['userId', '==', userId], ['habitId', '==', habitId]],
+      'date',
+      'desc'
+    );
+
+    if (completions.length === 0) {
+      await FirebaseDB.updateDocument('habits', habitId, { currentStreak: 0 });
+      return;
+    }
+
+    // Calculate current streak
+    const uniqueDates = [...new Set(completions.map(c => c.date))].sort((a, b) => b - a);
+    let streak = 0;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    let expectedDate = today.getTime();
+
+    for (const date of uniqueDates) {
+      if (date === expectedDate || date === expectedDate - (24 * 60 * 60 * 1000)) {
+        streak++;
+        expectedDate = date - (24 * 60 * 60 * 1000);
+      } else {
+        break;
+      }
+    }
+
+    // Get current habit data
+    const habit = await FirebaseDB.getDocument('habits', habitId);
+    const longestStreak = Math.max(habit.longestStreak || 0, streak);
+
+    await FirebaseDB.updateDocument('habits', habitId, {
+      currentStreak: streak,
+      longestStreak: longestStreak
+    });
+  } catch (error) {
+    console.error('Error updating streak:', error);
+  }
+}
+
+window.deleteHabit = async function(habitId) {
+  if (!confirm('Are you sure you want to delete this habit?')) return;
+
+  try {
+    await FirebaseDB.updateDocument('habits', habitId, { isActive: false });
+    MindVerse.showToast('Habit deleted', 'success');
+    await loadHabits();
+    await loadDailyCheckIn();
+  } catch (error) {
+    console.error('Error deleting habit:', error);
+    MindVerse.showToast('Failed to delete habit', 'error');
+  }
+};
+
+async function loadHabitStreaks(habits) {
+  const streaksDisplay = document.getElementById('habitStreaksDisplay');
+  if (!streaksDisplay) return;
+
+  const display = habits.filter(h => h.currentStreak > 0).map(h => `
+    <div class="streak-card">
+      <div class="streak-emoji">🔥</div>
+      <div class="streak-info">
+        <span class="streak-name">${h.name}</span>
+        <span class="streak-count">${h.currentStreak} day streak</span>
+      </div>
+    </div>
+  `).join('');
+
+  streaksDisplay.innerHTML = display || '<p style="color: var(--color-text-light); text-align: center;">Complete habits to start building streaks!</p>';
+  
+  // Load weekly habit grid
+  await loadWeeklyHabitGrid(habits);
+}
+
+async function loadWeeklyHabitGrid(habits) {
+  const gridContainer = document.getElementById('weeklyHabitGrid');
+  if (!gridContainer) return;
+
+  if (habits.length === 0) {
+    gridContainer.innerHTML = '<p style="color: var(--color-text-light); text-align: center;">Add habits to see your weekly progress!</p>';
+    return;
+  }
+
+  // Get the current week (Sunday to Saturday)
+  const today = new Date();
+  const currentDay = today.getDay(); // 0 = Sunday
+  const weekStart = new Date(today);
+  weekStart.setDate(today.getDate() - currentDay);
+  weekStart.setHours(0, 0, 0, 0);
+
+  // Create array of 7 days
+  const days = [];
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(weekStart);
+    date.setDate(weekStart.getDate() + i);
+    days.push({
+      date: date,
+      dayName: dayNames[i],
+      dayNumber: date.getDate(),
+      timestamp: date.getTime(),
+      isToday: date.toDateString() === today.toDateString()
+    });
+  }
+
+  // Get all completions for this week
+  const weekStartTimestamp = weekStart.getTime();
+  const weekEndTimestamp = weekStartTimestamp + (7 * 24 * 60 * 60 * 1000);
+
+  const completions = await FirebaseDB.queryDocuments(
+    'habitCompletions',
+    [
+      ['userId', '==', userId],
+      ['date', '>=', weekStartTimestamp],
+      ['date', '<', weekEndTimestamp]
+    ],
+    'date',
+    'asc'
+  );
+
+  // Create a map of completions by habitId and date
+  const completionMap = {};
+  completions.forEach(c => {
+    const key = `${c.habitId}_${c.date}`;
+    completionMap[key] = true;
+  });
+
+  // Build the grid HTML
+  let html = '<div class="weekly-grid-header">';
+  days.forEach(day => {
+    html += `
+      <div class="week-day-header ${day.isToday ? 'today' : ''}">
+        <div class="day-name">${day.dayName}</div>
+        <div class="day-number">${day.dayNumber}</div>
+      </div>
+    `;
+  });
+  html += '</div>';
+
+  // Add rows for each habit
+  habits.forEach(habit => {
+    html += `
+      <div class="habit-week-row">
+        <div class="habit-week-name">${habit.name}</div>
+        <div class="habit-week-cells">
+    `;
+    
+    days.forEach(day => {
+      const key = `${habit.id}_${day.timestamp}`;
+      const isCompleted = completionMap[key] || false;
+      const isPast = day.date < today && !day.isToday;
+      const isFuture = day.date > today;
+      
+      html += `
+        <div class="habit-week-cell ${isCompleted ? 'completed' : ''} ${day.isToday ? 'today' : ''} ${isPast && !isCompleted ? 'missed' : ''} ${isFuture ? 'future' : ''}">
+          ${isCompleted ? '✓' : ''}
+        </div>
+      `;
+    });
+    
+    html += `
+        </div>
+      </div>
+    `;
+  });
+
+  gridContainer.innerHTML = html;
+}
+
+// ============================================
+// Smart Reminders & Notifications
+// ============================================
+
+async function initializeReminders() {
+  // Check notification permission
+  if ('Notification' in window) {
+    const permission = Notification.permission;
+    
+    const statusEl = document.getElementById('notificationStatus');
+    const permEl = document.getElementById('notificationPermission');
+    
+    if (!statusEl || !permEl) return;
+
+    if (permission === 'granted') {
+      statusEl.innerHTML = '<span id="statusIcon">✅</span><span id="statusText">Notifications enabled</span>';
+      permEl.style.display = 'none';
+    } else if (permission === 'denied') {
+      statusEl.innerHTML = '<span id="statusIcon">🔕</span><span id="statusText">Notifications blocked. Enable in browser settings.</span>';
+      permEl.style.display = 'none';
+    } else {
+      statusEl.innerHTML = '<span id="statusIcon">🔔</span><span id="statusText">Notifications not enabled</span>';
+      permEl.style.display = 'block';
+    }
+  } else {
+    const statusEl = document.getElementById('notificationStatus');
+    if (statusEl) {
+      statusEl.innerHTML = '<span id="statusIcon">❌</span><span id="statusText">Notifications not supported in this browser</span>';
+    }
+  }
+
+  // Load reminder preferences
+  await loadReminderPreferences();
+}
+
+async function loadReminderPreferences() {
+  try {
+    const prefs = await FirebaseDB.getDocument('reminderPreferences', userId);
+    
+    if (prefs) {
+      const moodToggle = document.getElementById('moodReminderToggle');
+      const journalToggle = document.getElementById('journalReminderToggle');
+      const breathingToggle = document.getElementById('breathingReminderToggle');
+      const habitToggle = document.getElementById('habitReminderToggle');
+      const timeInput = document.getElementById('reminderTime');
+
+      if (moodToggle) moodToggle.checked = prefs.moodReminder || false;
+      if (journalToggle) journalToggle.checked = prefs.journalReminder || false;
+      if (breathingToggle) breathingToggle.checked = prefs.breathingReminder || false;
+      if (habitToggle) habitToggle.checked = prefs.habitReminder || false;
+      if (timeInput) timeInput.value = prefs.reminderTime || '20:00';
+    }
+  } catch (error) {
+    console.error('Error loading reminder preferences:', error);
+  }
+}
+
+window.requestNotificationPermission = async function() {
+  if ('Notification' in window) {
+    const permission = await Notification.requestPermission();
+    
+    if (permission === 'granted') {
+      MindVerse.showToast('Notifications enabled! 🔔', 'success');
+      await initializeReminders();
+    } else {
+      MindVerse.showToast('Notification permission denied', 'error');
+    }
+  }
+};
+
+window.toggleReminder = async function(type, enabled) {
+  try {
+    const prefs = await FirebaseDB.getDocument('reminderPreferences', userId) || {};
+    prefs[`${type}Reminder`] = enabled;
+    prefs.userId = userId;
+
+    await FirebaseDB.setDocument('reminderPreferences', userId, prefs, true);
+    
+    if (enabled) {
+      MindVerse.showToast(`${type} reminders enabled`, 'success');
+    }
+  } catch (error) {
+    console.error('Error toggling reminder:', error);
+  }
+};
+
+window.saveReminderTime = async function() {
+  const timeInput = document.getElementById('reminderTime');
+  if (!timeInput) return;
+
+  const time = timeInput.value;
+  
+  try {
+    const prefs = await FirebaseDB.getDocument('reminderPreferences', userId) || {};
+    prefs.reminderTime = time;
+    prefs.userId = userId;
+
+    await FirebaseDB.setDocument('reminderPreferences', userId, prefs, true);
+    MindVerse.showToast('Reminder time saved', 'success');
+  } catch (error) {
+    console.error('Error saving reminder time:', error);
+  }
+};
+
+window.sendTestNotification = function() {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    new Notification('MindVerse', {
+      body: 'This is a test notification! 🔔',
+      icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="0.9em" font-size="90">🧠</text></svg>'
+    });
+    MindVerse.showToast('Test notification sent!', 'success');
+  } else {
+    MindVerse.showToast('Please enable notifications first', 'error');
+  }
+};

@@ -51,6 +51,23 @@
         </p>
       </div>
 
+      <!-- Search Bar -->
+      <div class="card" style="margin-bottom: var(--spacing-lg);">
+        <div class="search-container">
+          <input 
+            type="text" 
+            id="skillSearchInput" 
+            class="search-input" 
+            placeholder="🔍 Search for skills (e.g., guitar, cooking, yoga, coding...)" 
+            autocomplete="off"
+          />
+          <div id="searchResults" class="search-results hidden"></div>
+        </div>
+        <p style="color: var(--color-text-light); font-size: 0.9rem; margin-top: var(--spacing-sm); margin-bottom: 0;">
+          Can't find what you're looking for? We'll show you YouTube resources!
+        </p>
+      </div>
+
       <!-- Skill Categories -->
       <div class="skills-categories">
         
@@ -281,6 +298,72 @@
               <div class="skill-icon">📔</div>
               <h4 class="skill-name">Journaling</h4>
               <p class="skill-desc">Reflective writing</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wellness & Lifestyle -->
+        <div class="card skill-category">
+          <div class="skill-category-header">
+            <span class="skill-category-icon">🌿</span>
+            <h2 class="card-title">Wellness & Lifestyle</h2>
+          </div>
+          <p class="skill-category-description">
+            Enhance your wellbeing and daily life
+          </p>
+          <div class="skills-grid">
+            <div class="skill-card" onclick="openSkillModal('meditation')">
+              <div class="skill-icon">🧘‍♂️</div>
+              <h4 class="skill-name">Meditation</h4>
+              <p class="skill-desc">Find inner peace</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('gardening')">
+              <div class="skill-icon">🌱</div>
+              <h4 class="skill-name">Gardening</h4>
+              <p class="skill-desc">Grow plants & food</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('chess')">
+              <div class="skill-icon">♟️</div>
+              <h4 class="skill-name">Chess</h4>
+              <p class="skill-desc">Strategic thinking</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('origami')">
+              <div class="skill-icon">🦢</div>
+              <h4 class="skill-name">Origami</h4>
+              <p class="skill-desc">Paper folding art</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Creative & Entertainment -->
+        <div class="card skill-category">
+          <div class="skill-category-header">
+            <span class="skill-category-icon">🎪</span>
+            <h2 class="card-title">Creative & Entertainment</h2>
+          </div>
+          <p class="skill-category-description">
+            Entertain, create content, and build things
+          </p>
+          <div class="skills-grid">
+            <div class="skill-card" onclick="openSkillModal('podcasting')">
+              <div class="skill-icon">🎙️</div>
+              <h4 class="skill-name">Podcasting</h4>
+              <p class="skill-desc">Share your voice</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('magic')">
+              <div class="skill-icon">🎩</div>
+              <h4 class="skill-name">Magic Tricks</h4>
+              <p class="skill-desc">Amaze and entertain</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('woodworking')">
+              <div class="skill-icon">🪵</div>
+              <h4 class="skill-name">Woodworking</h4>
+              <p class="skill-desc">Build with wood</p>
+            </div>
+            <div class="skill-card" onclick="openSkillModal('astronomy')">
+              <div class="skill-icon">🔭</div>
+              <h4 class="skill-name">Astronomy</h4>
+              <p class="skill-desc">Explore the cosmos</p>
             </div>
           </div>
         </div>

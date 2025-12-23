@@ -66,6 +66,263 @@
         </p>
       </div>
 
+      <!-- Daily Check-In Section -->
+      <div class="card">
+        <h2 class="card-title">📅 Today's Check-In</h2>
+        <p style="color: var(--color-text-light); margin-bottom: var(--spacing-lg);">
+          Your daily progress and personalized insights
+        </p>
+
+        <!-- Today's Summary -->
+        <div class="daily-summary">
+          <div class="summary-stat">
+            <span class="summary-icon">😊</span>
+            <div class="summary-info">
+              <span class="summary-label">Mood Today</span>
+              <span class="summary-value" id="todayMood">Not logged</span>
+            </div>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-icon">✅</span>
+            <div class="summary-info">
+              <span class="summary-label">Habits Completed</span>
+              <span class="summary-value" id="todayHabits">0/0</span>
+            </div>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-icon">🎯</span>
+            <div class="summary-info">
+              <span class="summary-label">Activities Done</span>
+              <span class="summary-value" id="todayActivities">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Suggestions for Tomorrow -->
+        <div class="suggestions-section">
+          <h3 class="suggestions-title">💡 Suggestions for Tomorrow</h3>
+          <div id="suggestionsList" class="suggestions-list">
+            <div class="suggestion-item">
+              <span class="suggestion-icon">🌅</span>
+              <span class="suggestion-text">Start your day with 5 minutes of breathing exercises</span>
+            </div>
+            <div class="suggestion-item">
+              <span class="suggestion-icon">📝</span>
+              <span class="suggestion-text">Try journaling to process your thoughts</span>
+            </div>
+            <div class="suggestion-item">
+              <span class="suggestion-icon">🚶</span>
+              <span class="suggestion-text">Take a 10-minute walk for mental clarity</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily Insights -->
+        <div class="insights-section">
+          <h3 class="insights-title">📊 Daily Insights</h3>
+          <div id="insightsList" class="insights-list">
+            <p style="color: var(--color-text-light); text-align: center;">Complete today's check-in to get personalized insights</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mood Tracker with Insights -->
+      <div class="card">
+        <h2 class="card-title">😊 Mood Tracker</h2>
+        <p style="color: var(--color-text-light); margin-bottom: var(--spacing-lg);">
+          Track your mood and discover patterns over time
+        </p>
+
+        <!-- Mood Insights -->
+        <div class="mood-insights-section">
+          <h3 style="font-size: var(--font-size-lg); margin-bottom: var(--spacing-md); color: var(--color-primary);">📈 Mood Insights (Last 7 Days)</h3>
+          <div class="mood-insights-cards">
+            <div class="insight-card">
+              <div class="insight-icon">📊</div>
+              <div class="insight-content">
+                <span class="insight-label">Average Mood</span>
+                <span class="insight-value" id="avgMood">-</span>
+              </div>
+            </div>
+            <div class="insight-card">
+              <div class="insight-icon">📈</div>
+              <div class="insight-content">
+                <span class="insight-label">Mood Trend</span>
+                <span class="insight-value" id="moodTrend">-</span>
+              </div>
+            </div>
+            <div class="insight-card">
+              <div class="insight-icon">⭐</div>
+              <div class="insight-content">
+                <span class="insight-label">Best Day</span>
+                <span class="insight-value" id="bestMoodDay">-</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Patterns & Correlations -->
+          <div class="mood-patterns" id="moodPatterns">
+            <h4 style="font-size: 0.95rem; color: var(--color-primary); margin-bottom: var(--spacing-sm);">🔍 Patterns We've Noticed:</h4>
+            <div id="patternsList" style="color: var(--color-text-light); font-size: 0.9rem;">
+              <p>Track your mood for a few days to discover patterns</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mood History Mini Chart -->
+        <div class="mood-mini-chart">
+          <h3 style="font-size: var(--font-size-base); margin-bottom: var(--spacing-sm);">Last 30 Days</h3>
+          <canvas id="moodMiniChart" height="150"></canvas>
+        </div>
+      </div>
+
+      <!-- Habit Tracker -->
+      <div class="card">
+        <h2 class="card-title">✅ Habit Tracker</h2>
+        <p style="color: var(--color-text-light); margin-bottom: var(--spacing-lg);">
+          Build positive habits and track your consistency
+        </p>
+
+        <!-- Add New Habit -->
+        <div class="add-habit-section">
+          <div class="form-group" style="display: flex; gap: var(--spacing-sm);">
+            <input 
+              type="text" 
+              id="newHabitInput" 
+              class="form-input" 
+              placeholder="e.g., Exercise for 30 min, Drink 8 glasses of water..." 
+              style="flex: 1;"
+            >
+            <button class="btn btn-primary" onclick="addNewHabit()">
+              ➕ Add Habit
+            </button>
+          </div>
+        </div>
+
+        <!-- Today's Habits -->
+        <div class="habits-section">
+          <h3 style="font-size: var(--font-size-base); margin-bottom: var(--spacing-md);">Today's Habits</h3>
+          <div id="todayHabitsList" class="habits-list">
+            <p style="color: var(--color-text-light); text-align: center;">No habits added yet. Create your first habit above!</p>
+          </div>
+        </div>
+
+        <!-- Habit Streaks -->
+        <div class="habit-streaks-section">
+          <h3 style="font-size: var(--font-size-base); margin-bottom: var(--spacing-md);">🔥 Habit Streaks</h3>
+          <div id="habitStreaksDisplay" class="streaks-grid">
+            <p style="color: var(--color-text-light); text-align: center;">Complete habits to start building streaks!</p>
+          </div>
+        </div>
+
+        <!-- Weekly Habit Progress -->
+        <div class="habit-weekly-view">
+          <h3 style="font-size: var(--font-size-base); margin-bottom: var(--spacing-md);">📅 This Week</h3>
+          <div id="weeklyHabitGrid" class="weekly-habit-grid">
+            <!-- Dynamic content -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Smart Reminders -->
+      <div class="card">
+        <h2 class="card-title">⏰ Smart Reminders</h2>
+        <p style="color: var(--color-text-light); margin-bottom: var(--spacing-lg);">
+          Get gentle nudges to maintain your wellness routine
+        </p>
+
+        <!-- Notification Permission -->
+        <div id="notificationPermission" class="alert alert-info" style="display: none;">
+          <p style="margin: 0 0 var(--spacing-sm) 0;">
+            <strong>Enable notifications</strong> to receive reminders
+          </p>
+          <button class="btn btn-primary btn-sm" onclick="requestNotificationPermission()">
+            🔔 Enable Notifications
+          </button>
+        </div>
+
+        <!-- Notification Status -->
+        <div id="notificationStatus" class="notification-status">
+          <span id="statusIcon">🔔</span>
+          <span id="statusText">Checking notification status...</span>
+        </div>
+
+        <!-- Reminder Settings -->
+        <div class="reminder-settings">
+          <h3 style="font-size: var(--font-size-base); margin-bottom: var(--spacing-md);">Reminder Preferences</h3>
+          
+          <div class="reminder-item">
+            <div class="reminder-info">
+              <span class="reminder-icon">😊</span>
+              <div>
+                <strong>Daily Mood Check-in</strong>
+                <p style="color: var(--color-text-light); font-size: 0.9rem; margin: 0;">Remind me to log my mood</p>
+              </div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="moodReminderToggle" onchange="toggleReminder('mood', this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="reminder-item">
+            <div class="reminder-info">
+              <span class="reminder-icon">📝</span>
+              <div>
+                <strong>Journal Reminder</strong>
+                <p style="color: var(--color-text-light); font-size: 0.9rem; margin: 0;">Remind me to journal</p>
+              </div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="journalReminderToggle" onchange="toggleReminder('journal', this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="reminder-item">
+            <div class="reminder-info">
+              <span class="reminder-icon">🫁</span>
+              <div>
+                <strong>Breathing Exercise</strong>
+                <p style="color: var(--color-text-light); font-size: 0.9rem; margin: 0;">Remind me to breathe & relax</p>
+              </div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="breathingReminderToggle" onchange="toggleReminder('breathing', this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="reminder-item">
+            <div class="reminder-info">
+              <span class="reminder-icon">✅</span>
+              <div>
+                <strong>Habit Reminders</strong>
+                <p style="color: var(--color-text-light); font-size: 0.9rem; margin: 0;">Remind me about my habits</p>
+              </div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="habitReminderToggle" onchange="toggleReminder('habit', this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <!-- Reminder Time -->
+          <div class="form-group" style="margin-top: var(--spacing-lg);">
+            <label class="form-label" for="reminderTime">Preferred Reminder Time</label>
+            <input type="time" id="reminderTime" class="form-input" value="20:00" onchange="saveReminderTime()">
+            <small style="color: var(--color-text-light); display: block; margin-top: var(--spacing-xs);">
+              We'll send gentle reminders around this time
+            </small>
+          </div>
+        </div>
+
+        <!-- Test Notification Button -->
+        <button class="btn btn-outline btn-block" onclick="sendTestNotification()">
+          🔔 Send Test Notification
+        </button>
+      </div>
+
       <!-- User Preferences -->
       <div class="card">
         <h2 class="card-title">Preferences</h2>
