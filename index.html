@@ -23,6 +23,10 @@
         <span class="nav-icon">🎯</span>
         <span>Skills</span>
       </a>
+      <a href="activity-tracker.html" class="nav-item">
+        <span class="nav-icon">📊</span>
+        <span>Study Tracker</span>
+      </a>
       <a href="profile.html" class="nav-item">
         <span class="nav-icon">👤</span>
         <span>Profile</span>
@@ -106,6 +110,43 @@
           <p class="text-center" style="color: var(--color-text-light);">
             No mood saved yet. Select your mood above to get started!
           </p>
+        </div>
+      </div>
+
+      <!-- NEW FEATURE: Study Tracker Discovery Card -->
+      <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);">
+        <div style="display: flex; align-items: center; gap: var(--spacing-lg); flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 250px;">
+            <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-sm);">
+              <span style="font-size: 2rem;">📊</span>
+              <h2 class="card-title" style="margin: 0; color: white;">New: Study Tracker</h2>
+            </div>
+            <p style="margin-bottom: var(--spacing-md); opacity: 0.95; font-size: 1rem;">
+              Track your study sessions, set weekly goals, analyze your progress with detailed charts, and maintain your study streak! Perfect for students and lifelong learners.
+            </p>
+            <div style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap;">
+              <a href="activity-tracker.html" class="btn" style="background: white; color: #667eea; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                🚀 Open Study Tracker
+              </a>
+              <button class="btn" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3);" onclick="this.parentElement.parentElement.parentElement.parentElement.style.display='none';">
+                Dismiss
+              </button>
+            </div>
+          </div>
+          <div style="flex: 0 0 auto; display: flex; flex-direction: column; gap: var(--spacing-xs); font-size: 0.9rem;">
+            <div style="background: rgba(255,255,255,0.15); padding: var(--spacing-sm) var(--spacing-md); border-radius: 8px;">
+              ⏱️ Focus Timer
+            </div>
+            <div style="background: rgba(255,255,255,0.15); padding: var(--spacing-sm) var(--spacing-md); border-radius: 8px;">
+              🎯 Weekly Goals
+            </div>
+            <div style="background: rgba(255,255,255,0.15); padding: var(--spacing-sm) var(--spacing-md); border-radius: 8px;">
+              📈 Progress Analytics
+            </div>
+            <div style="background: rgba(255,255,255,0.15); padding: var(--spacing-sm) var(--spacing-md); border-radius: 8px;">
+              🔥 Streak Tracking
+            </div>
+          </div>
         </div>
       </div>
 

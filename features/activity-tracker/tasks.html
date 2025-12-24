@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Study & Productivity Tracker - Task Manager">
+    <title>Tasks - Study Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                📚 Study Tracker
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="tasks.html">Tasks</a></li>
+                <li><a href="timer.html">Focus Timer</a></li>
+                <li><a href="analytics.html">Analytics</a></li>
+                <li><a href="goals.html">Goals</a></li>
+                <li><a href="reflection.html">Reflection</a></li>
+                <li><a href="export.html">Export</a></li>
+                <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme">🌙</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Page Header -->
+        <section class="card-header" style="margin-bottom: var(--spacing-lg);">
+            <div>
+                <h1>Task Manager</h1>
+                <p class="text-muted">Plan and organize your study tasks</p>
+            </div>
+            <button class="btn btn-primary" id="addTaskBtn">➕ Add Task</button>
+        </section>
+
+        <!-- Task Filters & View Options -->
+        <section class="card">
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">View</label>
+                        <select class="form-select" id="viewFilter">
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="all">All Tasks</option>
+                            <option value="backlog">Backlog</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="statusFilter">
+                            <option value="all">All Status</option>
+                            <option value="Not Started">Not Started</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Priority</label>
+                        <select class="form-select" id="priorityFilter">
+                            <option value="all">All Priorities</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Subject</label>
+                        <select class="form-select" id="subjectFilter">
+                            <option value="all">All Subjects</option>
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Task Summary -->
+        <section class="grid grid-4" id="taskSummary">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="stat-value" style="color: var(--status-not-started);" id="notStartedCount">0</h3>
+                    <p class="stat-label">Not Started</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="stat-value" style="color: var(--status-in-progress);" id="inProgressCount">0</h3>
+                    <p class="stat-label">In Progress</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="stat-value" style="color: var(--status-completed);" id="completedCount">0</h3>
+                    <p class="stat-label">Completed</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="stat-value" style="color: var(--accent-primary);" id="totalCount">0</h3>
+                    <p class="stat-label">Total Tasks</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Task List -->
+        <section class="card">
+            <div class="card-header">
+                <h2 class="card-title" id="taskListTitle">Tasks</h2>
+                <div class="btn-group gap-1">
+                    <button class="btn btn-sm btn-secondary" id="sortByDate">📅 Date</button>
+                    <button class="btn btn-sm btn-secondary" id="sortByPriority">⚡ Priority</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <ul class="task-list" id="taskList">
+                    <!-- Tasks populated by JavaScript -->
+                </ul>
+                <div class="empty-state hidden" id="emptyState">
+                    <div class="empty-state-icon">📝</div>
+                    <p>No tasks found. Start by adding your first task!</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add/Edit Task Modal -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Task</h2>
+                <button class="modal-close" id="closeModal" aria-label="Close Modal">✕</button>
+            </div>
+            <form id="taskForm">
+                <div class="form-group">
+                    <label class="form-label">Subject *</label>
+                    <input type="text" class="form-input" id="taskSubject" placeholder="e.g., Mathematics, Physics, Programming" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="taskDescription" placeholder="What do you need to study or complete?" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Estimated Time (minutes) *</label>
+                        <input type="number" class="form-input" id="taskEstimatedTime" min="5" value="30" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Priority *</label>
+                        <select class="form-select" id="taskPriority" required>
+                            <option value="High">High</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Date *</label>
+                        <input type="date" class="form-input" id="taskDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="taskStatus">
+                            <option value="Not Started">Not Started</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="btn-group mt-3">
+                    <button type="submit" class="btn btn-primary" id="saveTaskBtn">Save Task</button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="shared-utils.js"></script>
+    <script>
+        // ==================== STATE MANAGEMENT ====================
+        
+        let currentEditingTaskId = null;
+        let currentSortBy = 'date'; // 'date' or 'priority'
+
+        // ==================== TASK RENDERING ====================
+        
+        /**
+         * Load and display tasks based on filters
+         */
+        function loadTasks() {
+            const viewFilter = document.getElementById('viewFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const priorityFilter = document.getElementById('priorityFilter').value;
+            const subjectFilter = document.getElementById('subjectFilter').value;
+            
+            let tasks = [];
+            const today = getTodayDate();
+            
+            // Apply view filter
+            switch (viewFilter) {
+                case 'today':
+                    tasks = getTasksByDate(today);
+                    break;
+                case 'week':
+                    tasks = getWeekTasks();
+                    break;
+                case 'backlog':
+                    tasks = getBacklogTasks();
+                    break;
+                default:
+                    tasks = getAllTasks();
+            }
+            
+            // Apply status filter
+            if (statusFilter !== 'all') {
+                tasks = tasks.filter(task => task.status === statusFilter);
+            }
+            
+            // Apply priority filter
+            if (priorityFilter !== 'all') {
+                tasks = tasks.filter(task => task.priority === priorityFilter);
+            }
+            
+            // Apply subject filter
+            if (subjectFilter !== 'all') {
+                tasks = tasks.filter(task => task.subject === subjectFilter);
+            }
+            
+            // Sort tasks
+            sortTasks(tasks);
+            
+            // Update summary
+            updateTaskSummary();
+            
+            // Render tasks
+            renderTasks(tasks);
+        }
+
+        /**
+         * Sort tasks array
+         */
+        function sortTasks(tasks) {
+            const priorityOrder = { 'High': 1, 'Medium': 2, 'Low': 3 };
+            
+            if (currentSortBy === 'priority') {
+                tasks.sort((a, b) => {
+                    const priorityDiff = priorityOrder[a.priority] - priorityOrder[b.priority];
+                    if (priorityDiff !== 0) return priorityDiff;
+                    return a.date.localeCompare(b.date);
+                });
+            } else {
+                tasks.sort((a, b) => {
+                    const dateDiff = b.date.localeCompare(a.date);
+                    if (dateDiff !== 0) return dateDiff;
+                    return priorityOrder[a.priority] - priorityOrder[b.priority];
+                });
+            }
+        }
+
+        /**
+         * Render tasks to the DOM
+         */
+        function renderTasks(tasks) {
+            const taskList = document.getElementById('taskList');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (tasks.length === 0) {
+                taskList.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            taskList.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            
+            // Group tasks by date
+            const groupedTasks = {};
+            tasks.forEach(task => {
+                if (!groupedTasks[task.date]) {
+                    groupedTasks[task.date] = [];
+                }
+                groupedTasks[task.date].push(task);
+            });
+            
+            // Render grouped tasks
+            taskList.innerHTML = Object.keys(groupedTasks).sort().reverse().map(date => {
+                const dateTasks = groupedTasks[date];
+                const dateObj = parseDate(date);
+                const dayName = getDayName(date);
+                const isToday = date === getTodayDate();
+                
+                return `
+                    <div style="margin-bottom: var(--spacing-lg);">
+                        <h4 style="color: var(--text-muted); margin-bottom: var(--spacing-md);">
+                            ${dayName}, ${dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            ${isToday ? '📍 Today' : ''}
+                        </h4>
+                        ${dateTasks.map(task => renderTaskItem(task)).join('')}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /**
+         * Render individual task item
+         */
+        function renderTaskItem(task) {
+            const isCompleted = task.status === TASK_STATUS.COMPLETED;
+            const progressPercent = task.estimatedTime > 0 
+                ? Math.min((task.actualTime / task.estimatedTime) * 100, 100)
+                : 0;
+            
+            return `
+                <li class="task-item ${isCompleted ? 'completed' : ''}" data-task-id="${task.id}">
+                    <div class="task-content">
+                        <div class="task-title">${task.subject}</div>
+                        ${task.description ? `<p style="color: var(--text-muted); font-size: 0.9rem; margin: 0.25rem 0;">${task.description}</p>` : ''}
+                        <div class="task-meta">
+                            <span class="badge badge-${task.priority.toLowerCase()}">${task.priority}</span>
+                            <span class="badge badge-${task.status.toLowerCase().replace(' ', '-')}">${task.status}</span>
+                            <span>⏱️ ${formatTime(task.actualTime)} / ${formatTime(task.estimatedTime)}</span>
+                        </div>
+                        ${!isCompleted && task.estimatedTime > 0 ? `
+                            <div class="progress-container" style="margin-top: 0.5rem;">
+                                <div class="progress-bar" style="height: 6px;">
+                                    <div class="progress-fill" style="width: ${progressPercent}%"></div>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="task-actions">
+                        <a href="timer.html?taskId=${task.id}" class="btn btn-sm btn-success">⏱️</a>
+                        <button class="btn btn-sm btn-primary edit-task-btn" data-task-id="${task.id}">✏️</button>
+                        <button class="btn btn-sm btn-danger delete-task-btn" data-task-id="${task.id}">🗑️</button>
+                    </div>
+                </li>
+            `;
+        }
+
+        /**
+         * Update task summary counts
+         */
+        function updateTaskSummary() {
+            const allTasks = getAllTasks();
+            
+            const notStarted = allTasks.filter(t => t.status === TASK_STATUS.NOT_STARTED).length;
+            const inProgress = allTasks.filter(t => t.status === TASK_STATUS.IN_PROGRESS).length;
+            const completed = allTasks.filter(t => t.status === TASK_STATUS.COMPLETED).length;
+            
+            document.getElementById('notStartedCount').textContent = notStarted;
+            document.getElementById('inProgressCount').textContent = inProgress;
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('totalCount').textContent = allTasks.length;
+        }
+
+        /**
+         * Update subject filter dropdown with unique subjects
+         */
+        function updateSubjectFilter() {
+            const tasks = getAllTasks();
+            const subjects = [...new Set(tasks.map(t => t.subject))].sort();
+            
+            const subjectFilter = document.getElementById('subjectFilter');
+            const currentValue = subjectFilter.value;
+            
+            subjectFilter.innerHTML = '<option value="all">All Subjects</option>' +
+                subjects.map(subject => `<option value="${subject}">${subject}</option>`).join('');
+            
+            if (subjects.includes(currentValue)) {
+                subjectFilter.value = currentValue;
+            }
+        }
+
+        // ==================== MODAL MANAGEMENT ====================
+        
+        /**
+         * Open modal for adding new task
+         */
+        function openAddModal() {
+            currentEditingTaskId = null;
+            document.getElementById('modalTitle').textContent = 'Add New Task';
+            document.getElementById('taskForm').reset();
+            document.getElementById('taskDate').value = getTodayDate();
+            document.getElementById('taskModal').classList.add('active');
+        }
+
+        /**
+         * Open modal for editing task
+         */
+        function openEditModal(taskId) {
+            const task = getTaskById(taskId);
+            if (!task) return;
+            
+            currentEditingTaskId = taskId;
+            document.getElementById('modalTitle').textContent = 'Edit Task';
+            
+            document.getElementById('taskSubject').value = task.subject;
+            document.getElementById('taskDescription').value = task.description;
+            document.getElementById('taskEstimatedTime').value = task.estimatedTime;
+            document.getElementById('taskPriority').value = task.priority;
+            document.getElementById('taskDate').value = task.date;
+            document.getElementById('taskStatus').value = task.status;
+            
+            document.getElementById('taskModal').classList.add('active');
+        }
+
+        /**
+         * Close modal
+         */
+        function closeModal() {
+            document.getElementById('taskModal').classList.remove('active');
+            currentEditingTaskId = null;
+        }
+
+        /**
+         * Handle form submission
+         */
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const taskData = {
+                subject: document.getElementById('taskSubject').value.trim(),
+                description: document.getElementById('taskDescription').value.trim(),
+                estimatedTime: parseInt(document.getElementById('taskEstimatedTime').value),
+                priority: document.getElementById('taskPriority').value,
+                date: document.getElementById('taskDate').value,
+                status: document.getElementById('taskStatus').value
+            };
+            
+            if (currentEditingTaskId) {
+                // Update existing task
+                const existingTask = getTaskById(currentEditingTaskId);
+                updateTask(currentEditingTaskId, {
+                    ...taskData,
+                    actualTime: existingTask.actualTime // Preserve actual time
+                });
+                showToast('Task updated successfully!', 'success');
+            } else {
+                // Add new task
+                addTask(taskData);
+                showToast('Task added successfully!', 'success');
+            }
+            
+            closeModal();
+            updateSubjectFilter();
+            loadTasks();
+        }
+
+        /**
+         * Handle task deletion
+         */
+        function handleDeleteTask(taskId) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                deleteTask(taskId);
+                deleteTimerState(taskId);
+                showToast('Task deleted successfully!', 'info');
+                updateSubjectFilter();
+                loadTasks();
+            }
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        
+        // Theme toggle
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const newTheme = toggleTheme();
+            document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
+
+        // Mobile menu toggle
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // Add task button
+        document.getElementById('addTaskBtn').addEventListener('click', openAddModal);
+
+        // Close modal
+        document.getElementById('closeModal').addEventListener('click', closeModal);
+        document.getElementById('cancelBtn').addEventListener('click', closeModal);
+
+        // Close modal on background click
+        document.getElementById('taskModal').addEventListener('click', (e) => {
+            if (e.target.id === 'taskModal') closeModal();
+        });
+
+        // Form submission
+        document.getElementById('taskForm').addEventListener('submit', handleFormSubmit);
+
+        // Filter changes
+        document.getElementById('viewFilter').addEventListener('change', loadTasks);
+        document.getElementById('statusFilter').addEventListener('change', loadTasks);
+        document.getElementById('priorityFilter').addEventListener('change', loadTasks);
+        document.getElementById('subjectFilter').addEventListener('change', loadTasks);
+
+        // Sort buttons
+        document.getElementById('sortByDate').addEventListener('click', () => {
+            currentSortBy = 'date';
+            loadTasks();
+        });
+        document.getElementById('sortByPriority').addEventListener('click', () => {
+            currentSortBy = 'priority';
+            loadTasks();
+        });
+
+        // Task list event delegation
+        document.getElementById('taskList').addEventListener('click', (e) => {
+            const editBtn = e.target.closest('.edit-task-btn');
+            const deleteBtn = e.target.closest('.delete-task-btn');
+            
+            if (editBtn) {
+                const taskId = editBtn.getAttribute('data-task-id');
+                openEditModal(taskId);
+            } else if (deleteBtn) {
+                const taskId = deleteBtn.getAttribute('data-task-id');
+                handleDeleteTask(taskId);
+            }
+        });
+
+        // Set theme icon on load
+        function setThemeIcon() {
+            const theme = getTheme();
+            document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // ==================== INITIALIZATION ====================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            setThemeIcon();
+            updateSubjectFilter();
+            loadTasks();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Study & Productivity Tracker - Weekly Goals">
+    <title>Goals - Study Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                📚 Study Tracker
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="tasks.html">Tasks</a></li>
+                <li><a href="timer.html">Focus Timer</a></li>
+                <li><a href="analytics.html">Analytics</a></li>
+                <li><a href="goals.html">Goals</a></li>
+                <li><a href="reflection.html">Reflection</a></li>
+                <li><a href="export.html">Export</a></li>
+                <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme">🌙</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Page Header -->
+        <section class="card-header" style="margin-bottom: var(--spacing-lg);">
+            <div>
+                <h1>Weekly Goals</h1>
+                <p class="text-muted" id="weekRange">Set and track your weekly study goals</p>
+            </div>
+            <button class="btn btn-primary" id="setGoalBtn">🎯 Set New Goal</button>
+        </section>
+
+        <!-- Current Goal Progress -->
+        <section class="card" id="currentGoalSection">
+            <div class="card-header">
+                <h2 class="card-title" id="goalTitle">This Week's Goal</h2>
+                <button class="btn btn-sm btn-secondary" id="editGoalBtn">✏️ Edit</button>
+            </div>
+            <div class="card-body" id="goalContent">
+                <!-- Goal content populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Weekly Task Carry Forward -->
+        <section class="card">
+            <div class="card-header">
+                <h3 class="card-title">📋 Weekly Planning</h3>
+                <button class="btn btn-sm btn-primary" id="carryForwardBtn">➡️ Carry Forward Tasks</button>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Review incomplete tasks from last week and plan for this week</p>
+                
+                <!-- Last Week's Incomplete Tasks -->
+                <div id="lastWeekTasks">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Weekly Task Breakdown -->
+        <section class="card">
+            <div class="card-header">
+                <h3 class="card-title">📊 This Week's Tasks</h3>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-3" id="weekTaskSummary">
+                    <!-- Task summary populated by JavaScript -->
+                </div>
+                <div class="mt-3">
+                    <h4>Tasks by Day</h4>
+                    <div id="tasksByDay">
+                        <!-- Daily breakdown populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Visualization -->
+        <section class="card">
+            <div class="card-header">
+                <h3 class="card-title">📈 Daily Progress</h3>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <div class="bar-chart" id="dailyProgressChart">
+                        <!-- Chart populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Motivation & Tips -->
+        <section class="card" style="background: linear-gradient(135deg, var(--success), #37b24d); color: white;">
+            <div class="card-body text-center">
+                <h3 style="color: white;">💪 Stay Motivated!</h3>
+                <p id="motivationText" style="color: rgba(255,255,255,0.9); margin: 0;"></p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Goal Modal -->
+    <div class="modal" id="goalModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Set Weekly Goal</h2>
+                <button class="modal-close" id="closeModal" aria-label="Close Modal">✕</button>
+            </div>
+            <form id="goalForm">
+                <div class="form-group">
+                    <label class="form-label">Goal Title *</label>
+                    <input type="text" class="form-input" id="goalTitleInput" placeholder="e.g., Complete 10 hours of study" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="goalDescription" placeholder="Describe your goal and what you want to achieve..." rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Target Study Time (minutes) *</label>
+                    <input type="number" class="form-input" id="goalTargetMinutes" min="60" value="600" required>
+                    <small class="text-muted">Recommended: 600 minutes (10 hours) per week</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Priority Subjects (optional)</label>
+                    <input type="text" class="form-input" id="goalSubjects" placeholder="e.g., Mathematics, Physics, Programming">
+                    <small class="text-muted">Separate multiple subjects with commas</small>
+                </div>
+                <div class="btn-group mt-3">
+                    <button type="submit" class="btn btn-primary">Save Goal</button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="shared-utils.js"></script>
+    <script>
+        // ==================== STATE ====================
+        
+        let isEditMode = false;
+
+        // ==================== GOAL MANAGEMENT ====================
+        
+        /**
+         * Load and display current goal
+         */
+        function loadCurrentGoal() {
+            const goal = getWeeklyGoals();
+            const weekStart = getWeekStart();
+            const weekEnd = getWeekEnd();
+            
+            // Update week range
+            const startDate = parseDate(weekStart);
+            const endDate = parseDate(weekEnd);
+            document.getElementById('weekRange').textContent = 
+                `${startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+            
+            const goalContent = document.getElementById('goalContent');
+            
+            if (!goal) {
+                document.getElementById('editGoalBtn').classList.add('hidden');
+                goalContent.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎯</div>
+                        <p>No goal set for this week</p>
+                        <button class="btn btn-primary mt-2" onclick="openGoalModal()">Set Your Weekly Goal</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            document.getElementById('editGoalBtn').classList.remove('hidden');
+            
+            // Calculate progress
+            const weekStats = getWeeklyStats();
+            const progress = Math.min((weekStats.totalTime / goal.targetMinutes) * 100, 100);
+            const remainingTime = Math.max(0, goal.targetMinutes - weekStats.totalTime);
+            const daysLeft = getDaysBetween(getTodayDate(), weekEnd);
+            const avgPerDayNeeded = daysLeft > 0 ? remainingTime / daysLeft : 0;
+            
+            // Display goal
+            goalContent.innerHTML = `
+                <div class="mb-3">
+                    <h3>${goal.title || 'Weekly Study Goal'}</h3>
+                    ${goal.description ? `<p class="text-muted">${goal.description}</p>` : ''}
+                </div>
+                
+                <div class="progress-container mb-3">
+                    <div class="progress-header">
+                        <span><strong>Progress</strong></span>
+                        <span>${Math.round(progress)}%</span>
+                    </div>
+                    <div class="progress-bar" style="height: 20px;">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-3 mb-3">
+                    <div class="card" style="background: var(--bg-tertiary);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-primary);">${formatTime(goal.targetMinutes)}</div>
+                            <div class="text-muted" style="font-size: 0.85rem;">Target</div>
+                        </div>
+                    </div>
+                    <div class="card" style="background: var(--bg-tertiary);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);">${formatTime(weekStats.totalTime)}</div>
+                            <div class="text-muted" style="font-size: 0.85rem;">Completed</div>
+                        </div>
+                    </div>
+                    <div class="card" style="background: var(--bg-tertiary);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--warning);">${formatTime(remainingTime)}</div>
+                            <div class="text-muted" style="font-size: 0.85rem;">Remaining</div>
+                        </div>
+                    </div>
+                </div>
+                
+                ${daysLeft > 0 ? `
+                    <div class="alert alert-info">
+                        💡 Study <strong>${formatTime(Math.ceil(avgPerDayNeeded))}</strong> per day 
+                        for the next <strong>${daysLeft}</strong> day(s) to reach your goal!
+                    </div>
+                ` : ''}
+                
+                ${goal.subjects ? `
+                    <div class="mt-3">
+                        <strong>Priority Subjects:</strong>
+                        <div class="flex gap-1 mt-1" style="flex-wrap: wrap;">
+                            ${goal.subjects.split(',').map(s => `<span class="badge badge-low">${s.trim()}</span>`).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                ${progress >= 100 ? `
+                    <div class="alert alert-success mt-3">
+                        🎉 Congratulations! You've achieved your weekly goal!
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        /**
+         * Open goal modal
+         */
+        function openGoalModal(editMode = false) {
+            isEditMode = editMode;
+            const modal = document.getElementById('goalModal');
+            const title = document.getElementById('modalTitle');
+            
+            if (editMode) {
+                title.textContent = 'Edit Weekly Goal';
+                const goal = getWeeklyGoals();
+                if (goal) {
+                    document.getElementById('goalTitleInput').value = goal.title || '';
+                    document.getElementById('goalDescription').value = goal.description || '';
+                    document.getElementById('goalTargetMinutes').value = goal.targetMinutes || 600;
+                    document.getElementById('goalSubjects').value = goal.subjects || '';
+                }
+            } else {
+                title.textContent = 'Set Weekly Goal';
+                document.getElementById('goalForm').reset();
+                document.getElementById('goalTargetMinutes').value = 600;
+            }
+            
+            modal.classList.add('active');
+        }
+
+        /**
+         * Close goal modal
+         */
+        function closeGoalModal() {
+            document.getElementById('goalModal').classList.remove('active');
+            isEditMode = false;
+        }
+
+        /**
+         * Handle goal form submission
+         */
+        function handleGoalSubmit(e) {
+            e.preventDefault();
+            
+            const goalData = {
+                title: document.getElementById('goalTitleInput').value.trim(),
+                description: document.getElementById('goalDescription').value.trim(),
+                targetMinutes: parseInt(document.getElementById('goalTargetMinutes').value),
+                subjects: document.getElementById('goalSubjects').value.trim()
+            };
+            
+            saveWeeklyGoals(goalData);
+            closeGoalModal();
+            loadCurrentGoal();
+            showToast('Weekly goal saved successfully!', 'success');
+        }
+
+        /**
+         * Load last week's incomplete tasks
+         */
+        function loadLastWeekTasks() {
+            const lastWeekStart = getDaysAgo(13); // 2 weeks ago start
+            const lastWeekEnd = getDaysAgo(7); // Last week end
+            
+            const tasks = getAllTasks().filter(t => 
+                t.date >= lastWeekStart && 
+                t.date <= lastWeekEnd &&
+                t.status !== TASK_STATUS.COMPLETED
+            );
+            
+            const container = document.getElementById('lastWeekTasks');
+            
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-success">
+                        ✅ No incomplete tasks from last week. Great job!
+                    </div>
+                `;
+                document.getElementById('carryForwardBtn').disabled = true;
+                return;
+            }
+            
+            document.getElementById('carryForwardBtn').disabled = false;
+            
+            container.innerHTML = `
+                <div class="alert alert-info mb-2">
+                    Found ${tasks.length} incomplete task(s) from last week
+                </div>
+                <ul class="task-list">
+                    ${tasks.slice(0, 5).map(task => `
+                        <li class="task-item">
+                            <div class="task-content">
+                                <div class="task-title">${task.subject}</div>
+                                <div class="task-meta">
+                                    <span class="badge badge-${task.priority.toLowerCase()}">${task.priority}</span>
+                                    <span>📅 ${task.date}</span>
+                                    <span>⏱️ ${formatTime(task.estimatedTime)}</span>
+                                </div>
+                            </div>
+                        </li>
+                    `).join('')}
+                </ul>
+                ${tasks.length > 5 ? `<p class="text-muted text-center">...and ${tasks.length - 5} more</p>` : ''}
+            `;
+        }
+
+        /**
+         * Carry forward tasks to this week
+         */
+        function carryForwardTasks() {
+            if (!confirm('This will move all incomplete tasks from last week to today. Continue?')) {
+                return;
+            }
+            
+            const lastWeekStart = getDaysAgo(13);
+            const lastWeekEnd = getDaysAgo(7);
+            const today = getTodayDate();
+            
+            const tasks = getAllTasks().filter(t => 
+                t.date >= lastWeekStart && 
+                t.date <= lastWeekEnd &&
+                t.status !== TASK_STATUS.COMPLETED
+            );
+            
+            tasks.forEach(task => {
+                updateTask(task.id, { date: today });
+            });
+            
+            showToast(`${tasks.length} task(s) moved to today!`, 'success');
+            loadLastWeekTasks();
+            loadWeekTaskBreakdown();
+        }
+
+        /**
+         * Load week task breakdown
+         */
+        function loadWeekTaskBreakdown() {
+            const weekTasks = getWeekTasks();
+            
+            // Summary
+            const notStarted = weekTasks.filter(t => t.status === TASK_STATUS.NOT_STARTED).length;
+            const inProgress = weekTasks.filter(t => t.status === TASK_STATUS.IN_PROGRESS).length;
+            const completed = weekTasks.filter(t => t.status === TASK_STATUS.COMPLETED).length;
+            
+            document.getElementById('weekTaskSummary').innerHTML = `
+                <div class="card" style="background: var(--bg-tertiary);">
+                    <div class="card-body text-center">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--status-not-started);">${notStarted}</div>
+                        <div class="text-muted" style="font-size: 0.85rem;">Not Started</div>
+                    </div>
+                </div>
+                <div class="card" style="background: var(--bg-tertiary);">
+                    <div class="card-body text-center">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--status-in-progress);">${inProgress}</div>
+                        <div class="text-muted" style="font-size: 0.85rem;">In Progress</div>
+                    </div>
+                </div>
+                <div class="card" style="background: var(--bg-tertiary);">
+                    <div class="card-body text-center">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--status-completed);">${completed}</div>
+                        <div class="text-muted" style="font-size: 0.85rem;">Completed</div>
+                    </div>
+                </div>
+            `;
+            
+            // By day
+            const weekDates = getCurrentWeekDates();
+            const byDayContainer = document.getElementById('tasksByDay');
+            
+            byDayContainer.innerHTML = weekDates.map(date => {
+                const dayTasks = getTasksByDate(date);
+                const dayName = getDayName(date);
+                const isToday = date === getTodayDate();
+                const time = getTotalTimeByDate(date);
+                
+                return `
+                    <div style="padding: 1rem; margin-bottom: 0.5rem; background: var(--bg-tertiary); border-radius: var(--radius-md);">
+                        <div class="flex justify-between align-center">
+                            <div>
+                                <strong>${dayName}</strong> ${isToday ? '📍' : ''}
+                                <span class="text-muted" style="font-size: 0.9rem; margin-left: 0.5rem;">
+                                    ${dayTasks.length} task(s) • ${formatTime(time)}
+                                </span>
+                            </div>
+                            <a href="tasks.html" class="btn btn-sm btn-secondary">View</a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /**
+         * Load daily progress chart
+         */
+        function loadDailyProgressChart() {
+            const weekDates = getCurrentWeekDates();
+            const times = weekDates.map(date => getTotalTimeByDate(date));
+            const goal = getWeeklyGoals();
+            const dailyTarget = goal ? goal.targetMinutes / 7 : 90; // Default ~1.5 hours
+            const maxTime = Math.max(...times, dailyTarget);
+            
+            const chart = document.getElementById('dailyProgressChart');
+            chart.innerHTML = weekDates.map((date, index) => {
+                const time = times[index];
+                const height = (time / maxTime) * 100;
+                const dayName = getDayName(date).substring(0, 3);
+                const isToday = date === getTodayDate();
+                const metTarget = time >= dailyTarget;
+                
+                return `
+                    <div class="bar" style="height: ${height}%; background: ${metTarget ? 'var(--success)' : 'var(--accent-primary)'};">
+                        <div class="bar-value">${formatTime(time)}</div>
+                        <div class="bar-label">${dayName}${isToday ? ' 📍' : ''}${metTarget ? ' ✓' : ''}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /**
+         * Update motivation text
+         */
+        function updateMotivation() {
+            const goal = getWeeklyGoals();
+            if (!goal) {
+                document.getElementById('motivationText').textContent = 
+                    'Set a weekly goal to track your progress and stay motivated!';
+                return;
+            }
+            
+            const weekStats = getWeeklyStats();
+            const progress = (weekStats.totalTime / goal.targetMinutes) * 100;
+            
+            let message = '';
+            if (progress >= 100) {
+                message = '🎉 Goal achieved! You\'re crushing it this week!';
+            } else if (progress >= 75) {
+                message = '🌟 Almost there! Just a little more to reach your goal!';
+            } else if (progress >= 50) {
+                message = '💪 Halfway there! Keep up the great work!';
+            } else if (progress >= 25) {
+                message = '🚀 Good start! Stay consistent to reach your goal!';
+            } else {
+                message = '💡 Every journey starts with a single step. You\'ve got this!';
+            }
+            
+            document.getElementById('motivationText').textContent = message;
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        
+        // Theme toggle
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const newTheme = toggleTheme();
+            document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
+
+        // Mobile menu toggle
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // Set goal button
+        document.getElementById('setGoalBtn').addEventListener('click', () => openGoalModal(false));
+
+        // Edit goal button
+        document.getElementById('editGoalBtn').addEventListener('click', () => openGoalModal(true));
+
+        // Modal controls
+        document.getElementById('closeModal').addEventListener('click', closeGoalModal);
+        document.getElementById('cancelBtn').addEventListener('click', closeGoalModal);
+        document.getElementById('goalModal').addEventListener('click', (e) => {
+            if (e.target.id === 'goalModal') closeGoalModal();
+        });
+
+        // Form submission
+        document.getElementById('goalForm').addEventListener('submit', handleGoalSubmit);
+
+        // Carry forward button
+        document.getElementById('carryForwardBtn').addEventListener('click', carryForwardTasks);
+
+        // Set theme icon
+        function setThemeIcon() {
+            const theme = getTheme();
+            document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // ==================== INITIALIZATION ====================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            setThemeIcon();
+            loadCurrentGoal();
+            loadLastWeekTasks();
+            loadWeekTaskBreakdown();
+            loadDailyProgressChart();
+            updateMotivation();
+        });
+    </script>
+</body>
+</html>

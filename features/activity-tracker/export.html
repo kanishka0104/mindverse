@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Study & Productivity Tracker - Export Data">
+    <title>Export - Study Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                📚 Study Tracker
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="tasks.html">Tasks</a></li>
+                <li><a href="timer.html">Focus Timer</a></li>
+                <li><a href="analytics.html">Analytics</a></li>
+                <li><a href="goals.html">Goals</a></li>
+                <li><a href="reflection.html">Reflection</a></li>
+                <li><a href="export.html">Export</a></li>
+                <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme">🌙</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Page Header -->
+        <section class="card-header" style="margin-bottom: var(--spacing-lg);">
+            <div>
+                <h1>Export Study Data</h1>
+                <p class="text-muted">Download your study data for analysis or backup</p>
+            </div>
+        </section>
+
+        <!-- Export Options -->
+        <section class="grid grid-2">
+            <!-- CSV Export -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">📊 Export as CSV</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Export your task data in CSV format for use in spreadsheet applications like Excel or Google Sheets.</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Date Range</label>
+                        <select class="form-select" id="csvDateRange">
+                            <option value="week">This Week</option>
+                            <option value="month">Last 30 Days</option>
+                            <option value="all">All Time</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row hidden" id="csvCustomDates">
+                        <div class="form-group">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" class="form-input" id="csvStartDate">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">End Date</label>
+                            <input type="date" class="form-input" id="csvEndDate">
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mb-3">
+                        <strong>CSV includes:</strong> Date, Subject, Description, Status, Priority, Estimated Time, Actual Time
+                    </div>
+                    
+                    <button class="btn btn-primary" id="exportCsvBtn">⬇️ Download CSV</button>
+                </div>
+            </div>
+
+            <!-- JSON Export -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">📦 Export as JSON</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Export comprehensive data including tasks, reflections, goals, and streak information in JSON format.</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Date Range</label>
+                        <select class="form-select" id="jsonDateRange">
+                            <option value="week">This Week</option>
+                            <option value="month">Last 30 Days</option>
+                            <option value="all">All Time</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row hidden" id="jsonCustomDates">
+                        <div class="form-group">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" class="form-input" id="jsonStartDate">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">End Date</label>
+                            <input type="date" class="form-input" id="jsonEndDate">
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mb-3">
+                        <strong>JSON includes:</strong> Tasks, Reflections, Goals, Streak Data, Summary Statistics
+                    </div>
+                    
+                    <button class="btn btn-primary" id="exportJsonBtn">⬇️ Download JSON</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Preview Section -->
+        <section class="card">
+            <div class="card-header">
+                <h3 class="card-title">📋 Data Preview</h3>
+                <button class="btn btn-sm btn-secondary" id="refreshPreviewBtn">🔄 Refresh</button>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-4 mb-3">
+                    <div class="card" style="background: var(--bg-tertiary);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-primary);" id="totalTasks">0</div>
+                            <div class="text-muted" style="font-size: 0.85rem;">Total Tasks</div>
+                        </div>
+                    </div>
+                    <div class="card" style="background: var(--bg-tertiary);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);" id="totalReflections">0</div>
+                            <div class="text-muted" style="font-size: 0.85rem;">Reflections</div>
+                        </div>
+                    </div>
+                    <div class="card" style="background: var(--bg-tertiary);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--warning);" id="totalStudyTime">0h</div>
+                            <div class="text-muted" style="font-size: 0.85rem;">Study Time</div>
+                        </div>
+                    </div>
+                    <div class="card" style="background: var(--bg-tertiary);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--info);" id="currentStreakPreview">0</div>
+                            <div class="text-muted" style="font-size: 0.85rem;">Day Streak</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="dataBreakdown">
+                    <!-- Data breakdown populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Import/Backup Section -->
+        <section class="card">
+            <div class="card-header">
+                <h3 class="card-title">💾 Backup & Storage Info</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info mb-3">
+                    <strong>💡 Tip:</strong> All your data is stored locally in your browser using localStorage. 
+                    Export regularly to create backups and prevent data loss.
+                </div>
+                
+                <div class="grid grid-2">
+                    <div>
+                        <h4>Storage Information</h4>
+                        <p><strong>Storage Used:</strong> <span id="storageUsed">Calculating...</span></p>
+                        <p><strong>Last Export:</strong> <span id="lastExport">Never</span></p>
+                    </div>
+                    <div>
+                        <h4>Quick Actions</h4>
+                        <div class="btn-group flex-column">
+                            <button class="btn btn-secondary" id="clearCacheBtn">🗑️ Clear All Data</button>
+                            <button class="btn btn-secondary" id="viewRawDataBtn">👁️ View Raw Data</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Export History -->
+        <section class="card">
+            <div class="card-header">
+                <h3 class="card-title">📜 Recent Exports</h3>
+            </div>
+            <div class="card-body">
+                <div id="exportHistory">
+                    <p class="text-muted">Export history is not tracked. Your exports are downloaded directly to your device.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Help & Info -->
+        <section class="card" style="background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover)); color: white;">
+            <div class="card-body">
+                <h3 style="color: white;">ℹ️ Export Information</h3>
+                <div style="margin-top: 1rem; color: rgba(255,255,255,0.9);">
+                    <p><strong>CSV Format:</strong> Best for viewing in spreadsheet applications. Contains task data only.</p>
+                    <p><strong>JSON Format:</strong> Best for complete data backup. Contains all app data including reflections and settings.</p>
+                    <p><strong>Privacy:</strong> Your data never leaves your device. All exports are generated locally in your browser.</p>
+                    <p><strong>Recommendations:</strong> Export your data monthly for backup purposes. Store exports in a safe location.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Raw Data Modal -->
+    <div class="modal" id="rawDataModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>Raw Data View</h2>
+                <button class="modal-close" id="closeRawDataModal" aria-label="Close Modal">✕</button>
+            </div>
+            <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
+                <pre id="rawDataContent" style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); overflow-x: auto; font-size: 0.85rem;"></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="shared-utils.js"></script>
+    <script>
+        // ==================== EXPORT FUNCTIONS ====================
+        
+        /**
+         * Get date range based on selection
+         */
+        function getDateRange(rangeType, startDateId, endDateId) {
+            const today = getTodayDate();
+            let startDate, endDate = today;
+            
+            switch (rangeType) {
+                case 'week':
+                    startDate = getWeekStart();
+                    break;
+                case 'month':
+                    startDate = getDaysAgo(30);
+                    break;
+                case 'all':
+                    const allTasks = getAllTasks();
+                    if (allTasks.length > 0) {
+                        const dates = allTasks.map(t => t.date).sort();
+                        startDate = dates[0];
+                    } else {
+                        startDate = today;
+                    }
+                    break;
+                case 'custom':
+                    startDate = document.getElementById(startDateId).value;
+                    endDate = document.getElementById(endDateId).value;
+                    if (!startDate || !endDate) {
+                        showToast('Please select both start and end dates', 'warning');
+                        return null;
+                    }
+                    break;
+                default:
+                    startDate = today;
+            }
+            
+            return { startDate, endDate };
+        }
+
+        /**
+         * Export data as CSV
+         */
+        function exportCSV() {
+            const rangeType = document.getElementById('csvDateRange').value;
+            const range = getDateRange(rangeType, 'csvStartDate', 'csvEndDate');
+            
+            if (!range) return;
+            
+            const csvData = exportDataAsCSV(range.startDate, range.endDate);
+            const filename = `study-tracker-${range.startDate}-to-${range.endDate}.csv`;
+            
+            downloadFile(csvData, filename, 'text/csv');
+            showToast('CSV exported successfully!', 'success');
+            updateLastExportTime();
+        }
+
+        /**
+         * Export data as JSON
+         */
+        function exportJSON() {
+            const rangeType = document.getElementById('jsonDateRange').value;
+            const range = getDateRange(rangeType, 'jsonStartDate', 'jsonEndDate');
+            
+            if (!range) return;
+            
+            const jsonData = exportDataAsJSON(range.startDate, range.endDate);
+            const jsonString = JSON.stringify(jsonData, null, 2);
+            const filename = `study-tracker-${range.startDate}-to-${range.endDate}.json`;
+            
+            downloadFile(jsonString, filename, 'application/json');
+            showToast('JSON exported successfully!', 'success');
+            updateLastExportTime();
+        }
+
+        /**
+         * Update last export time
+         */
+        function updateLastExportTime() {
+            const now = new Date().toLocaleString();
+            localStorage.setItem('spt_last_export', now);
+            document.getElementById('lastExport').textContent = now;
+        }
+
+        /**
+         * Load data preview
+         */
+        function loadDataPreview() {
+            const allTasks = getAllTasks();
+            const allReflections = getFromStorage(STORAGE_KEYS.REFLECTIONS, {});
+            const totalTime = allTasks.reduce((sum, t) => sum + (t.actualTime || 0), 0);
+            const streakData = getStreakData();
+            
+            document.getElementById('totalTasks').textContent = allTasks.length;
+            document.getElementById('totalReflections').textContent = Object.keys(allReflections).length;
+            document.getElementById('totalStudyTime').textContent = formatTime(totalTime);
+            document.getElementById('currentStreakPreview').textContent = streakData.current;
+            
+            // Data breakdown
+            const subjects = [...new Set(allTasks.map(t => t.subject))];
+            const completed = allTasks.filter(t => t.status === TASK_STATUS.COMPLETED).length;
+            
+            const breakdown = document.getElementById('dataBreakdown');
+            breakdown.innerHTML = `
+                <h4 class="mb-2">Data Breakdown</h4>
+                <div class="grid grid-3 gap-2">
+                    <div>
+                        <p><strong>Tasks by Status:</strong></p>
+                        <p class="text-muted">Not Started: ${allTasks.filter(t => t.status === TASK_STATUS.NOT_STARTED).length}</p>
+                        <p class="text-muted">In Progress: ${allTasks.filter(t => t.status === TASK_STATUS.IN_PROGRESS).length}</p>
+                        <p class="text-muted">Completed: ${completed}</p>
+                    </div>
+                    <div>
+                        <p><strong>Subjects:</strong></p>
+                        <p class="text-muted">Total Subjects: ${subjects.length}</p>
+                        <p class="text-muted">Most Tasks: ${subjects.length > 0 ? subjects[0] : 'N/A'}</p>
+                    </div>
+                    <div>
+                        <p><strong>Time Stats:</strong></p>
+                        <p class="text-muted">Avg per Task: ${allTasks.length > 0 ? formatTime(Math.round(totalTime / allTasks.length)) : '0m'}</p>
+                        <p class="text-muted">Completion Rate: ${allTasks.length > 0 ? Math.round((completed / allTasks.length) * 100) : 0}%</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * Calculate storage used
+         */
+        function calculateStorageUsed() {
+            let totalSize = 0;
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key) && key.startsWith('spt_')) {
+                    totalSize += localStorage[key].length + key.length;
+                }
+            }
+            
+            // Convert to KB
+            const sizeKB = (totalSize / 1024).toFixed(2);
+            document.getElementById('storageUsed').textContent = `${sizeKB} KB`;
+        }
+
+        /**
+         * Load last export time
+         */
+        function loadLastExportTime() {
+            const lastExport = localStorage.getItem('spt_last_export');
+            document.getElementById('lastExport').textContent = lastExport || 'Never';
+        }
+
+        /**
+         * Clear all data
+         */
+        function clearAllData() {
+            const confirmation = prompt('⚠️ This will delete ALL your data permanently!\n\nType "DELETE" to confirm:');
+            
+            if (confirmation === 'DELETE') {
+                // Clear all app data
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith('spt_')) {
+                        localStorage.removeItem(key);
+                    }
+                });
+                
+                showToast('All data has been cleared!', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            } else if (confirmation !== null) {
+                showToast('Clear operation cancelled - incorrect confirmation', 'info');
+            }
+        }
+
+        /**
+         * View raw data
+         */
+        function viewRawData() {
+            const allData = {};
+            
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('spt_')) {
+                    try {
+                        allData[key] = JSON.parse(localStorage[key]);
+                    } catch {
+                        allData[key] = localStorage[key];
+                    }
+                }
+            });
+            
+            document.getElementById('rawDataContent').textContent = JSON.stringify(allData, null, 2);
+            document.getElementById('rawDataModal').classList.add('active');
+        }
+
+        /**
+         * Close raw data modal
+         */
+        function closeRawDataModal() {
+            document.getElementById('rawDataModal').classList.remove('active');
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        
+        // Theme toggle
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const newTheme = toggleTheme();
+            document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
+
+        // Mobile menu toggle
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // CSV date range
+        document.getElementById('csvDateRange').addEventListener('change', (e) => {
+            const customDates = document.getElementById('csvCustomDates');
+            if (e.target.value === 'custom') {
+                customDates.classList.remove('hidden');
+            } else {
+                customDates.classList.add('hidden');
+            }
+        });
+
+        // JSON date range
+        document.getElementById('jsonDateRange').addEventListener('change', (e) => {
+            const customDates = document.getElementById('jsonCustomDates');
+            if (e.target.value === 'custom') {
+                customDates.classList.remove('hidden');
+            } else {
+                customDates.classList.add('hidden');
+            }
+        });
+
+        // Export buttons
+        document.getElementById('exportCsvBtn').addEventListener('click', exportCSV);
+        document.getElementById('exportJsonBtn').addEventListener('click', exportJSON);
+
+        // Other buttons
+        document.getElementById('refreshPreviewBtn').addEventListener('click', loadDataPreview);
+        document.getElementById('clearCacheBtn').addEventListener('click', clearAllData);
+        document.getElementById('viewRawDataBtn').addEventListener('click', viewRawData);
+
+        // Modal
+        document.getElementById('closeRawDataModal').addEventListener('click', closeRawDataModal);
+        document.getElementById('rawDataModal').addEventListener('click', (e) => {
+            if (e.target.id === 'rawDataModal') closeRawDataModal();
+        });
+
+        // Set theme icon
+        function setThemeIcon() {
+            const theme = getTheme();
+            document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // ==================== INITIALIZATION ====================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            setThemeIcon();
+            loadDataPreview();
+            calculateStorageUsed();
+            loadLastExportTime();
+            
+            // Set default dates for custom ranges
+            document.getElementById('csvStartDate').value = getWeekStart();
+            document.getElementById('csvEndDate').value = getTodayDate();
+            document.getElementById('jsonStartDate').value = getWeekStart();
+            document.getElementById('jsonEndDate').value = getTodayDate();
+        });
+    </script>
+</body>
+</html>

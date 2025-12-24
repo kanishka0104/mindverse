@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Study & Productivity Tracker - Dashboard">
+    <title>Dashboard - Study Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                📚 Study Tracker
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="tasks.html">Tasks</a></li>
+                <li><a href="timer.html">Focus Timer</a></li>
+                <li><a href="analytics.html">Analytics</a></li>
+                <li><a href="goals.html">Goals</a></li>
+                <li><a href="reflection.html">Reflection</a></li>
+                <li><a href="export.html">Export</a></li>
+                <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme">🌙</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Welcome Section -->
+        <section class="welcome-section mb-3">
+            <h1 id="welcomeMessage">Welcome Back! 👋</h1>
+            <p id="currentDate"></p>
+        </section>
+
+        <!-- Quick Stats Grid -->
+        <section class="grid grid-4" id="quickStats">
+            <div class="stat-card">
+                <div class="stat-value" id="todayTimeValue">0m</div>
+                <div class="stat-label">Today's Study Time</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #51cf66, #37b24d);">
+                <div class="stat-value" id="streakValue">0</div>
+                <div class="stat-label">Day Streak 🔥</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #ffd43b, #fab005);">
+                <div class="stat-value" id="weekTasksValue">0</div>
+                <div class="stat-label">Week Tasks Done</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #ff6b6b, #fa5252);">
+                <div class="stat-value" id="backlogValue">0</div>
+                <div class="stat-label">Backlog Tasks</div>
+            </div>
+        </section>
+
+        <!-- Today's Summary -->
+        <section class="card">
+            <div class="card-header">
+                <h2 class="card-title">Today's Summary</h2>
+                <div class="btn-group">
+                    <a href="tasks.html" class="btn btn-primary btn-sm">Add Task</a>
+                    <a href="timer.html" class="btn btn-success btn-sm">Start Timer</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Daily Score -->
+                <div class="progress-container mb-2">
+                    <div class="progress-header">
+                        <span><strong>Daily Progress Score</strong></span>
+                        <span id="dailyScoreText">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="dailyScoreBar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Today's Tasks -->
+                <h3 class="mt-3 mb-2">Today's Tasks</h3>
+                <ul class="task-list" id="todayTaskList">
+                    <!-- Tasks will be populated by JavaScript -->
+                </ul>
+                <div class="empty-state hidden" id="emptyTaskState">
+                    <div class="empty-state-icon">📝</div>
+                    <p>No tasks for today. <a href="tasks.html">Add your first task!</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Weekly Overview -->
+        <section class="grid grid-2">
+            <!-- Weekly Progress -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">This Week</h3>
+                </div>
+                <div class="card-body">
+                    <div class="progress-container">
+                        <div class="progress-header">
+                            <span>Completion Rate</span>
+                            <span id="weekCompletionRate">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="weekCompletionBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <p><strong>Total Study Time:</strong> <span id="weekTotalTime">0h</span></p>
+                        <p><strong>Average per Day:</strong> <span id="weekAvgTime">0m</span></p>
+                        <p><strong>Tasks Completed:</strong> <span id="weekCompletedTasks">0</span> / <span id="weekTotalTasks">0</span></p>
+                    </div>
+                    <a href="analytics.html" class="btn btn-secondary btn-sm mt-2">View Details</a>
+                </div>
+            </div>
+
+            <!-- Weekly Goals -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Weekly Goal</h3>
+                    <a href="goals.html" class="btn btn-primary btn-sm">Set Goal</a>
+                </div>
+                <div class="card-body" id="weeklyGoalContent">
+                    <!-- Goal content will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Activity -->
+        <section class="card">
+            <div class="card-header">
+                <h3 class="card-title">Recent Activity</h3>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <div class="bar-chart" id="weeklyActivityChart">
+                        <!-- Daily activity bars will be generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="card">
+            <div class="card-header">
+                <h3 class="card-title">Quick Actions</h3>
+            </div>
+            <div class="card-body">
+                <div class="btn-group">
+                    <a href="tasks.html" class="btn btn-primary">📝 Plan Tasks</a>
+                    <a href="timer.html" class="btn btn-success">⏱️ Start Focus Session</a>
+                    <a href="reflection.html" class="btn btn-secondary">💭 Daily Reflection</a>
+                    <a href="analytics.html" class="btn btn-secondary">📊 View Analytics</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Motivation & Tips -->
+        <section class="card" style="background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover)); color: white;">
+            <div class="card-body text-center">
+                <h3 id="motivationText">Keep going! Consistency is key. 💪</h3>
+                <p id="tipText">Break your study sessions into 25-minute focused blocks for better retention.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Scripts -->
+    <script src="shared-utils.js"></script>
+    <script>
+        // ==================== DASHBOARD INITIALIZATION ====================
+        
+        /**
+         * Load and display dashboard data
+         */
+        function loadDashboard() {
+            updateDateTime();
+            updateQuickStats();
+            updateTodayTasks();
+            updateWeeklyOverview();
+            updateWeeklyGoal();
+            updateActivityChart();
+            updateMotivation();
+        }
+
+        /**
+         * Update date and time display
+         */
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+            
+            // Personalized greeting based on time
+            const hour = now.getHours();
+            let greeting = 'Good Morning';
+            if (hour >= 12 && hour < 17) greeting = 'Good Afternoon';
+            else if (hour >= 17) greeting = 'Good Evening';
+            
+            document.getElementById('welcomeMessage').textContent = `${greeting}! 👋`;
+        }
+
+        /**
+         * Update quick stats cards
+         */
+        function updateQuickStats() {
+            const today = getTodayDate();
+            
+            // Today's study time
+            const todayTime = getTotalTimeByDate(today);
+            document.getElementById('todayTimeValue').textContent = formatTime(todayTime);
+            
+            // Streak
+            updateStreak();
+            const streakData = getStreakData();
+            document.getElementById('streakValue').textContent = streakData.current;
+            
+            // Week tasks completed
+            const weekStats = getWeeklyStats();
+            document.getElementById('weekTasksValue').textContent = weekStats.tasksCompleted;
+            
+            // Backlog
+            const backlog = getBacklogTasks();
+            document.getElementById('backlogValue').textContent = backlog.length;
+        }
+
+        /**
+         * Update today's tasks section
+         */
+        function updateTodayTasks() {
+            const today = getTodayDate();
+            const tasks = getTasksByDate(today);
+            const taskList = document.getElementById('todayTaskList');
+            const emptyState = document.getElementById('emptyTaskState');
+            
+            if (tasks.length === 0) {
+                taskList.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                document.getElementById('dailyScoreBar').style.width = '0%';
+                document.getElementById('dailyScoreText').textContent = '0%';
+                return;
+            }
+            
+            taskList.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            
+            // Calculate and display daily score
+            const score = getDailyScore(today);
+            document.getElementById('dailyScoreBar').style.width = `${score}%`;
+            document.getElementById('dailyScoreText').textContent = `${score}%`;
+            
+            // Render tasks
+            taskList.innerHTML = tasks.slice(0, 5).map(task => `
+                <li class="task-item ${task.status === TASK_STATUS.COMPLETED ? 'completed' : ''}">
+                    <div class="task-content">
+                        <div class="task-title">${task.subject}</div>
+                        <div class="task-meta">
+                            <span class="badge badge-${task.priority.toLowerCase()}">${task.priority}</span>
+                            <span class="badge badge-${task.status.toLowerCase().replace(' ', '-')}">${task.status}</span>
+                            <span>⏱️ ${formatTime(task.actualTime)} / ${formatTime(task.estimatedTime)}</span>
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <a href="timer.html?taskId=${task.id}" class="btn btn-sm btn-primary">Start</a>
+                    </div>
+                </li>
+            `).join('');
+            
+            // Show "View All" link if more than 5 tasks
+            if (tasks.length > 5) {
+                taskList.innerHTML += `
+                    <li style="text-align: center; padding: 1rem;">
+                        <a href="tasks.html" class="btn btn-secondary btn-sm">View All ${tasks.length} Tasks</a>
+                    </li>
+                `;
+            }
+        }
+
+        /**
+         * Update weekly overview section
+         */
+        function updateWeeklyOverview() {
+            const stats = getWeeklyStats();
+            
+            // Completion rate
+            document.getElementById('weekCompletionRate').textContent = `${stats.completionRate}%`;
+            document.getElementById('weekCompletionBar').style.width = `${stats.completionRate}%`;
+            
+            // Time stats
+            document.getElementById('weekTotalTime').textContent = formatTime(stats.totalTime);
+            document.getElementById('weekAvgTime').textContent = formatTime(stats.avgTime);
+            
+            // Task counts
+            document.getElementById('weekCompletedTasks').textContent = stats.tasksCompleted;
+            document.getElementById('weekTotalTasks').textContent = stats.totalTasks;
+        }
+
+        /**
+         * Update weekly goal section
+         */
+        function updateWeeklyGoal() {
+            const goal = getWeeklyGoals();
+            const goalContent = document.getElementById('weeklyGoalContent');
+            
+            if (!goal) {
+                goalContent.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎯</div>
+                        <p>No goal set for this week.</p>
+                        <a href="goals.html" class="btn btn-primary btn-sm mt-2">Set Weekly Goal</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            const weekStats = getWeeklyStats();
+            const progress = Math.min((weekStats.totalTime / goal.targetMinutes) * 100, 100);
+            
+            goalContent.innerHTML = `
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <span><strong>${goal.title || 'Weekly Goal'}</strong></span>
+                        <span>${Math.round(progress)}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <p><strong>Target:</strong> ${formatTime(goal.targetMinutes)}</p>
+                    <p><strong>Progress:</strong> ${formatTime(weekStats.totalTime)}</p>
+                    ${goal.description ? `<p class="text-muted">${goal.description}</p>` : ''}
+                </div>
+            `;
+        }
+
+        /**
+         * Update weekly activity chart
+         */
+        function updateActivityChart() {
+            const weekDates = getCurrentWeekDates();
+            const chart = document.getElementById('weeklyActivityChart');
+            
+            // Get max time for scaling
+            const times = weekDates.map(date => getTotalTimeByDate(date));
+            const maxTime = Math.max(...times, 120); // Minimum 2 hours for scale
+            
+            chart.innerHTML = weekDates.map((date, index) => {
+                const time = times[index];
+                const height = (time / maxTime) * 100;
+                const dayName = getDayName(date).substring(0, 3);
+                const isToday = date === getTodayDate();
+                
+                return `
+                    <div class="bar" style="height: ${height}%">
+                        <div class="bar-value">${formatTime(time)}</div>
+                        <div class="bar-label">${dayName}${isToday ? ' 📍' : ''}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /**
+         * Update motivation text
+         */
+        function updateMotivation() {
+            const streakData = getStreakData();
+            const motivations = [
+                { text: 'Keep going! Consistency is key. 💪', tip: 'Break your study sessions into 25-minute focused blocks for better retention.' },
+                { text: 'Great progress! You\'re building momentum. 🚀', tip: 'Review your notes within 24 hours to improve retention by 60%.' },
+                { text: 'Every small step counts! 📈', tip: 'Active recall is proven to be more effective than re-reading.' },
+                { text: 'You\'re doing amazing! Stay focused. 🎯', tip: 'Take a 5-10 minute break every hour to maintain peak focus.' },
+                { text: 'Believe in yourself! You can do this. ⭐', tip: 'Teach someone else what you learned - it\'s the ultimate retention test.' }
+            ];
+            
+            let selectedMotivation;
+            
+            if (streakData.current >= 7) {
+                selectedMotivation = { 
+                    text: `Amazing! ${streakData.current} day streak! You're unstoppable! 🔥`, 
+                    tip: 'Your consistency is paying off. Keep this momentum going!' 
+                };
+            } else if (streakData.current >= 3) {
+                selectedMotivation = { 
+                    text: `Great job! ${streakData.current} days in a row! 🌟`, 
+                    tip: 'You\'re building a strong habit. Don\'t break the chain!' 
+                };
+            } else {
+                selectedMotivation = motivations[Math.floor(Math.random() * motivations.length)];
+            }
+            
+            document.getElementById('motivationText').textContent = selectedMotivation.text;
+            document.getElementById('tipText').textContent = selectedMotivation.tip;
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        
+        /**
+         * Theme toggle handler
+         */
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const newTheme = toggleTheme();
+            document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
+
+        /**
+         * Mobile menu toggle
+         */
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        /**
+         * Set theme icon on load
+         */
+        function setThemeIcon() {
+            const theme = getTheme();
+            document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // ==================== INITIALIZATION ====================
+        
+        // Load dashboard when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            setThemeIcon();
+            loadDashboard();
+            
+            // Refresh dashboard every minute
+            setInterval(() => {
+                updateDateTime();
+                updateQuickStats();
+            }, 60000);
+
+            // Notify parent that iframe is ready
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
+            }
+        });
+
+        // ==================== THEME SYNC WITH PARENT ====================
+        
+        // Listen for theme changes from parent window (MindVerse)
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'SET_THEME') {
+                const theme = event.data.theme;
+                saveTheme(theme);
+                setThemeIcon();
+            }
+        });
+    </script>
+</body>
+</html>

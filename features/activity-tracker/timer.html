@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Study & Productivity Tracker - Focus Timer">
+    <title>Focus Timer - Study Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                📚 Study Tracker
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="tasks.html">Tasks</a></li>
+                <li><a href="timer.html">Focus Timer</a></li>
+                <li><a href="analytics.html">Analytics</a></li>
+                <li><a href="goals.html">Goals</a></li>
+                <li><a href="reflection.html">Reflection</a></li>
+                <li><a href="export.html">Export</a></li>
+                <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme">🌙</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Task Selection -->
+        <section class="card">
+            <div class="card-header">
+                <h2 class="card-title">Focus Timer</h2>
+                <a href="tasks.html" class="btn btn-secondary btn-sm">➕ Add Task</a>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="form-label">Select Task</label>
+                    <select class="form-select" id="taskSelect">
+                        <option value="">Choose a task to start timer...</option>
+                    </select>
+                </div>
+                <div id="taskDetails" class="hidden mt-2">
+                    <div class="card" style="background: var(--bg-tertiary);">
+                        <div class="card-body">
+                            <h3 id="taskSubject"></h3>
+                            <p id="taskDescription" class="text-muted"></p>
+                            <div class="flex gap-2" style="flex-wrap: wrap;">
+                                <span class="badge" id="taskPriority"></span>
+                                <span class="badge" id="taskStatus"></span>
+                                <span>📅 <span id="taskDate"></span></span>
+                            </div>
+                            <div class="mt-2">
+                                <strong>Estimated:</strong> <span id="taskEstimated"></span> | 
+                                <strong>Spent:</strong> <span id="taskActual"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timer Display -->
+        <section class="card text-center">
+            <div class="card-body">
+                <div class="timer-display" id="timerDisplay">00:00:00</div>
+                
+                <!-- Timer Controls -->
+                <div class="timer-controls">
+                    <button class="btn btn-lg btn-success" id="startBtn" disabled>▶️ Start</button>
+                    <button class="btn btn-lg btn-warning hidden" id="pauseBtn">⏸️ Pause</button>
+                    <button class="btn btn-lg btn-danger" id="resetBtn" disabled>🔄 Reset</button>
+                    <button class="btn btn-lg btn-primary" id="saveBtn" disabled>💾 Save Progress</button>
+                </div>
+
+                <!-- Session Info -->
+                <div class="mt-3" id="sessionInfo">
+                    <p class="text-muted">Select a task and click Start to begin your focus session</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Break Reminder -->
+        <section class="card hidden" id="breakReminder">
+            <div class="card-body text-center" style="background: linear-gradient(135deg, var(--warning), #fab005); color: #000;">
+                <h3>⏰ Time for a Break!</h3>
+                <p>You've been studying for 25 minutes. Take a 5-minute break to recharge.</p>
+                <button class="btn btn-lg" style="background: white; color: #000;" id="dismissBreakBtn">Got it!</button>
+            </div>
+        </section>
+
+        <!-- Timer Stats -->
+        <section class="grid grid-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="stat-value" style="color: var(--accent-primary);" id="todayTotalTime">0m</h3>
+                    <p class="stat-label">Today's Total Time</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="stat-value" style="color: var(--success);" id="completedToday">0</h3>
+                    <p class="stat-label">Tasks Completed Today</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="stat-value" style="color: var(--info);" id="currentStreak">0</h3>
+                    <p class="stat-label">Day Streak</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Active Tasks -->
+        <section class="card">
+            <div class="card-header">
+                <h3 class="card-title">Today's Active Tasks</h3>
+            </div>
+            <div class="card-body">
+                <ul class="task-list" id="activeTasks">
+                    <!-- Populated by JavaScript -->
+                </ul>
+                <div class="empty-state hidden" id="emptyTasksState">
+                    <div class="empty-state-icon">⏱️</div>
+                    <p>No tasks for today. <a href="tasks.html">Add tasks</a> to get started!</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Scripts -->
+    <script src="shared-utils.js"></script>
+    <script>
+        // ==================== TIMER STATE ====================
+        
+        let timerInterval = null;
+        let currentSeconds = 0;
+        let currentTaskId = null;
+        let isPaused = false;
+        let sessionStartTime = null;
+        let lastBreakReminder = 0;
+        let totalSessionTime = 0;
+
+        // ==================== TIMER FUNCTIONS ====================
+        
+        /**
+         * Start the timer
+         */
+        function startTimer() {
+            if (!currentTaskId) return;
+            
+            isPaused = false;
+            sessionStartTime = Date.now();
+            
+            // Update UI
+            document.getElementById('startBtn').classList.add('hidden');
+            document.getElementById('pauseBtn').classList.remove('hidden');
+            document.getElementById('resetBtn').disabled = false;
+            document.getElementById('saveBtn').disabled = false;
+            
+            // Update task status to In Progress
+            const task = getTaskById(currentTaskId);
+            if (task && task.status === TASK_STATUS.NOT_STARTED) {
+                updateTask(currentTaskId, { status: TASK_STATUS.IN_PROGRESS });
+                loadTaskDetails(currentTaskId);
+            }
+            
+            // Start timer interval
+            timerInterval = setInterval(() => {
+                currentSeconds++;
+                totalSessionTime++;
+                updateTimerDisplay();
+                updateSessionInfo();
+                checkBreakReminder();
+                
+                // Auto-save every 30 seconds
+                if (currentSeconds % 30 === 0) {
+                    autoSaveProgress();
+                }
+            }, 1000);
+            
+            // Save timer state
+            saveTimerStateToStorage();
+            
+            showToast('Timer started! Stay focused! 🎯', 'success');
+        }
+
+        /**
+         * Pause the timer
+         */
+        function pauseTimer() {
+            isPaused = true;
+            clearInterval(timerInterval);
+            
+            // Update UI
+            document.getElementById('startBtn').classList.remove('hidden');
+            document.getElementById('pauseBtn').classList.add('hidden');
+            
+            // Save progress
+            autoSaveProgress();
+            saveTimerStateToStorage();
+            
+            showToast('Timer paused. Take a moment to rest! ⏸️', 'info');
+        }
+
+        /**
+         * Reset the timer
+         */
+        function resetTimer() {
+            if (currentSeconds > 0 && !confirm('Are you sure you want to reset? Unsaved progress will be lost.')) {
+                return;
+            }
+            
+            clearInterval(timerInterval);
+            currentSeconds = 0;
+            totalSessionTime = 0;
+            lastBreakReminder = 0;
+            isPaused = false;
+            sessionStartTime = null;
+            
+            // Update UI
+            document.getElementById('startBtn').classList.remove('hidden');
+            document.getElementById('pauseBtn').classList.add('hidden');
+            updateTimerDisplay();
+            updateSessionInfo();
+            
+            // Clear timer state
+            if (currentTaskId) {
+                deleteTimerState(currentTaskId);
+            }
+            
+            showToast('Timer reset successfully! 🔄', 'info');
+        }
+
+        /**
+         * Save progress to task
+         */
+        function saveProgress() {
+            if (!currentTaskId || currentSeconds === 0) return;
+            
+            const task = getTaskById(currentTaskId);
+            if (!task) return;
+            
+            const minutesToAdd = Math.floor(currentSeconds / 60);
+            const newActualTime = task.actualTime + minutesToAdd;
+            
+            updateTask(currentTaskId, {
+                actualTime: newActualTime
+            });
+            
+            // Update streak
+            updateStreak();
+            
+            // Reset timer
+            resetTimer();
+            
+            // Reload data
+            loadTaskSelect();
+            loadActiveTasks();
+            updateStats();
+            
+            showToast(`Progress saved! ${formatTime(minutesToAdd)} added to task.`, 'success');
+        }
+
+        /**
+         * Auto-save progress without resetting timer
+         */
+        function autoSaveProgress() {
+            if (!currentTaskId || currentSeconds === 0) return;
+            
+            const task = getTaskById(currentTaskId);
+            if (!task) return;
+            
+            const minutesToAdd = Math.floor(currentSeconds / 60);
+            if (minutesToAdd > 0) {
+                const newActualTime = task.actualTime + minutesToAdd;
+                updateTask(currentTaskId, { actualTime: newActualTime });
+                
+                // Reset counter to remaining seconds
+                currentSeconds = currentSeconds % 60;
+                
+                // Update streak
+                updateStreak();
+                
+                // Update stats
+                updateStats();
+            }
+            
+            saveTimerStateToStorage();
+        }
+
+        /**
+         * Update timer display
+         */
+        function updateTimerDisplay() {
+            document.getElementById('timerDisplay').textContent = formatTimerDisplay(currentSeconds);
+        }
+
+        /**
+         * Update session info
+         */
+        function updateSessionInfo() {
+            if (!currentTaskId) return;
+            
+            const task = getTaskById(currentTaskId);
+            if (!task) return;
+            
+            const sessionMinutes = Math.floor(totalSessionTime / 60);
+            const remainingMinutes = Math.max(0, task.estimatedTime - task.actualTime - sessionMinutes);
+            
+            document.getElementById('sessionInfo').innerHTML = `
+                <p><strong>Session Time:</strong> ${formatTime(sessionMinutes)}</p>
+                <p><strong>Remaining:</strong> ${formatTime(remainingMinutes)}</p>
+            `;
+        }
+
+        /**
+         * Check if break reminder should be shown
+         */
+        function checkBreakReminder() {
+            const minutesElapsed = Math.floor(totalSessionTime / 60);
+            
+            if (minutesElapsed > 0 && minutesElapsed % BREAK_REMINDER_INTERVAL === 0 && minutesElapsed !== lastBreakReminder) {
+                lastBreakReminder = minutesElapsed;
+                showBreakReminder();
+            }
+        }
+
+        /**
+         * Show break reminder
+         */
+        function showBreakReminder() {
+            document.getElementById('breakReminder').classList.remove('hidden');
+            
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                document.getElementById('breakReminder').classList.add('hidden');
+            }, 10000);
+        }
+
+        /**
+         * Save timer state to localStorage
+         */
+        function saveTimerStateToStorage() {
+            if (!currentTaskId) return;
+            
+            saveTimerState(currentTaskId, {
+                currentSeconds,
+                totalSessionTime,
+                lastBreakReminder,
+                sessionStartTime,
+                isPaused,
+                savedAt: Date.now()
+            });
+        }
+
+        /**
+         * Restore timer state from localStorage
+         */
+        function restoreTimerState(taskId) {
+            const state = getTimerState(taskId);
+            if (!state) return false;
+            
+            // Check if state is recent (within 12 hours)
+            const hoursSinceLastSave = (Date.now() - state.savedAt) / (1000 * 60 * 60);
+            if (hoursSinceLastSave > 12) {
+                deleteTimerState(taskId);
+                return false;
+            }
+            
+            currentSeconds = state.currentSeconds || 0;
+            totalSessionTime = state.totalSessionTime || 0;
+            lastBreakReminder = state.lastBreakReminder || 0;
+            sessionStartTime = state.sessionStartTime;
+            
+            updateTimerDisplay();
+            updateSessionInfo();
+            
+            if (!state.isPaused) {
+                // Calculate time passed since last save
+                const secondsPassed = Math.floor((Date.now() - state.savedAt) / 1000);
+                currentSeconds += secondsPassed;
+                totalSessionTime += secondsPassed;
+            }
+            
+            return true;
+        }
+
+        // ==================== TASK MANAGEMENT ====================
+        
+        /**
+         * Load task select dropdown
+         */
+        function loadTaskSelect() {
+            const today = getTodayDate();
+            const tasks = getTasksByDate(today).filter(t => t.status !== TASK_STATUS.COMPLETED);
+            const taskSelect = document.getElementById('taskSelect');
+            
+            // Get URL parameter if exists
+            const urlParams = new URLSearchParams(window.location.search);
+            const taskIdParam = urlParams.get('taskId');
+            
+            taskSelect.innerHTML = '<option value="">Choose a task to start timer...</option>' +
+                tasks.map(task => `
+                    <option value="${task.id}">${task.subject} - ${task.description || 'No description'}</option>
+                `).join('');
+            
+            // If taskId in URL, select it
+            if (taskIdParam && tasks.find(t => t.id === taskIdParam)) {
+                taskSelect.value = taskIdParam;
+                handleTaskSelection(taskIdParam);
+            }
+        }
+
+        /**
+         * Handle task selection
+         */
+        function handleTaskSelection(taskId) {
+            if (!taskId) {
+                document.getElementById('taskDetails').classList.add('hidden');
+                document.getElementById('startBtn').disabled = true;
+                currentTaskId = null;
+                return;
+            }
+            
+            currentTaskId = taskId;
+            loadTaskDetails(taskId);
+            
+            // Try to restore previous timer state
+            const restored = restoreTimerState(taskId);
+            
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('taskDetails').classList.remove('hidden');
+            
+            if (restored) {
+                showToast('Previous timer session restored!', 'info');
+            }
+        }
+
+        /**
+         * Load task details
+         */
+        function loadTaskDetails(taskId) {
+            const task = getTaskById(taskId);
+            if (!task) return;
+            
+            document.getElementById('taskSubject').textContent = task.subject;
+            document.getElementById('taskDescription').textContent = task.description || 'No description';
+            document.getElementById('taskPriority').textContent = task.priority;
+            document.getElementById('taskPriority').className = `badge badge-${task.priority.toLowerCase()}`;
+            document.getElementById('taskStatus').textContent = task.status;
+            document.getElementById('taskStatus').className = `badge badge-${task.status.toLowerCase().replace(' ', '-')}`;
+            document.getElementById('taskDate').textContent = task.date;
+            document.getElementById('taskEstimated').textContent = formatTime(task.estimatedTime);
+            document.getElementById('taskActual').textContent = formatTime(task.actualTime);
+            
+            updateSessionInfo();
+        }
+
+        /**
+         * Load active tasks for today
+         */
+        function loadActiveTasks() {
+            const today = getTodayDate();
+            const tasks = getTasksByDate(today);
+            const taskList = document.getElementById('activeTasks');
+            const emptyState = document.getElementById('emptyTasksState');
+            
+            if (tasks.length === 0) {
+                taskList.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            taskList.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            
+            taskList.innerHTML = tasks.map(task => `
+                <li class="task-item ${task.status === TASK_STATUS.COMPLETED ? 'completed' : ''}">
+                    <div class="task-content">
+                        <div class="task-title">${task.subject}</div>
+                        <div class="task-meta">
+                            <span class="badge badge-${task.status.toLowerCase().replace(' ', '-')}">${task.status}</span>
+                            <span>⏱️ ${formatTime(task.actualTime)} / ${formatTime(task.estimatedTime)}</span>
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="btn btn-sm btn-primary select-task-btn" data-task-id="${task.id}">Select</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        /**
+         * Update stats
+         */
+        function updateStats() {
+            const today = getTodayDate();
+            const todayTime = getTotalTimeByDate(today);
+            const todayTasks = getTasksByDate(today);
+            const completedToday = todayTasks.filter(t => t.status === TASK_STATUS.COMPLETED).length;
+            const streakData = getStreakData();
+            
+            document.getElementById('todayTotalTime').textContent = formatTime(todayTime);
+            document.getElementById('completedToday').textContent = completedToday;
+            document.getElementById('currentStreak').textContent = streakData.current;
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        
+        // Theme toggle
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const newTheme = toggleTheme();
+            document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
+
+        // Mobile menu toggle
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // Task selection
+        document.getElementById('taskSelect').addEventListener('change', (e) => {
+            handleTaskSelection(e.target.value);
+        });
+
+        // Timer controls
+        document.getElementById('startBtn').addEventListener('click', startTimer);
+        document.getElementById('pauseBtn').addEventListener('click', pauseTimer);
+        document.getElementById('resetBtn').addEventListener('click', resetTimer);
+        document.getElementById('saveBtn').addEventListener('click', saveProgress);
+
+        // Break reminder dismiss
+        document.getElementById('dismissBreakBtn').addEventListener('click', () => {
+            document.getElementById('breakReminder').classList.add('hidden');
+        });
+
+        // Active tasks quick select
+        document.getElementById('activeTasks').addEventListener('click', (e) => {
+            const selectBtn = e.target.closest('.select-task-btn');
+            if (selectBtn) {
+                const taskId = selectBtn.getAttribute('data-task-id');
+                document.getElementById('taskSelect').value = taskId;
+                handleTaskSelection(taskId);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Save timer state before page unload
+        window.addEventListener('beforeunload', (e) => {
+            if (currentTaskId && currentSeconds > 0 && !isPaused) {
+                autoSaveProgress();
+                saveTimerStateToStorage();
+            }
+        });
+
+        // Set theme icon
+        function setThemeIcon() {
+            const theme = getTheme();
+            document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // ==================== INITIALIZATION ====================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            setThemeIcon();
+            loadTaskSelect();
+            loadActiveTasks();
+            updateStats();
+        });
+    </script>
+</body>
+</html>

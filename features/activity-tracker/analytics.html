@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Study & Productivity Tracker - Analytics">
+    <title>Analytics - Study Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                📚 Study Tracker
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="tasks.html">Tasks</a></li>
+                <li><a href="timer.html">Focus Timer</a></li>
+                <li><a href="analytics.html">Analytics</a></li>
+                <li><a href="goals.html">Goals</a></li>
+                <li><a href="reflection.html">Reflection</a></li>
+                <li><a href="export.html">Export</a></li>
+                <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme">🌙</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Page Header -->
+        <section class="card-header" style="margin-bottom: var(--spacing-lg);">
+            <div>
+                <h1>Analytics & Insights</h1>
+                <p class="text-muted">Track your progress and productivity patterns</p>
+            </div>
+            <div class="form-group" style="min-width: 200px; margin: 0;">
+                <select class="form-select" id="timeRangeFilter">
+                    <option value="week">This Week</option>
+                    <option value="biweek">Last 2 Weeks</option>
+                    <option value="month">Last 30 Days</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Key Metrics -->
+        <section class="grid grid-4">
+            <div class="stat-card">
+                <div class="stat-value" id="totalStudyTime">0h</div>
+                <div class="stat-label">Total Study Time</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #51cf66, #37b24d);">
+                <div class="stat-value" id="completionRate">0%</div>
+                <div class="stat-label">Completion Rate</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #ffd43b, #fab005);">
+                <div class="stat-value" id="avgDailyTime">0m</div>
+                <div class="stat-label">Avg Daily Time</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #ff6b6b, #fa5252);">
+                <div class="stat-value" id="productivityScore">0%</div>
+                <div class="stat-label">Productivity Score</div>
+            </div>
+        </section>
+
+        <!-- Weekly Comparison -->
+        <section class="card">
+            <div class="card-header">
+                <h2 class="card-title">📈 Progress Over Time</h2>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <div class="bar-chart" id="progressChart">
+                        <!-- Chart populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="mt-3" id="weekComparison">
+                    <!-- Week comparison data -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Subject-wise Distribution -->
+        <section class="grid grid-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">📚 Subject-wise Time Distribution</h3>
+                </div>
+                <div class="card-body">
+                    <div id="subjectDistribution">
+                        <!-- Subject bars populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Productivity Quality -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">⚡ Productivity Quality</h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="stat-value" style="font-size: 3rem; color: var(--accent-primary);" id="qualityRatio">-</div>
+                        <p class="stat-label" id="qualityLabel">Calculating...</p>
+                        <p class="text-muted" style="font-size: 0.9rem;">Actual vs Estimated Time Ratio</p>
+                    </div>
+                    <div class="mt-3" id="qualityInsights">
+                        <!-- Insights populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Study Scores -->
+        <section class="card">
+            <div class="card-header">
+                <h3 class="card-title">🎯 Daily Study Scores</h3>
+            </div>
+            <div class="card-body">
+                <div id="dailyScores">
+                    <!-- Daily scores populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Backlog & Pending Tasks -->
+        <section class="card">
+            <div class="card-header">
+                <h3 class="card-title">⚠️ Backlog Analysis</h3>
+                <span class="badge badge-danger" id="backlogCount">0</span>
+            </div>
+            <div class="card-body">
+                <div id="backlogContent">
+                    <!-- Backlog tasks populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Streak & Consistency -->
+        <section class="grid grid-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">🔥 Streak Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="streak-container" style="background: linear-gradient(135deg, #ffd43b, #fab005);">
+                        <div class="streak-value" id="currentStreak">0</div>
+                        <div class="streak-label">Current Streak (Days)</div>
+                    </div>
+                    <div class="mt-3">
+                        <p><strong>Longest Streak:</strong> <span id="longestStreak">0</span> days</p>
+                        <p><strong>Last Study Date:</strong> <span id="lastStudyDate">-</span></p>
+                        <p class="text-muted" style="font-size: 0.9rem;">
+                            Study at least ${MIN_DAILY_MINUTES} minutes daily to maintain streak
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Study Pattern -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">📊 Study Pattern</h3>
+                </div>
+                <div class="card-body">
+                    <div id="studyPattern">
+                        <!-- Pattern analysis populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Weekly Insights -->
+        <section class="card" style="background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover)); color: white;">
+            <div class="card-body">
+                <h3 style="color: white;">💡 Insights & Recommendations</h3>
+                <div id="insights" style="margin-top: 1rem;">
+                    <!-- Insights populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Scripts -->
+    <script src="shared-utils.js"></script>
+    <script>
+        // ==================== DATA LOADING ====================
+        
+        let currentTimeRange = 'week';
+
+        /**
+         * Load all analytics data
+         */
+        function loadAnalytics() {
+            const range = document.getElementById('timeRangeFilter').value;
+            currentTimeRange = range;
+            
+            let days = 7;
+            if (range === 'biweek') days = 14;
+            else if (range === 'month') days = 30;
+            
+            const startDate = getDaysAgo(days - 1);
+            const endDate = getTodayDate();
+            
+            updateKeyMetrics(startDate, endDate, days);
+            updateProgressChart(startDate, endDate, days);
+            updateSubjectDistribution(startDate, endDate);
+            updateProductivityQuality(startDate, endDate);
+            updateDailyScores(startDate, endDate, days);
+            updateBacklogAnalysis();
+            updateStreakInfo();
+            updateStudyPattern(startDate, endDate, days);
+            generateInsights(startDate, endDate, days);
+        }
+
+        /**
+         * Update key metrics cards
+         */
+        function updateKeyMetrics(startDate, endDate, days) {
+            const tasks = getAllTasks().filter(t => t.date >= startDate && t.date <= endDate);
+            
+            // Total study time
+            const totalTime = tasks.reduce((sum, t) => sum + (t.actualTime || 0), 0);
+            document.getElementById('totalStudyTime').textContent = formatTime(totalTime);
+            
+            // Completion rate
+            const completed = tasks.filter(t => t.status === TASK_STATUS.COMPLETED).length;
+            const completionRate = tasks.length > 0 ? (completed / tasks.length) * 100 : 0;
+            document.getElementById('completionRate').textContent = Math.round(completionRate) + '%';
+            
+            // Average daily time
+            const avgTime = totalTime / days;
+            document.getElementById('avgDailyTime').textContent = formatTime(Math.round(avgTime));
+            
+            // Productivity score (based on completion rate and study time)
+            const targetDailyMinutes = 120; // 2 hours
+            const timeScore = Math.min((totalTime / days) / targetDailyMinutes, 1) * 50;
+            const completionScore = (completionRate / 100) * 50;
+            const productivityScore = Math.round(timeScore + completionScore);
+            document.getElementById('productivityScore').textContent = productivityScore + '%';
+        }
+
+        /**
+         * Update progress chart
+         */
+        function updateProgressChart(startDate, endDate, days) {
+            const dates = [];
+            const start = parseDate(startDate);
+            
+            for (let i = 0; i < days; i++) {
+                const date = new Date(start);
+                date.setDate(start.getDate() + i);
+                dates.push(formatDate(date));
+            }
+            
+            const times = dates.map(date => getTotalTimeByDate(date));
+            const maxTime = Math.max(...times, 60); // Minimum 1 hour for scale
+            
+            const chart = document.getElementById('progressChart');
+            chart.innerHTML = dates.map((date, index) => {
+                const time = times[index];
+                const height = (time / maxTime) * 100;
+                const dateObj = parseDate(date);
+                const label = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                const isToday = date === getTodayDate();
+                
+                return `
+                    <div class="bar" style="height: ${height}%">
+                        <div class="bar-value">${formatTime(time)}</div>
+                        <div class="bar-label">${label}${isToday ? ' 📍' : ''}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Week comparison (if applicable)
+            if (days >= 14) {
+                const midPoint = Math.floor(days / 2);
+                const firstHalf = times.slice(0, midPoint);
+                const secondHalf = times.slice(midPoint);
+                
+                const firstHalfTotal = firstHalf.reduce((a, b) => a + b, 0);
+                const secondHalfTotal = secondHalf.reduce((a, b) => a + b, 0);
+                
+                const improvement = firstHalfTotal > 0 
+                    ? ((secondHalfTotal - firstHalfTotal) / firstHalfTotal) * 100 
+                    : 0;
+                
+                const comparisonDiv = document.getElementById('weekComparison');
+                comparisonDiv.innerHTML = `
+                    <div class="alert ${improvement >= 0 ? 'alert-success' : 'alert-warning'}">
+                        <strong>Period Comparison:</strong> 
+                        ${improvement >= 0 ? '📈 ' : '📉 '}
+                        ${Math.abs(improvement).toFixed(1)}% 
+                        ${improvement >= 0 ? 'increase' : 'decrease'} 
+                        compared to previous period
+                    </div>
+                `;
+            }
+        }
+
+        /**
+         * Update subject distribution
+         */
+        function updateSubjectDistribution(startDate, endDate) {
+            const tasks = getAllTasks().filter(t => t.date >= startDate && t.date <= endDate);
+            const distribution = getSubjectTimeDistribution(tasks);
+            
+            const subjects = Object.keys(distribution).sort((a, b) => distribution[b] - distribution[a]);
+            const maxTime = Math.max(...Object.values(distribution), 1);
+            
+            const container = document.getElementById('subjectDistribution');
+            
+            if (subjects.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center">No data available</p>';
+                return;
+            }
+            
+            container.innerHTML = subjects.map(subject => {
+                const time = distribution[subject];
+                const percentage = (time / maxTime) * 100;
+                
+                return `
+                    <div style="margin-bottom: 1.5rem;">
+                        <div class="flex justify-between mb-1">
+                            <strong>${subject}</strong>
+                            <span>${formatTime(time)}</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /**
+         * Update productivity quality metrics
+         */
+        function updateProductivityQuality(startDate, endDate) {
+            const tasks = getAllTasks().filter(t => 
+                t.date >= startDate && 
+                t.date <= endDate &&
+                t.status === TASK_STATUS.COMPLETED
+            );
+            
+            const quality = getProductivityQuality(tasks);
+            
+            document.getElementById('qualityRatio').textContent = quality.ratio || '-';
+            document.getElementById('qualityLabel').textContent = quality.quality;
+            
+            // Insights
+            const insights = document.getElementById('qualityInsights');
+            let insightText = '';
+            
+            if (quality.quality === 'No Data') {
+                insightText = '<p class="text-muted">Complete some tasks to see productivity quality metrics.</p>';
+            } else if (quality.quality === 'Very Fast') {
+                insightText = `
+                    <div class="alert alert-success">
+                        ✅ You're completing tasks faster than estimated! Great time management.
+                    </div>
+                `;
+            } else if (quality.quality === 'Efficient') {
+                insightText = `
+                    <div class="alert alert-success">
+                        ✅ Excellent! You're very close to your estimates. Keep it up!
+                    </div>
+                `;
+            } else if (quality.quality === 'Good') {
+                insightText = `
+                    <div class="alert alert-info">
+                        👍 Good job! Your time estimates are fairly accurate.
+                    </div>
+                `;
+            } else if (quality.quality === 'Acceptable') {
+                insightText = `
+                    <div class="alert alert-warning">
+                        ⚠️ Tasks are taking longer than planned. Try breaking them into smaller chunks.
+                    </div>
+                `;
+            } else {
+                insightText = `
+                    <div class="alert alert-danger">
+                        ⚠️ Tasks are taking significantly longer. Review your time estimates and planning.
+                    </div>
+                `;
+            }
+            
+            insights.innerHTML = insightText;
+        }
+
+        /**
+         * Update daily scores
+         */
+        function updateDailyScores(startDate, endDate, days) {
+            const dates = [];
+            const start = parseDate(startDate);
+            
+            for (let i = 0; i < days; i++) {
+                const date = new Date(start);
+                date.setDate(start.getDate() + i);
+                dates.push(formatDate(date));
+            }
+            
+            const container = document.getElementById('dailyScores');
+            container.innerHTML = dates.reverse().map(date => {
+                const score = getDailyScore(date);
+                const tasks = getTasksByDate(date);
+                const time = getTotalTimeByDate(date);
+                const dateObj = parseDate(date);
+                const dayName = getDayName(date);
+                const isToday = date === getTodayDate();
+                
+                let scoreColor = 'var(--danger)';
+                if (score >= 70) scoreColor = 'var(--success)';
+                else if (score >= 40) scoreColor = 'var(--warning)';
+                
+                return `
+                    <div style="margin-bottom: 1rem; padding: 1rem; background: var(--bg-tertiary); border-radius: var(--radius-md);">
+                        <div class="flex justify-between align-center">
+                            <div>
+                                <strong>${dayName}, ${dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</strong>
+                                ${isToday ? ' 📍' : ''}
+                                <p class="text-muted" style="margin: 0; font-size: 0.9rem;">
+                                    ${formatTime(time)} • ${tasks.length} tasks
+                                </p>
+                            </div>
+                            <div class="text-center">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: ${scoreColor};">${score}%</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Score</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /**
+         * Update backlog analysis
+         */
+        function updateBacklogAnalysis() {
+            const backlogTasks = getBacklogTasks();
+            document.getElementById('backlogCount').textContent = backlogTasks.length;
+            
+            const container = document.getElementById('backlogContent');
+            
+            if (backlogTasks.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-success">
+                        ✅ No backlog! All tasks are up to date. Great job!
+                    </div>
+                `;
+                return;
+            }
+            
+            // Group by date
+            const grouped = {};
+            backlogTasks.forEach(task => {
+                if (!grouped[task.date]) grouped[task.date] = [];
+                grouped[task.date].push(task);
+            });
+            
+            container.innerHTML = `
+                <div class="alert alert-warning mb-3">
+                    ⚠️ You have ${backlogTasks.length} incomplete task(s) from past dates. 
+                    Consider completing or rescheduling them.
+                </div>
+                <ul class="task-list">
+                    ${backlogTasks.slice(0, 10).map(task => `
+                        <li class="task-item">
+                            <div class="task-content">
+                                <div class="task-title">${task.subject}</div>
+                                <div class="task-meta">
+                                    <span class="badge badge-${task.priority.toLowerCase()}">${task.priority}</span>
+                                    <span>📅 ${task.date}</span>
+                                    <span>⏱️ ${formatTime(task.estimatedTime)}</span>
+                                </div>
+                            </div>
+                            <div class="task-actions">
+                                <a href="tasks.html" class="btn btn-sm btn-primary">Manage</a>
+                            </div>
+                        </li>
+                    `).join('')}
+                </ul>
+                ${backlogTasks.length > 10 ? `<p class="text-center mt-2"><a href="tasks.html" class="btn btn-secondary btn-sm">View All Backlog</a></p>` : ''}
+            `;
+        }
+
+        /**
+         * Update streak information
+         */
+        function updateStreakInfo() {
+            const streakData = getStreakData();
+            
+            document.getElementById('currentStreak').textContent = streakData.current;
+            document.getElementById('longestStreak').textContent = streakData.longest;
+            document.getElementById('lastStudyDate').textContent = 
+                streakData.lastStudyDate 
+                    ? parseDate(streakData.lastStudyDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                    : 'Never';
+        }
+
+        /**
+         * Update study pattern analysis
+         */
+        function updateStudyPattern(startDate, endDate, days) {
+            const dates = [];
+            const start = parseDate(startDate);
+            
+            for (let i = 0; i < days; i++) {
+                const date = new Date(start);
+                date.setDate(start.getDate() + i);
+                dates.push(formatDate(date));
+            }
+            
+            const studyDays = dates.filter(date => getTotalTimeByDate(date) >= MIN_DAILY_MINUTES).length;
+            const consistency = (studyDays / days) * 100;
+            
+            const container = document.getElementById('studyPattern');
+            container.innerHTML = `
+                <div class="progress-container mb-3">
+                    <div class="progress-header">
+                        <span><strong>Consistency</strong></span>
+                        <span>${Math.round(consistency)}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${consistency}%"></div>
+                    </div>
+                </div>
+                <p><strong>Study Days:</strong> ${studyDays} / ${days} days</p>
+                <p><strong>Rest Days:</strong> ${days - studyDays} days</p>
+                <p class="text-muted" style="font-size: 0.9rem;">
+                    ${consistency >= 80 ? '🌟 Excellent consistency!' : 
+                      consistency >= 60 ? '👍 Good consistency!' : 
+                      consistency >= 40 ? '⚠️ Try to be more consistent.' : 
+                      '❌ Need more consistency.'}
+                </p>
+            `;
+        }
+
+        /**
+         * Generate insights and recommendations
+         */
+        function generateInsights(startDate, endDate, days) {
+            const tasks = getAllTasks().filter(t => t.date >= startDate && t.date <= endDate);
+            const totalTime = tasks.reduce((sum, t) => sum + (t.actualTime || 0), 0);
+            const avgTime = totalTime / days;
+            const completed = tasks.filter(t => t.status === TASK_STATUS.COMPLETED).length;
+            const completionRate = tasks.length > 0 ? (completed / tasks.length) * 100 : 0;
+            const streakData = getStreakData();
+            
+            const insights = [];
+            
+            // Time-based insights
+            if (avgTime >= 120) {
+                insights.push('✅ You\'re consistently studying 2+ hours daily. Excellent dedication!');
+            } else if (avgTime >= 60) {
+                insights.push('👍 Good study time! Consider increasing to 2 hours daily for better results.');
+            } else {
+                insights.push('⚠️ Try to increase your daily study time. Aim for at least 1-2 hours.');
+            }
+            
+            // Completion rate insights
+            if (completionRate >= 80) {
+                insights.push('🎯 Outstanding task completion rate! Keep up the great work.');
+            } else if (completionRate >= 60) {
+                insights.push('📊 Good completion rate, but there\'s room for improvement.');
+            } else {
+                insights.push('⚠️ Low completion rate. Try setting more realistic goals or breaking tasks into smaller chunks.');
+            }
+            
+            // Streak insights
+            if (streakData.current >= 7) {
+                insights.push(`🔥 Amazing ${streakData.current}-day streak! You\'re building strong study habits.`);
+            } else if (streakData.current >= 3) {
+                insights.push('🌟 Great streak going! Keep it up to build momentum.');
+            } else if (streakData.current === 0) {
+                insights.push('💪 Start a new streak today! Just ${MIN_DAILY_MINUTES} minutes is all you need.');
+            }
+            
+            // Backlog insights
+            const backlog = getBacklogTasks();
+            if (backlog.length > 5) {
+                insights.push(`⚠️ You have ${backlog.length} pending tasks. Consider reviewing and rescheduling them.`);
+            }
+            
+            // Subject diversity
+            const subjects = [...new Set(tasks.map(t => t.subject))];
+            if (subjects.length >= 4) {
+                insights.push('📚 Great subject diversity! Balanced learning across multiple topics.');
+            } else if (subjects.length === 1) {
+                insights.push('💡 Consider diversifying your studies across multiple subjects.');
+            }
+            
+            const container = document.getElementById('insights');
+            container.innerHTML = insights.map(insight => `<p style="margin: 0.5rem 0;">• ${insight}</p>`).join('');
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        
+        // Theme toggle
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const newTheme = toggleTheme();
+            document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
+
+        // Mobile menu toggle
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // Time range filter
+        document.getElementById('timeRangeFilter').addEventListener('change', loadAnalytics);
+
+        // Set theme icon
+        function setThemeIcon() {
+            const theme = getTheme();
+            document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // ==================== INITIALIZATION ====================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            setThemeIcon();
+            loadAnalytics();
+        });
+    </script>
+</body>
+</html>
