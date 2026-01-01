@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Study & Productivity Tracker - Daily Reflection">
+    <title>Reflection - Study Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                📚 Study Tracker
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="tasks.html">Tasks</a></li>
+                <li><a href="timer.html">Focus Timer</a></li>
+                <li><a href="analytics.html">Analytics</a></li>
+                <li><a href="goals.html">Goals</a></li>
+                <li><a href="reflection.html">Reflection</a></li>
+                <li><a href="export.html">Export</a></li>
+                <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme">🌙</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Page Header -->
+        <section class="card-header" style="margin-bottom: var(--spacing-lg);">
+            <div>
+                <h1>Daily Reflection</h1>
+                <p class="text-muted">Take a moment to reflect on your study session</p>
+            </div>
+            <div class="form-group" style="min-width: 200px; margin: 0;">
+                <input type="date" class="form-input" id="reflectionDate">
+            </div>
+        </section>
+
+        <!-- Today's Summary -->
+        <section class="card">
+            <div class="card-header">
+                <h2 class="card-title">Today's Study Summary</h2>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-4 mb-3">
+                    <div class="card" style="background: var(--bg-tertiary);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-primary);" id="todayTime">0m</div>
+                            <div class="text-muted" style="font-size: 0.85rem;">Study Time</div>
+                        </div>
+                    </div>
+                    <div class="card" style="background: var(--bg-tertiary);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);" id="todayCompleted">0</div>
+                            <div class="text-muted" style="font-size: 0.85rem;">Tasks Done</div>
+                        </div>
+                    </div>
+                    <div class="card" style="background: var(--bg-tertiary);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--warning);" id="todayScore">0%</div>
+                            <div class="text-muted" style="font-size: 0.85rem;">Daily Score</div>
+                        </div>
+                    </div>
+                    <div class="card" style="background: var(--bg-tertiary);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--info);" id="todaySubjects">0</div>
+                            <div class="text-muted" style="font-size: 0.85rem;">Subjects</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tasks Completed Today -->
+                <div id="todayTasksList">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Reflection Form -->
+        <section class="card">
+            <div class="card-header">
+                <h2 class="card-title">💭 Your Reflection</h2>
+            </div>
+            <div class="card-body">
+                <form id="reflectionForm">
+                    <!-- Mood Selection -->
+                    <div class="form-group">
+                        <label class="form-label">How was your study session today?</label>
+                        <div class="flex gap-2" style="justify-content: space-around; flex-wrap: wrap;">
+                            <button type="button" class="mood-btn" data-mood="excellent">
+                                <div style="font-size: 3rem;">😄</div>
+                                <div style="font-size: 0.85rem;">Excellent</div>
+                            </button>
+                            <button type="button" class="mood-btn" data-mood="good">
+                                <div style="font-size: 3rem;">😊</div>
+                                <div style="font-size: 0.85rem;">Good</div>
+                            </button>
+                            <button type="button" class="mood-btn" data-mood="okay">
+                                <div style="font-size: 3rem;">😐</div>
+                                <div style="font-size: 0.85rem;">Okay</div>
+                            </button>
+                            <button type="button" class="mood-btn" data-mood="challenging">
+                                <div style="font-size: 3rem;">😕</div>
+                                <div style="font-size: 0.85rem;">Challenging</div>
+                            </button>
+                            <button type="button" class="mood-btn" data-mood="difficult">
+                                <div style="font-size: 3rem;">😓</div>
+                                <div style="font-size: 0.85rem;">Difficult</div>
+                            </button>
+                        </div>
+                        <input type="hidden" id="moodInput" required>
+                    </div>
+
+                    <!-- What went well -->
+                    <div class="form-group">
+                        <label class="form-label">✅ What went well today?</label>
+                        <textarea class="form-textarea" id="wentWell" placeholder="What are you proud of? What did you accomplish?" rows="3"></textarea>
+                    </div>
+
+                    <!-- Challenges -->
+                    <div class="form-group">
+                        <label class="form-label">⚠️ What challenges did you face?</label>
+                        <textarea class="form-textarea" id="challenges" placeholder="What was difficult? What slowed you down?" rows="3"></textarea>
+                    </div>
+
+                    <!-- Key Learnings -->
+                    <div class="form-group">
+                        <label class="form-label">💡 Key Learnings & Insights</label>
+                        <textarea class="form-textarea" id="learnings" placeholder="What did you learn? Any insights or revelations?" rows="3"></textarea>
+                    </div>
+
+                    <!-- Tomorrow's Plan -->
+                    <div class="form-group">
+                        <label class="form-label">🎯 Plan for Tomorrow</label>
+                        <textarea class="form-textarea" id="tomorrowPlan" placeholder="What will you focus on tomorrow? Any specific goals?" rows="3"></textarea>
+                    </div>
+
+                    <!-- Focus Level -->
+                    <div class="form-group">
+                        <label class="form-label">Focus Level: <span id="focusValue">5</span>/10</label>
+                        <input type="range" class="form-input" id="focusLevel" min="1" max="10" value="5" style="width: 100%;">
+                    </div>
+
+                    <!-- Energy Level -->
+                    <div class="form-group">
+                        <label class="form-label">Energy Level: <span id="energyValue">5</span>/10</label>
+                        <input type="range" class="form-input" id="energyLevel" min="1" max="10" value="5" style="width: 100%;">
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="form-group">
+                        <label class="form-label">Tags (optional)</label>
+                        <input type="text" class="form-input" id="tags" placeholder="e.g., productive, distracted, breakthrough">
+                        <small class="text-muted">Separate tags with commas</small>
+                    </div>
+
+                    <div class="btn-group mt-3">
+                        <button type="submit" class="btn btn-primary">💾 Save Reflection</button>
+                        <button type="button" class="btn btn-secondary" id="clearBtn">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Smart Suggestions for Tomorrow (Hidden by default) -->
+        <section class="card hidden" id="smartSuggestions" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+            <div class="card-header" style="border-bottom: 2px solid rgba(255,255,255,0.2);">
+                <h2 class="card-title" style="color: white; display: flex; align-items: center; gap: var(--spacing-sm);">
+                    <span>🎯</span> Smart Planning Suggestions for Tomorrow
+                </h2>
+            </div>
+            <div class="card-body">
+                <p style="margin-bottom: var(--spacing-lg); font-size: 1rem; opacity: 0.95;">
+                    Based on your reflection, here are personalized recommendations to help you have an even better study session tomorrow:
+                </p>
+                <div id="suggestionsContent">
+                    <!-- Populated by JavaScript -->
+                </div>
+                <div class="btn-group mt-3">
+                    <button class="btn" style="background: white; color: #667eea; font-weight: 600;" onclick="document.getElementById('smartSuggestions').classList.add('hidden')">
+                        Got it! ✓
+                    </button>
+                    <button class="btn" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);" onclick="copySuggestionsToClipboard()">
+                        📋 Copy to Clipboard
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Past Reflections -->
+        <section class="card">
+            <div class="card-header">
+                <h3 class="card-title">📚 Past Reflections</h3>
+            </div>
+            <div class="card-body">
+                <div id="pastReflections">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Reflection Insights -->
+        <section class="card" style="background: linear-gradient(135deg, var(--info), #1098ad); color: white;">
+            <div class="card-body">
+                <h3 style="color: white;">🌟 Weekly Reflection Insights</h3>
+                <div id="weeklyInsights" style="margin-top: 1rem;">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Scripts -->
+    <script src="shared-utils.js"></script>
+    <script>
+        // ==================== STATE ====================
+        
+        let selectedMood = null;
+        let currentDate = getTodayDate();
+
+        // ==================== REFLECTION MANAGEMENT ====================
+        
+        /**
+         * Load reflection for selected date
+         */
+        function loadReflectionForDate(date) {
+            currentDate = date;
+            document.getElementById('reflectionDate').value = date;
+            
+            loadTodaySummary(date);
+            loadExistingReflection(date);
+            loadPastReflections();
+            loadWeeklyInsights();
+        }
+
+        /**
+         * Load today's summary
+         */
+        function loadTodaySummary(date) {
+            const tasks = getTasksByDate(date);
+            const time = getTotalTimeByDate(date);
+            const completed = tasks.filter(t => t.status === TASK_STATUS.COMPLETED);
+            const score = getDailyScore(date);
+            const subjects = [...new Set(tasks.map(t => t.subject))];
+            
+            document.getElementById('todayTime').textContent = formatTime(time);
+            document.getElementById('todayCompleted').textContent = completed.length;
+            document.getElementById('todayScore').textContent = score + '%';
+            document.getElementById('todaySubjects').textContent = subjects.length;
+            
+            // Tasks list
+            const tasksList = document.getElementById('todayTasksList');
+            if (completed.length > 0) {
+                tasksList.innerHTML = `
+                    <h4 class="mt-3 mb-2">Tasks Completed:</h4>
+                    <ul class="task-list">
+                        ${completed.map(task => `
+                            <li class="task-item completed">
+                                <div class="task-content">
+                                    <div class="task-title">${task.subject}</div>
+                                    <div class="task-meta">
+                                        <span>⏱️ ${formatTime(task.actualTime)}</span>
+                                    </div>
+                                </div>
+                            </li>
+                        `).join('')}
+                    </ul>
+                `;
+            } else {
+                tasksList.innerHTML = `<p class="text-muted mt-2">No tasks completed yet.</p>`;
+            }
+        }
+
+        /**
+         * Load existing reflection if any
+         */
+        function loadExistingReflection(date) {
+            const reflection = getReflection(date);
+            
+            if (reflection) {
+                // Set mood
+                selectedMood = reflection.mood;
+                document.getElementById('moodInput').value = reflection.mood;
+                updateMoodButtons();
+                
+                // Set form values
+                document.getElementById('wentWell').value = reflection.wentWell || '';
+                document.getElementById('challenges').value = reflection.challenges || '';
+                document.getElementById('learnings').value = reflection.learnings || '';
+                document.getElementById('tomorrowPlan').value = reflection.tomorrowPlan || '';
+                document.getElementById('focusLevel').value = reflection.focusLevel || 5;
+                document.getElementById('energyLevel').value = reflection.energyLevel || 5;
+                document.getElementById('tags').value = reflection.tags || '';
+                
+                updateSliderValues();
+            } else {
+                // Clear form
+                clearForm();
+            }
+        }
+
+        /**
+         * Update mood button selection
+         */
+        function updateMoodButtons() {
+            document.querySelectorAll('.mood-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-mood') === selectedMood) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        /**
+         * Handle mood selection
+         */
+        function handleMoodSelection(mood) {
+            selectedMood = mood;
+            document.getElementById('moodInput').value = mood;
+            updateMoodButtons();
+        }
+
+        /**
+         * Update slider value displays
+         */
+        function updateSliderValues() {
+            document.getElementById('focusValue').textContent = document.getElementById('focusLevel').value;
+            document.getElementById('energyValue').textContent = document.getElementById('energyLevel').value;
+        }
+
+        /**
+         * Handle form submission
+         */
+        function handleReflectionSubmit(e) {
+            e.preventDefault();
+            
+            if (!selectedMood) {
+                showToast('Please select a mood!', 'warning');
+                return;
+            }
+            
+            const reflectionData = {
+                mood: selectedMood,
+                wentWell: document.getElementById('wentWell').value.trim(),
+                challenges: document.getElementById('challenges').value.trim(),
+                learnings: document.getElementById('learnings').value.trim(),
+                tomorrowPlan: document.getElementById('tomorrowPlan').value.trim(),
+                focusLevel: parseInt(document.getElementById('focusLevel').value),
+                energyLevel: parseInt(document.getElementById('energyLevel').value),
+                tags: document.getElementById('tags').value.trim()
+            };
+            
+            saveReflection(currentDate, reflectionData);
+            showToast('Reflection saved successfully!', 'success');
+            
+            // Generate and show smart suggestions
+            generateSmartSuggestions(reflectionData, currentDate);
+            
+            loadPastReflections();
+            loadWeeklyInsights();
+        }
+
+        /**
+         * Clear form
+         */
+        function clearForm() {
+            selectedMood = null;
+            document.getElementById('reflectionForm').reset();
+            document.getElementById('moodInput').value = '';
+            document.getElementById('focusLevel').value = 5;
+            document.getElementById('energyLevel').value = 5;
+            updateMoodButtons();
+            updateSliderValues();
+        }
+
+        /**
+         * Load past reflections
+         */
+        function loadPastReflections() {
+            const allReflections = getFromStorage(STORAGE_KEYS.REFLECTIONS, {});
+            const dates = Object.keys(allReflections).sort().reverse();
+            const container = document.getElementById('pastReflections');
+            
+            if (dates.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>No past reflections yet. Start by saving your first reflection!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Show last 5 reflections
+            const recentDates = dates.slice(0, 5);
+            
+            container.innerHTML = recentDates.map(date => {
+                const reflection = allReflections[date];
+                const dateObj = parseDate(date);
+                const dayName = getDayName(date);
+                
+                const moodEmojis = {
+                    excellent: '😄',
+                    good: '😊',
+                    okay: '😐',
+                    challenging: '😕',
+                    difficult: '😓'
+                };
+                
+                return `
+                    <div class="card mb-3" style="background: var(--bg-tertiary);">
+                        <div class="card-body">
+                            <div class="flex justify-between align-center mb-2">
+                                <div>
+                                    <strong>${dayName}, ${dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</strong>
+                                    <span style="font-size: 1.5rem; margin-left: 1rem;">${moodEmojis[reflection.mood]}</span>
+                                </div>
+                                <button class="btn btn-sm btn-primary view-reflection-btn" data-date="${date}">View</button>
+                            </div>
+                            ${reflection.wentWell ? `<p class="text-muted" style="font-size: 0.9rem; margin: 0.5rem 0;"><strong>✅ Highlights:</strong> ${reflection.wentWell.substring(0, 100)}${reflection.wentWell.length > 100 ? '...' : ''}</p>` : ''}
+                            <div class="flex gap-2 mt-2" style="flex-wrap: wrap;">
+                                <span class="badge badge-low">Focus: ${reflection.focusLevel}/10</span>
+                                <span class="badge badge-low">Energy: ${reflection.energyLevel}/10</span>
+                                ${reflection.tags ? reflection.tags.split(',').map(tag => `<span class="badge badge-medium">${tag.trim()}</span>`).join('') : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            if (dates.length > 5) {
+                container.innerHTML += `<p class="text-center text-muted">Showing 5 most recent reflections</p>`;
+            }
+        }
+
+        /**
+         * Load weekly insights from reflections
+         */
+        function loadWeeklyInsights() {
+            const weekDates = getCurrentWeekDates();
+            const allReflections = getFromStorage(STORAGE_KEYS.REFLECTIONS, {});
+            const weekReflections = weekDates.map(date => allReflections[date]).filter(r => r);
+            
+            const container = document.getElementById('weeklyInsights');
+            
+            if (weekReflections.length === 0) {
+                container.innerHTML = `<p style="color: rgba(255,255,255,0.9);">No reflections this week yet.</p>`;
+                return;
+            }
+            
+            // Calculate averages
+            const avgFocus = weekReflections.reduce((sum, r) => sum + (r.focusLevel || 0), 0) / weekReflections.length;
+            const avgEnergy = weekReflections.reduce((sum, r) => sum + (r.energyLevel || 0), 0) / weekReflections.length;
+            
+            // Mood distribution
+            const moodCounts = {};
+            weekReflections.forEach(r => {
+                moodCounts[r.mood] = (moodCounts[r.mood] || 0) + 1;
+            });
+            const mostCommonMood = Object.keys(moodCounts).reduce((a, b) => moodCounts[a] > moodCounts[b] ? a : b);
+            
+            container.innerHTML = `
+                <div class="grid grid-3 gap-2">
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 700;">${avgFocus.toFixed(1)}/10</div>
+                        <div style="font-size: 0.9rem; opacity: 0.9;">Avg Focus</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 700;">${avgEnergy.toFixed(1)}/10</div>
+                        <div style="font-size: 0.9rem; opacity: 0.9;">Avg Energy</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 700;">${weekReflections.length}</div>
+                        <div style="font-size: 0.9rem; opacity: 0.9;">Reflections</div>
+                    </div>
+                </div>
+                <p style="margin-top: 1rem; color: rgba(255,255,255,0.9);">
+                    Most common mood this week: <strong>${mostCommonMood}</strong>
+                </p>
+            `;
+        }
+
+        /**
+         * Generate smart planning suggestions based on reflection data
+         */
+        function generateSmartSuggestions(reflectionData, date) {
+            const suggestions = [];
+            const tasks = getTasksByDate(date);
+            const todayTime = getTotalTimeByDate(date);
+            const completedTasks = tasks.filter(t => t.status === TASK_STATUS.COMPLETED);
+            
+            // Analyze mood
+            if (reflectionData.mood === 'difficult' || reflectionData.mood === 'challenging') {
+                suggestions.push({
+                    icon: '🧘',
+                    title: 'Start with Easier Tasks',
+                    text: 'Since today was challenging, begin tomorrow with tasks that build confidence. Save complex topics for when your energy is highest.'
+                });
+                suggestions.push({
+                    icon: '⏰',
+                    title: 'Shorter Study Blocks',
+                    text: 'Consider using 15-20 minute focus sessions instead of longer blocks. This can reduce overwhelm and maintain momentum.'
+                });
+            } else if (reflectionData.mood === 'excellent' || reflectionData.mood === 'good') {
+                suggestions.push({
+                    icon: '🚀',
+                    title: 'Tackle Challenging Topics',
+                    text: 'You\'re in a great flow! Tomorrow is perfect for those difficult subjects you\'ve been avoiding.'
+                });
+            }
+            
+            // Analyze focus level
+            if (reflectionData.focusLevel <= 4) {
+                suggestions.push({
+                    icon: '🎧',
+                    title: 'Minimize Distractions',
+                    text: 'Your focus was below average today. Try: turning off phone notifications, using website blockers, or finding a quieter study space.'
+                });
+                suggestions.push({
+                    icon: '🍅',
+                    title: 'Use Pomodoro Technique',
+                    text: 'Set 25-minute focused sessions with 5-minute breaks. This proven method helps maintain concentration.'
+                });
+            } else if (reflectionData.focusLevel >= 8) {
+                suggestions.push({
+                    icon: '⚡',
+                    title: 'Capitalize on Your Focus',
+                    text: 'Your focus is excellent! Schedule your most important or complex tasks during your peak focus hours tomorrow.'
+                });
+            }
+            
+            // Analyze energy level
+            if (reflectionData.energyLevel <= 4) {
+                suggestions.push({
+                    icon: '💤',
+                    title: 'Prioritize Rest & Recovery',
+                    text: 'Low energy detected. Ensure 7-9 hours of sleep tonight. Consider light exercise or a short walk before studying tomorrow.'
+                });
+                suggestions.push({
+                    icon: '🥗',
+                    title: 'Nutrition & Hydration',
+                    text: 'Stay hydrated and eat balanced meals. Avoid heavy meals before study sessions - they can make you sluggish.'
+                });
+            } else if (reflectionData.energyLevel >= 8) {
+                suggestions.push({
+                    icon: '🎯',
+                    title: 'Increase Your Study Target',
+                    text: 'Your energy levels are great! Consider extending your study time by 30-60 minutes or adding one more challenging task.'
+                });
+            }
+            
+            // Analyze study time
+            if (todayTime < 60) {
+                suggestions.push({
+                    icon: '📈',
+                    title: 'Build Study Consistency',
+                    text: 'Try to gradually increase your study time. Aim for at least 2 hours tomorrow. Small, consistent progress compounds over time.'
+                });
+            } else if (todayTime > 300) {
+                suggestions.push({
+                    icon: '🌊',
+                    title: 'Balance is Key',
+                    text: 'You studied for a long time today! Make sure to include breaks tomorrow. Quality often beats quantity - prevent burnout.'
+                });
+            }
+            
+            // Analyze task completion
+            const completionRate = tasks.length > 0 ? (completedTasks.length / tasks.length) * 100 : 0;
+            if (completionRate < 50 && tasks.length > 0) {
+                suggestions.push({
+                    icon: '📝',
+                    title: 'Break Down Tasks',
+                    text: 'Many tasks remained incomplete. Try breaking large tasks into smaller, manageable chunks (15-30 min each) for better completion rates.'
+                });
+                suggestions.push({
+                    icon: '🎯',
+                    title: 'Set Realistic Goals',
+                    text: 'Focus on 3-5 key tasks tomorrow instead of overloading. Completing fewer tasks fully is better than many partially.'
+                });
+            } else if (completionRate >= 80) {
+                suggestions.push({
+                    icon: '🌟',
+                    title: 'Great Task Management!',
+                    text: 'Excellent completion rate! Maintain this momentum. Consider setting slightly more ambitious goals tomorrow.'
+                });
+            }
+            
+            // Analyze challenges mentioned
+            if (reflectionData.challenges) {
+                const challengesLower = reflectionData.challenges.toLowerCase();
+                if (challengesLower.includes('distract') || challengesLower.includes('focus')) {
+                    suggestions.push({
+                        icon: '🔕',
+                        title: 'Create a Distraction-Free Zone',
+                        text: 'You mentioned distraction issues. Tomorrow: use "Do Not Disturb" mode, clear your desk, and inform others of your study time.'
+                    });
+                }
+                if (challengesLower.includes('tired') || challengesLower.includes('sleepy') || challengesLower.includes('exhaust')) {
+                    suggestions.push({
+                        icon: '☕',
+                        title: 'Optimize Your Study Time',
+                        text: 'Study during your natural energy peaks. Most people focus best in morning or late afternoon. Avoid post-lunch slumps.'
+                    });
+                }
+                if (challengesLower.includes('understand') || challengesLower.includes('difficult') || challengesLower.includes('confus')) {
+                    suggestions.push({
+                        icon: '👥',
+                        title: 'Seek Help & Different Resources',
+                        text: 'Struggling with concepts? Try: watching video tutorials, joining study groups, or asking for help. Different explanations can provide clarity.'
+                    });
+                }
+            }
+            
+            // Time-based suggestion
+            const hour = new Date().getHours();
+            if (hour >= 22 || hour < 6) {
+                suggestions.push({
+                    icon: '🌙',
+                    title: 'Get Quality Sleep Tonight',
+                    text: 'It\'s late! Prioritize sleep over late-night cramming. A well-rested mind learns 30% better than a tired one.'
+                });
+            }
+            
+            // If no specific suggestions, add general ones
+            if (suggestions.length === 0) {
+                suggestions.push({
+                    icon: '📚',
+                    title: 'Active Learning Techniques',
+                    text: 'Use active recall: quiz yourself, teach concepts to others, or create mind maps. This beats passive reading every time.'
+                });
+                suggestions.push({
+                    icon: '🎯',
+                    title: 'Review Yesterday\'s Material',
+                    text: 'Spend 10-15 minutes reviewing what you studied today. Spaced repetition significantly improves long-term retention.'
+                });
+            }
+            
+            // Limit to top 5 most relevant suggestions
+            const topSuggestions = suggestions.slice(0, 5);
+            
+            // Display suggestions
+            const suggestionsHTML = topSuggestions.map(s => `
+                <div class="card mb-3" style="background: rgba(255,255,255,0.15); border: none; color: white;">
+                    <div class="card-body">
+                        <div style="display: flex; gap: var(--spacing-md); align-items: start;">
+                            <div style="font-size: 2.5rem; flex-shrink: 0;">${s.icon}</div>
+                            <div style="flex: 1;">
+                                <h4 style="color: white; margin: 0 0 var(--spacing-sm) 0; font-size: 1.1rem;">${s.title}</h4>
+                                <p style="margin: 0; opacity: 0.95; font-size: 0.95rem; line-height: 1.5;">${s.text}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('suggestionsContent').innerHTML = suggestionsHTML;
+            document.getElementById('smartSuggestions').classList.remove('hidden');
+            
+            // Scroll to suggestions
+            setTimeout(() => {
+                document.getElementById('smartSuggestions').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 300);
+        }
+
+        /**
+         * Copy suggestions to clipboard
+         */
+        function copySuggestionsToClipboard() {
+            const suggestionsDiv = document.getElementById('suggestionsContent');
+            const suggestions = Array.from(suggestionsDiv.querySelectorAll('.card-body')).map(card => {
+                const title = card.querySelector('h4').textContent;
+                const text = card.querySelector('p').textContent;
+                return `• ${title}\n  ${text}`;
+            }).join('\n\n');
+            
+            const header = '🎯 Smart Planning Suggestions for Tomorrow:\n\n';
+            const fullText = header + suggestions;
+            
+            navigator.clipboard.writeText(fullText).then(() => {
+                showToast('Suggestions copied to clipboard!', 'success');
+            }).catch(() => {
+                showToast('Could not copy to clipboard', 'warning');
+            });
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        
+        // Theme toggle
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const newTheme = toggleTheme();
+            document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
+
+        // Mobile menu toggle
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // Date selection
+        document.getElementById('reflectionDate').addEventListener('change', (e) => {
+            loadReflectionForDate(e.target.value);
+        });
+
+        // Mood buttons
+        document.querySelectorAll('.mood-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleMoodSelection(btn.getAttribute('data-mood'));
+            });
+        });
+
+        // Sliders
+        document.getElementById('focusLevel').addEventListener('input', updateSliderValues);
+        document.getElementById('energyLevel').addEventListener('input', updateSliderValues);
+
+        // Form submission
+        document.getElementById('reflectionForm').addEventListener('submit', handleReflectionSubmit);
+
+        // Clear button
+        document.getElementById('clearBtn').addEventListener('click', clearForm);
+
+        // View reflection buttons
+        document.getElementById('pastReflections').addEventListener('click', (e) => {
+            const btn = e.target.closest('.view-reflection-btn');
+            if (btn) {
+                const date = btn.getAttribute('data-date');
+                loadReflectionForDate(date);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Set theme icon
+        function setThemeIcon() {
+            const theme = getTheme();
+            document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Add CSS for mood buttons
+        const style = document.createElement('style');
+        style.textContent = `
+            .mood-btn {
+                background: var(--bg-tertiary);
+                border: 3px solid var(--border-color);
+                border-radius: var(--radius-lg);
+                padding: 1rem;
+                cursor: pointer;
+                transition: all var(--transition-fast);
+                text-align: center;
+                min-width: 100px;
+            }
+            .mood-btn:hover {
+                transform: scale(1.05);
+                border-color: var(--accent-primary);
+            }
+            .mood-btn.active {
+                background: var(--accent-primary);
+                color: white;
+                border-color: var(--accent-primary);
+                transform: scale(1.1);
+            }
+        `;
+        document.head.appendChild(style);
+
+        // ==================== INITIALIZATION ====================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            setThemeIcon();
+            loadReflectionForDate(getTodayDate());
+        });
+    </script>
+</body>
+</html>
